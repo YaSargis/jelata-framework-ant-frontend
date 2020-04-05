@@ -1,0 +1,582 @@
+import { connect } from 'react-redux';
+import React from 'react';
+import { compose, withHandlers, lifecycle, withStateHandlers } from 'recompose';
+import _ from 'lodash';
+
+import { notification, Modal } from 'antd';
+const confirm = Modal.confirm;
+
+import qs from 'query-string';
+
+import { PostMessage } from 'src/libs/api';
+
+import { toggleLoading } from 'src/redux/actions/helpers';
+
+let wss = []; // ws array
+
+const enhance = compose(
+  connect(
+    state => ({
+      user_detail: state.user.user_detail,
+      loading: true
+    }),
+    dispatch => ({
+      toggleLoading: status => dispatch(toggleLoading(status))
+    })
+  ),
+  withStateHandlers(
+    ({
+      inState = {
+        data: {}, origin: {}, id_title: null,
+        carouselRef: React.createRef(), initIndex: 0,
+        collapseAll: false, localChangeCollapse: false,
+        localActiveKey: []
+      }
+    }) => ({
+      data: inState.data, origin: inState.origin,
+      id_title: inState.id_title, carouselRef: inState.carouselRef,
+      initIndex: inState.initIndex, collapseAll: inState.collapseAll,
+      localChangeCollapse: inState.localChangeCollapse,
+      localActiveKey: inState.localActiveKey
+    }),
+    {
+      set_state: state => obj => {
+        let _state = { ...state };
+        _.keys(obj).map(k => {
+          _state[k] = obj[k];
+        });
+        return _state;
+      }
+    }
+  ),
+  withHandlers({
+    get_params: props => _props => {
+      let params = {},
+        _p = _props || props; // _props = nextProps or prevProps
+      if (props.compo) {
+        params.inputs = qs.parse(_p.location.search);
+        params.search = _p.location.search;
+        params.path = _p.path; params.id_page = _p.path;
+      } else {
+        params.inputs = qs.parse(_p.location.search);
+        params.search = _p.location.search;
+        params.path = _p.match;
+        params.id_page = _p.match.params.id_page; // id_page React-router
+      }
+      return { ...params };
+    },
+    onChangeData: ({ set_state, data = {} }) => (event, item_config) => {
+      let value = event,
+        _data,
+        valueTextTypes = event && event.target && event.target.value;
+      if (event !== null) {
+        value = event.target ? event.target.value : event;
+      }
+
+      if (event && event.target) {
+        value === '' ? (value = null) : (value = value);
+      }
+      _data = { ...data };
+      _data[item_config.key] = value;
+
+      if (value === '' || valueTextTypes === '') {
+        switch (item_config.type) {
+          case 'text':
+          case 'date':
+          case 'autocomplete':
+          case 'textarea':
+          case 'number': {
+            _data[item_config.key] = null;
+            break;
+          }
+        }
+      }
+
+      set_state({
+        data: { ..._data }
+      });
+    }
+  }),
+  withHandlers({
+    getData: ({ get_params, toggleLoading, origin, set_state, compo }) => (id, getData) => {
+      let params = get_params();
+
+      if (id) {
+        let id_title = _.filter(
+          origin.config,
+          o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+        )[0].title;
+        params.inputs[id_title] = id;
+      }
+
+      PostMessage({
+        url: `schema/getone?path=${params.id_page}`,
+        data: JSON.stringify({
+          inputs: params.inputs
+        })
+      })
+        .then(res => {
+
+					if (!compo && !params.inputs._doctitle_)
+          	document.title = res.data.title;
+					else if (params.inputs._doctitle_)
+						document.title = params.inputs._doctitle_;
+
+          let _r = res.data,
+            s_parsed = qs.parse(location.search),
+            rel = s_parsed.relation ? s_parsed.relation.split(',') : [],
+            rel_obj = {};
+          if (res.data.subscrible) {
+            let ws = document.location.href.split('//')[1];
+            ws = ws.split('/')[0];
+            ws = 'ws://' + ws + '/ws';
+            //ws = 'ws://' + '94.230.251.78:8080' + '/ws'
+            let socket = new WebSocket(ws);
+            wss.push(socket);
+
+            let idcol = (
+              res.data.config.filter(x => x.col.toUpperCase() === 'ID' && !x.related)[0] || {}
+            ).key;
+
+            socket.onopen = () => {
+              let ids = [];
+              res.data.data.forEach(x => ids.push(x[idcol]));
+
+              socket.send(JSON.stringify({ viewpath: params.id_page, ids: ids }));
+            };
+
+            socket.onclose = event => {
+              if (event.wasClean) {
+                console.log('clear closed (getOne)');
+              } else {
+                /*notification.error({
+									message: 'failed',
+								})*/
+                console.log('ws close failed');
+              }
+            };
+
+            socket.onmessage = e => {
+              let data = JSON.parse(e.data);
+              if (!data.error) {
+                data.forEach(x => {
+                  notification.success({
+                    message: x.notificationtext
+                  });
+                  PostMessage({
+                    url: '/api/setsended',
+                    data: { id: x.id }
+                  }).then(res => {
+                    console.log('sended');
+                  });
+                  if (res.data.data[0])
+                    getData(res.data.data[0][idcol], getData);
+                });
+              } else {
+                /*notification.error({
+									message: data.error,
+								})*/
+                console.log('ws message failed');
+              }
+            };
+            socket.onerror = error => {
+              notification.error({
+                message: 'ws error'
+              });
+              console.log('ws error:', error);
+            };
+          }
+          rel.forEach(x => {
+            rel_obj[x] = s_parsed[x];
+          });
+          let data = {};
+          data.viewid = _r.id;
+          data.tablename = _r.table;
+          data.relation = s_parsed.relation || null;
+          data.relationobj = rel_obj || {};
+
+          set_state({
+            data: { ...res.data.data[0] },
+            origin: { ...res.data },
+            global: { ...data },
+            loading: false
+          });
+          toggleLoading(false);
+        })
+        .catch(() => {
+          toggleLoading(false);
+        });
+    }
+  }),
+  withHandlers({
+    onSaveRow: ({ getData, onChangeData, set_state, data, origin, global = {} }) => (
+      value,
+      item_config
+    ) => {
+      let id_title = _.filter(
+        origin.config,
+        o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+      )[0].key;
+
+      if (origin.viewtype === 'form not mutable') {
+        onChangeData(value, item_config);
+      } else if (origin.viewtype === 'form full') {
+        // form full
+
+        const go = () =>
+          new Promise((resolve, reject) => {
+            let _data = { ...global };
+
+            _data.tablename = origin.table;
+            data[id_title] ? (_data.id = data[id_title]) : null;
+            _data.config = { ...item_config };
+            _data.value = value;
+
+            if (!item_config.related) {
+              // _data.tablename = view_settings.tablename
+            } else {
+              _data.relatetable = _data.tablename;
+              _data.tablename = item_config.table;
+            }
+            resolve(_data);
+          });
+
+        go()
+          .then(_data => {
+            PostMessage({
+              url: 'api/saverow',
+              data: _data
+            }).then(res => {
+              let res_data = res.data.outjson;
+              if (!item_config.related) {
+                if (!data[id_title] & !res_data || item_config.updatable) {
+                  getData(data[id_title] || res_data.id, getData);
+                } else {
+                  if (res_data.id) {
+                    data[id_title] = res_data.id;
+                    data[item_config.key] = value;
+                  } else {
+                    data = res_data;
+                  }
+                  set_state({
+                    data: { ...data }
+                  });
+                }
+              } else {
+                if (item_config.updatable) {
+                  getData(data[id_title] || res_data.id, getData);
+                }
+              }
+              notification.success({
+                message: 'OK',
+                duration: 2
+              });
+            });
+          })
+          .catch(err => {
+            if (err)
+              notification.error({
+                message: 'Error',
+                description: err.response ? err.response.data.message : 'Uncknown Error'
+              });
+          });
+      }
+    },
+    onSubmitState: ({ set_state, data = {}, origin = {} }) => (event, item_config) => {
+      let id_title = _.filter(
+          origin.config,
+          o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+        )[0].title,
+        keys = _.keys(origin.data[0]),
+        _data = {};
+      keys.map(k => {
+        if (origin.data[0][k] !== data[k]) {
+          _data[k] = data[k];
+        }
+      });
+    }
+  }),
+  withHandlers({
+    onChangeInput: ({ onSaveRow }) => (event, item) => {
+      let value = event;
+      if (event !== null && event !== undefined) {
+        value = event.target ? event.target.value : event;
+      }
+
+      if (event === undefined || event === '') value = null;
+      onSaveRow(value, item);
+    },
+    onRemoveImg: ({ data, onSaveRow }) => event => {
+      // title - binding
+      confirm({
+        title: 'delete file?',
+        content: '',
+        onOk() {
+          let row = event.row,
+            row_data = data[row.key];
+
+          _.remove(row_data, o => o.uri === event.file_url); // deleting file
+
+          onSaveRow(row_data, row);
+        },
+        onCancel() {},
+        okText: 'Yes',
+        cancelText: 'No'
+      });
+      notification.info({
+        message: 'Do not forget save changes'
+      });
+    },
+    onRemoveFile: ({ data, onSaveRow }) => (files, uri, item) => {
+      confirm({
+        title: 'Delete file?',
+        content: '',
+        onOk() {
+          _.remove(files, o => o.uri === uri);
+          onSaveRow(files, item);
+        },
+        onCancel() {},
+        okText: 'Yes',
+        cancelText: 'No'
+      });
+      notification.info({
+        message: 'Do not forget save changes'
+      });
+    },
+    onUploadFileChange: ({ set_state, data, origin }) => (event, item_config, multyple) => {
+      if (event.target) {
+        if (event.target.files.length > 0) {
+          let _data = new FormData(),
+            id_title = _.filter(
+              origin.config,
+              o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+            )[0].key;
+
+          for (let i in event.target.files) {
+            if (data[item_config.key]) {
+              _data.append('file_' + i, event.target.files[i]);
+            } else {
+              _data.append('file_' + i, event.target.files[i]);
+            }
+          }
+
+          _data.append('config', JSON.stringify(item_config));
+
+          if (data[id_title]) _data.append('id', data[id_title]);
+          if (data[item_config.key]) _data.append('value', JSON.stringify(data[item_config.key]));
+          if (!item_config.related) _data.append('tablename', origin.table || NaN);
+          else {
+            _data.append('tablename', item_config.tablename);
+            _data.append('relatetable', origin.table || NaN);
+          }
+          _data.append('viewid', origin.id);
+
+          PostMessage({
+            url: 'api/savefile',
+            data: _data
+          })
+            .then(res => {
+              let res_data = res.data.outjson;
+              if (res_data.id) {
+                data[id_title] = res_data.id;
+                data[item_config.key] = JSON.parse(res_data.value);
+              } else {
+                data = res_data;
+              }
+              set_state({
+                data: { ...data }
+              });
+            })
+            .catch(err => {
+              if (err && err.response && err.response.data)
+                notification.error({
+                  message: 'Error',
+                  description: err.response.data.message
+                });
+              else
+                notification.error({
+                  message: 'Error',
+                  description: ''
+                });
+            });
+        }
+      }
+    },
+    onUpload: ({ set_state, data, origin }) => (event, item_config, multyple) => {
+      //handlerUploadFiles: ({ data, set_get_one, view_settings, config, changeUploaded }) => (event, item_config, multyple) => {
+      let _data = new FormData(),
+        id_title = _.filter(
+          origin.config,
+          o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+        )[0].key;
+
+      _data.append('file_0', event.file);
+      _data.append('config', JSON.stringify(item_config));
+
+      if (data[id_title]) _data.append('id', data[id_title]);
+      if (data[item_config.key]) _data.append('value', JSON.stringify(data[item_config.key]));
+
+      if (!item_config.related) _data.append('tablename', origin.table || NaN);
+      else {
+        _data.append('tablename', item_config.tablename);
+        _data.append('relatetable', origin.table || NaN);
+      }
+      _data.append('viewid', origin.id);
+
+      PostMessage({
+        url: 'api/savefile',
+        data: _data,
+        params: {
+          onUploadProgress: e => {
+            set_state({
+              uploaded: multyple
+                ? ((e.loaded / e.total) * 100).toFixed()
+                : ((e.loaded / e.total) * 100).toFixed()
+            });
+          }
+        }
+      })
+        .then(res => {
+          let res_data = res.data.outjson;
+          if (res_data.id) {
+            data[id_title] = res_data.id;
+            data[item_config.key] = JSON.parse(res_data.value);
+          } else {
+            data = res_data;
+          }
+          set_state({
+            data: { ...data },
+            uploaded: multyple ? false : false
+          });
+        })
+        .catch(err => {
+          set_state({
+            uploaded: multyple ? false : false
+          });
+          if (err && err.response && err.response.data)
+            notification.error({
+              message: 'Error',
+              description: err.response.data.message
+            });
+          else
+            notification.error({
+              message: 'Error',
+              description: ''
+            });
+        });
+    },
+    onSave: ({ data, set_state, global, origin, getData }) => (callback = null) => {
+      set_state({
+        loading: true
+      });
+      let id_title = _.filter(
+        origin.config,
+        o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+      )[0].key;
+      PostMessage({
+        url: 'api/savestate',
+        data: {
+          data: data,
+          viewid: global.viewid,
+          id: data[id_title],
+          relation: global.relation,
+          relationobj: global.relationobj
+        }
+      })
+        .then(res => {
+          let res_data = res.data.outjson;
+
+          if (res_data.id) {
+            data[id_title] = res_data.id;
+          }
+          set_state({
+            data: { ...data },
+            loading: false
+          });
+          notification.success({
+            message: 'OK'
+          });
+          getData(data[id_title] || res_data.id, getData);
+					if (callback && typeof(callback) === 'function') {
+						callback()
+					}
+        })
+        .catch(() => {
+          set_state({ loading: false });
+        });
+    },
+    handlerAutoComplete: ({ origin, set_state }) => (search_string, item) => {
+      getDataSelect();
+      function getDataSelect() {
+        let inputs = {};
+        PostMessage({
+          url: 'api/autocomplete',
+          data: JSON.stringify({
+            val: search_string,
+            table: origin.table,
+            col: item.col
+          })
+        }).then(res => {
+          let newconfig = [...origin.config];
+
+          newconfig.forEach((el, i) => {
+            if (newconfig[i].key === item.key)
+							newconfig[i]['selectdata'] = res.data.outjson;
+          });
+
+          origin.config = newconfig;
+          set_state({
+            origin: origin
+          });
+        });
+      }
+    },
+    onChangeCollapse: ({ set_state }) => key => {
+      set_state({
+        localChangeCollapse: true,
+        localActiveKey: key
+      });
+    }
+  }),
+  lifecycle({
+    componentDidMount() {
+      this.props.getData(null, this.props.getData);
+    },
+    componentWillUnmount() {
+      wss.forEach(ws_item => ws_item.close());
+    },
+    componentDidUpdate(prevProps) {
+      const { btnCollapseAll, set_state } = this.props;
+      if (prevProps.btnCollapseAll !== btnCollapseAll) {
+        set_state({
+          localChangeCollapse: false,
+          collapseAll: btnCollapseAll
+        });
+      }
+    },
+    componentWillUpdate(nextProps) {
+      const { compo, getData, get_params } = this.props;
+      let params = get_params(this.props),
+        nextParams = get_params(nextProps);
+
+      if (!compo) {
+        if (params.id_page !== nextParams.id_page) {
+          getData();
+        }
+      } else {
+        // Compo data
+        const locationFirstLevel = nextProps.location.pathname.slice(0, 6);
+        if (locationFirstLevel !== '/trees') {
+          if (
+            nextProps.location.search !== this.props.location.search ||
+            nextProps.path !== this.props.path
+          ) {
+            getData();
+          }
+        }
+      }
+    }
+  })
+);
+
+export default enhance;
