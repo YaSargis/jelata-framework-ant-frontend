@@ -206,8 +206,8 @@ const enhance = compose(
 					if (res.data.acts.filter((a) => a.isforevery && a.type !== 'Expand' && a.type !== 'onLoad').length > 0 ) {
 							res.data.config.push({col:'__actions__', title:'➥', key: '__actions__', visible:true, editable:false })
 					}
-
-					res.data.config.unshift({col:'rownum', title:'#', key: 'rownum', visible:true, editable:false })
+					if (res.data.pagination)
+						res.data.config.unshift({col:'rownum', title:'#', key: 'rownum', visible:true, editable:false })
 					if (res.data.checker)
 						res.data.config.unshift({col:'checker', title:'', key: '__checker__', visible:true, editable:false })
 

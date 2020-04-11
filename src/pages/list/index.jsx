@@ -132,7 +132,7 @@ const TableComp = ({
             return ''
           }
         }
-        let classname = item.classname + isEditableClass(item.editable)    
+        let classname = item.classname + ' ' + isEditableClass(item.editable)
 		columns2.push({
           dataField: item.key, text: item.title, title: () => item.title,
           events: {

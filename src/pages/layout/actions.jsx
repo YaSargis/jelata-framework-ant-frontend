@@ -148,16 +148,20 @@ const enhance = compose(
 		switch (config_one.actapitype) {
           case 'GET':
             Get(uri, body).then((res) => {
-				if (!config_one.isforevery) {
-					getData(data[id_key], getData);
-				} else {
-					getData(getData, {});
-				}
+				if (res && res.data && res.data._redirect) {
+					window.location.href = res.data._redirect
+			    }
 				if (res && res.data && res.data.message) {
 					notification['success']({
 						message: res.data.message
 					});
 				}
+				if (!config_one.isforevery) {
+					getData(data[id_key], getData);
+				} else {
+					getData(getData, {});
+				}
+
             }).catch( err => {
               toggleLoading(false);
             })
@@ -167,6 +171,9 @@ const enhance = compose(
                 url: uri,
                 data: body,
             }).then(res => {
+				if (res && res.data && res.data._redirect) {
+					window.location.href = res.data._redirect
+			    }
 				if (res && res.data && res.data.message) {
 					notification['success']({
 						message: res.data.message
@@ -191,6 +198,9 @@ const enhance = compose(
 						message: res.data.message
 					});
 				}
+				if (res && res.data && res.data._redirect) {
+					window.location.href = res.data._redirect
+			    }
 				if (!config_one.isforevery) {
 					getData(data[id_key], getData);
 				} else {
@@ -212,6 +222,9 @@ const enhance = compose(
 						message: res.data.message
 					});
 				}
+				if (res && res.data && res.data._redirect) {
+					window.location.href = res.data._redirect
+			    }
 		        if (!config_one.isforevery) {
 					getData(data[id_key], getData);
 				} else {

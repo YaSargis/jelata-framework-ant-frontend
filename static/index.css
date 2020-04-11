@@ -311,10 +311,12 @@
 
 }
 
-.editable span {
+.editable div {
 	border-style: outset;
 	border-width: thin;
 	border-color: #f0fffe8c;
 	display: flex;
 	background: #f0fdff7d;
+	min-height: 23px;
+	cursor: pointer;
 }
