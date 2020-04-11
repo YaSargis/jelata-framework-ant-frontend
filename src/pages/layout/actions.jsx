@@ -134,7 +134,7 @@ const enhance = compose(
       window.open(el.act + url);
     },
     onCallApi: ({  getData, origin = {}, data, location, toggleLoading, params, checked }) => (config_one) => {
-      toggleLoading(true); // запускаем прелоадер
+      toggleLoading(true); 
       let uri = config_one.act;
       function call() {
         let body = {}
@@ -145,19 +145,19 @@ const enhance = compose(
         }
         let id_key = origin.config.filter((item) => item.col.toUpperCase() === 'ID' && !item.fn && !item.related )[0].key
 
-				switch (config_one.actapitype) {
+		switch (config_one.actapitype) {
           case 'GET':
             Get(uri, body).then((res) => {
-							if (!config_one.isforevery) {
-								getData(data[id_key], getData);
-							} else {
-								getData(getData, {});
-							}
-							if (res && res.data && res.data.message) {
-								notification['success']({
-									message: res.data.message
-								});
-							}
+				if (!config_one.isforevery) {
+					getData(data[id_key], getData);
+				} else {
+					getData(getData, {});
+				}
+				if (res && res.data && res.data.message) {
+					notification['success']({
+						message: res.data.message
+					});
+				}
             }).catch( err => {
               toggleLoading(false);
             })
@@ -167,16 +167,16 @@ const enhance = compose(
                 url: uri,
                 data: body,
             }).then(res => {
-							if (res && res.data && res.data.message) {
-								notification['success']({
-									message: res.data.message
-								});
-							}
-							if (!config_one.isforevery) {
-								getData(data[id_key], getData);
-							} else {
-								getData(getData, {});
-							}
+				if (res && res.data && res.data.message) {
+					notification['success']({
+						message: res.data.message
+					});
+				}
+				if (!config_one.isforevery) {
+					getData(data[id_key], getData);
+				} else {
+					getData(getData, {});
+				}
             }).catch( err => {
               toggleLoading(false);
             })
@@ -186,21 +186,20 @@ const enhance = compose(
                 url: uri,
                 data: body
               }).then(res => {
-								if (res && res.data && res.data.message) {
-									notification['success']({
-										message: res.data.message
-									});
-								}
-								if (!config_one.isforevery) {
-									getData(data[id_key], getData);
-								} else {
-									// если в таблице (в list)
-									getData(getData, {});
-								}
-								console.log('res:', res)
-	            }).catch( err => {
+				if (res && res.data && res.data.message) {
+					notification['success']({
+						message: res.data.message
+					});
+				}
+				if (!config_one.isforevery) {
+					getData(data[id_key], getData);
+				} else {
+					getData(getData, {});
+				}
+				console.log('res:', res)
+	        }).catch( err => {
                 console.log('ERR POST API:', err)
-                toggleLoading(false); // останавливаем прелоадер
+                toggleLoading(false); 
               })
             break;
             case 'DELETE':
@@ -208,14 +207,19 @@ const enhance = compose(
                 url: uri,
                 data: body
               }).then((res) => {
-								if (res && res.data && res.data.message) {
-									notification['success']({
-										message: res.data.message
-									});
-								}
-								toggleLoading(false)
-								console.log('res:', res)
-							}).catch(() => toggleLoading(false));
+				if (res && res.data && res.data.message) {
+					notification['success']({
+						message: res.data.message
+					});
+				}
+		        if (!config_one.isforevery) {
+					getData(data[id_key], getData);
+				} else {
+					getData(getData, {});
+				}
+				toggleLoading(false)
+				console.log('res:', res)
+			}).catch(() => toggleLoading(false));
             break;
         }
       }

@@ -125,7 +125,15 @@ const TableComp = ({
 			}
 
       if (item.visible && arr_hide.filter(hCol => hCol === item.title).length === 0 && item.key !== '__checker__') {
-        columns2.push({
+        const isEditableClass = (editable) => {
+          if (editable) {
+            return 'editable'
+          } else {
+            return ''
+          }
+        }
+        let classname = item.classname + isEditableClass(item.editable)    
+		columns2.push({
           dataField: item.key, text: item.title, title: () => item.title,
           events: {
             onDoubleClick: (e, column, columnIndex, row, rowIndex) => {
@@ -172,7 +180,7 @@ const TableComp = ({
                   border: '1px solid #c8c8c8', paddingLeft: '.857em',
                   position: 'sticky', right: 0
                 },
-          classes: item.classname,
+          classes: classname,
           headerClasses: 'ant-table-header-column ant-table-column-has-actions',
           sort: isorderby,
           sortCaret: (order, column) => {
@@ -419,7 +427,7 @@ const TableComp = ({
                   let sel_key = (listConfig.filter((lc_) => lc_.col === sel_col && lc_.table === config.relation)[0]||{}).key
                   value = item[sel_key]
                   newItem[k] = (
-                    <span style={{ color: colorRow(item, listConfig) }}>
+                    <div style={{ color: colorRow(item, listConfig) }}>
                       {value !== undefined && value !== null ? (
                         typeof value === 'object' ? (
                           <span>{JSON.stringify(value)}</span>
@@ -433,11 +441,11 @@ const TableComp = ({
                       ) : (
                         ''
                       )}
-                    </span>
+                    </div>
                   )
             } else {
               newItem[k] = (
-                <span style={{ color: colorRow(item, listConfig) }}>
+                <div style={{ color: colorRow(item, listConfig) }}>
                   {value !== undefined && value !== null ? (
                     typeof value === 'object' ? (
                       <span>{JSON.stringify(value)}</span>
@@ -451,7 +459,7 @@ const TableComp = ({
                   ) : (
                     ''
                   )}
-                </span>
+                </div>
               )
             }
           } else if (config.type === 'array') {
@@ -498,7 +506,7 @@ const TableComp = ({
 					else {
 
             newItem[k] = (
-              <span style={{ color: colorRow(item, listConfig) }}>
+              <div style={{ color: colorRow(item, listConfig) }}>
                 {value !== undefined && value !== null ? (
                   typeof value === 'object' ? (
                     //JSON.stringify()
@@ -519,7 +527,7 @@ const TableComp = ({
                 ) : (
                   ''
                 )}
-              </span>
+              </div>
             );
           }
         }
