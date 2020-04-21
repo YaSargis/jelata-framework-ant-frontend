@@ -20,14 +20,17 @@ const enhance = compose(
     componentWillMount() {
       let { reset_app, set_loading, set_login_status } = this.props;
       set_loading(true);
-      Post({
-        url: `auth/logout`
-      }).then((res) => {
-        reset_app();
-        set_loading(false);
-      }).catch((err) => {
-        set_loading(false);
-      })
+	  
+	   apishka(
+        'POST',
+        {}, '/auth/logout',
+        (res) => {
+          reset_app();
+          set_loading(false);
+        }, (err) => {
+          set_loading(false);
+        }
+      )
     }
   })
 );

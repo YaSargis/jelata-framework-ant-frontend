@@ -5,7 +5,7 @@ import qs from 'query-string';
 import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
 
-import { PostMessage } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 let timer = {};
 
@@ -133,25 +133,23 @@ const enhance = compose(
       timer[name] ? clearTimeout(timer[name]) : null;
       const getDataSelect = new Promise ((resolve, reject) => {
         timer[name] = setTimeout( () => {
-          PostMessage({
-            url: config.select_api,
-            data: JSON.stringify({
-              data: data,
-              inputs: inputs,
+          apishka(
+            'POST',
+            {
+              data: data, inputs: inputs,
               config: globalConfig
-            }),
-            params: {
-              substr: id || substr
-            }
-          }).then((res) => {
-            let { data } = res;
+            },
+            config.select_api+'?substr='+(id || substr),
+            (res) => {
+              let dat = _.sortBy(res.outjson, ['value']);
+              resolve(dat);
+            },
+            (err) => { }
+          );
 
-            let dat = _.sortBy(data.outjson, ['value']);
-
-            resolve(dat);
-          });
         }, substr ? 2000 : 1);
       });
+
 
       return getDataSelect.then( res => {
         if(substr) {
@@ -172,6 +170,7 @@ const enhance = compose(
     },
     onFocus: ({ data, location, set_state, config }) => (substr, id) => {
 
+
       const getDataSelect = new Promise ((resolve, reject) => {
         timer[name] = setTimeout( () => {
           let inputs = qs.parse(location.search);
@@ -187,21 +186,19 @@ const enhance = compose(
                 } else inputs[obj.col.value] = obj.const;
               });
             };
-
-            PostMessage({
-              url: 'api/select',
-              data: JSON.stringify({
-                inputs: inputs,
-                config: config,
-                val: substr,
-                id: id,
-                ismulti: null
-              })
-            }).then((res) => {
-              let { data } = res,
-                _data = _.sortBy(data.outjson, ['value']);
-              resolve(_data);
-            });
+            apishka(
+              'POST',
+              {
+                inputs: inputs, config: config,
+                val: substr, id: id, ismulti: null
+              },
+              '/api/select',
+              (res) => {
+                let _data = _.sortBy(res.outjson, ['value']);
+                resolve(_data);
+              },
+              (err) => {}
+            );
           }
         }, substr ? 1000 : 1);
       });
@@ -235,11 +232,11 @@ const enhance = compose(
     },
     componentDidUpdate(prevProps) {
       const {config, options, data, onFocusApi, onFocus } = this.props;
-      if(data !== prevProps.data) {
+      /*if(data !== prevProps.data) {
         if(_.isEmpty(options) && data[config.key]) {
           if(config.type === 'typehead_api') onFocusApi(null, data[config.key]); else onFocus(null, data[config.key]);
         }
-      }
+      }*/
     }
   })
 )

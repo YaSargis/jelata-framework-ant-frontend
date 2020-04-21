@@ -7,7 +7,7 @@ import { set_loading } from 'src/redux/actions/loader';
 import { notification } from 'antd';
 
 import { Configer } from 'src/libs/methods';
-import { Get, Post } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 const enhance = compose(
   connect(
@@ -55,12 +55,12 @@ const enhance = compose(
   withState('password', 'changePassword', ''),
   withHandlers({
     handleGetMenu: ({ form, getMenu, set_loading, set_login_status }) => {
-      Get(`api/menu`).then((res) => {
+	   apishka('GET', {}, '/api/menu', (res) => {
         getMenu(res);
         set_login_status(true);
-      }).catch((err) => {
+      }, (err) => {
         set_login_status(false);
-      });
+      })
     },
     onECP: ({ sertificats = [], legacy = true, set_state, setTypeLogin }) => () => {
       set_state({
@@ -98,38 +98,30 @@ const enhance = compose(
       if(legacy === true) {
         form.validateFields((err, values) => {
           if (!err) {
-            Post({
-              url: `auth/auth_f`,
-              data: JSON.stringify({
+            apishka(
+              'POST',
+              {
                   login: values.username,
                   pass: values.password
-              })
-            }).then(() => {
-              set_login_status(true);
-							location.href='/'
-            }).catch(err => {
-              Configer.searchByString(err, 'response,data,message');
-              notification.error({
-                message: 'Auth error',
-                description: Configer.searchByString(err, 'response,data,message') || 'Unknown error'
-              });
-            })
+              },
+              '/auth/auth_f',
+              (res) => {
+                set_login_status(true);
+  							location.href='/'
+              }
+            )
           }
         })
       } else {
-        Post({
-          url: `/auth/auth_crypto`,
-          data: JSON.stringify(select_scp)
-        }).then(() => {
-          set_login_status(true);
-					location.href='/'
-        }).catch(err => {
-          Configer.searchByString(err, 'response,data,message');
-          notification.error({
-            message: 'Auth error',
-            description: Configer.searchByString(err, 'response,data,message') || 'Unknown error'
-          });
-        })
+        apishka(
+          'POST',
+          select_scp,
+          '/auth/auth_crypto',
+          (res) => {
+            set_login_status(true);
+            location.href='/'
+          }
+        )
       }
     }
   }),

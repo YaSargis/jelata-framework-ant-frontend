@@ -8,7 +8,7 @@ const confirm = Modal.confirm;
 
 import qs from 'query-string';
 
-import { PostMessage } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 import { toggleLoading } from 'src/redux/actions/helpers';
 
@@ -109,38 +109,35 @@ const enhance = compose(
         params.inputs[id_title] = id;
       }
 
-      PostMessage({
-        url: `schema/getone?path=${params.id_page}`,
-        data: JSON.stringify({
-          inputs: params.inputs
-        })
-      })
-        .then(res => {
+      apishka(
+        'POST',
+        {inputs: params.inputs},
+        `/schema/getone?path=${params.id_page}`,
+        (res) => {
+		  if (!compo && !params.inputs._doctitle_)
+			document.title = res.title;
+		  else if (params.inputs._doctitle_)
+			document.title = params.inputs._doctitle_;
 
-					if (!compo && !params.inputs._doctitle_)
-          	document.title = res.data.title;
-					else if (params.inputs._doctitle_)
-						document.title = params.inputs._doctitle_;
-
-          let _r = res.data,
+          let _r = res,
             s_parsed = qs.parse(location.search),
             rel = s_parsed.relation ? s_parsed.relation.split(',') : [],
             rel_obj = {};
-          if (res.data.subscrible) {
+
+          if (res.subscrible) {
             let ws = document.location.href.split('//')[1];
             ws = ws.split('/')[0];
             ws = 'ws://' + ws + '/ws';
-            //ws = 'ws://' + '94.230.251.78:8080' + '/ws'
             let socket = new WebSocket(ws);
             wss.push(socket);
 
             let idcol = (
-              res.data.config.filter(x => x.col.toUpperCase() === 'ID' && !x.related)[0] || {}
+              res.config.filter(x => x.col.toUpperCase() === 'ID' && !x.related)[0] || {}
             ).key;
 
             socket.onopen = () => {
               let ids = [];
-              res.data.data.forEach(x => ids.push(x[idcol]));
+              res.data.forEach(x => ids.push(x[idcol]));
 
               socket.send(JSON.stringify({ viewpath: params.id_page, ids: ids }));
             };
@@ -149,9 +146,6 @@ const enhance = compose(
               if (event.wasClean) {
                 console.log('clear closed (getOne)');
               } else {
-                /*notification.error({
-									message: 'failed',
-								})*/
                 console.log('ws close failed');
               }
             };
@@ -163,19 +157,12 @@ const enhance = compose(
                   notification.success({
                     message: x.notificationtext
                   });
-                  PostMessage({
-                    url: '/api/setsended',
-                    data: { id: x.id }
-                  }).then(res => {
-                    console.log('sended');
-                  });
-                  if (res.data.data[0])
-                    getData(res.data.data[0][idcol], getData);
+
+                  apishka('POST', { id: x.id }, '/api/setsended')
+                  if (res.data[0])
+                    getData(res.data[0][idcol], getData);
                 });
               } else {
-                /*notification.error({
-									message: data.error,
-								})*/
                 console.log('ws message failed');
               }
             };
@@ -196,16 +183,14 @@ const enhance = compose(
           data.relationobj = rel_obj || {};
 
           set_state({
-            data: { ...res.data.data[0] },
-            origin: { ...res.data },
-            global: { ...data },
-            loading: false
+            data: { ...res.data[0] }, origin: { ...res },
+            global: { ...data }, loading: false
           });
           toggleLoading(false);
-        })
-        .catch(() => {
-          toggleLoading(false);
-        });
+        },
+        (err) => {toggleLoading(false);}
+
+      )
     }
   }),
   withHandlers({
@@ -243,11 +228,8 @@ const enhance = compose(
 
         go()
           .then(_data => {
-            PostMessage({
-              url: 'api/saverow',
-              data: _data
-            }).then(res => {
-              let res_data = res.data.outjson;
+            apishka ('POST', _data, '/api/saverow', (res) => {
+              let res_data = res.outjson;
               if (!item_config.related) {
                 if (!data[id_title] & !res_data || item_config.updatable) {
                   getData(data[id_title] || res_data.id, getData);
@@ -268,10 +250,12 @@ const enhance = compose(
                 }
               }
               notification.success({
-                message: 'OK',
+                message: 'Сохранено',
                 duration: 2
               });
-            });
+              },
+              (err) => {}
+            )
           })
           .catch(err => {
             if (err)
@@ -371,12 +355,8 @@ const enhance = compose(
           }
           _data.append('viewid', origin.id);
 
-          PostMessage({
-            url: 'api/savefile',
-            data: _data
-          })
-            .then(res => {
-              let res_data = res.data.outjson;
+          apishka ('POST', _data, '/api/savefile', (res) => {
+              let res_data = res.outjson;
               if (res_data.id) {
                 data[id_title] = res_data.id;
                 data[item_config.key] = JSON.parse(res_data.value);
@@ -386,19 +366,9 @@ const enhance = compose(
               set_state({
                 data: { ...data }
               });
-            })
-            .catch(err => {
-              if (err && err.response && err.response.data)
-                notification.error({
-                  message: 'Error',
-                  description: err.response.data.message
-                });
-              else
-                notification.error({
-                  message: 'Error',
-                  description: ''
-                });
-            });
+            },
+            (err) => {}
+          )
         }
       }
     },
@@ -423,47 +393,20 @@ const enhance = compose(
       }
       _data.append('viewid', origin.id);
 
-      PostMessage({
-        url: 'api/savefile',
-        data: _data,
-        params: {
-          onUploadProgress: e => {
-            set_state({
-              uploaded: multyple
-                ? ((e.loaded / e.total) * 100).toFixed()
-                : ((e.loaded / e.total) * 100).toFixed()
-            });
-          }
+       apishka('POST', _data, '/api/savefile', (res) => {
+        let res_data = res.outjson;
+        if (res_data.id) {
+          data[id_title] = res_data.id;
+          data[item_config.key] = JSON.parse(res_data.value);
+        } else {
+          data = res_data;
         }
-      })
-        .then(res => {
-          let res_data = res.data.outjson;
-          if (res_data.id) {
-            data[id_title] = res_data.id;
-            data[item_config.key] = JSON.parse(res_data.value);
-          } else {
-            data = res_data;
-          }
-          set_state({
-            data: { ...data },
-            uploaded: multyple ? false : false
-          });
-        })
-        .catch(err => {
-          set_state({
-            uploaded: multyple ? false : false
-          });
-          if (err && err.response && err.response.data)
-            notification.error({
-              message: 'Error',
-              description: err.response.data.message
-            });
-          else
-            notification.error({
-              message: 'Error',
-              description: ''
-            });
+        set_state({
+          data: { ...data },
+          uploaded: multyple ? false : false
         });
+
+      }, (err) => {})
     },
     onSave: ({ data, set_state, global, origin, getData }) => (callback = null) => {
       set_state({
@@ -473,62 +416,53 @@ const enhance = compose(
         origin.config,
         o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
       )[0].key;
-      PostMessage({
-        url: 'api/savestate',
-        data: {
-          data: data,
-          viewid: global.viewid,
-          id: data[id_title],
-          relation: global.relation,
-          relationobj: global.relationobj
-        }
-      })
-        .then(res => {
-          let res_data = res.data.outjson;
+      apishka('POST', {
+        data: data, viewid: global.viewid,
+        id: data[id_title], relation: global.relation,
+        relationobj: global.relationobj
+      }, '/api/savestate', (res) => {
+        let res_data = res.outjson;
 
-          if (res_data.id) {
-            data[id_title] = res_data.id;
-          }
-          set_state({
-            data: { ...data },
-            loading: false
-          });
-          notification.success({
-            message: 'OK'
-          });
-          getData(data[id_title] || res_data.id, getData);
-					if (callback && typeof(callback) === 'function') {
-						callback()
-					}
-        })
-        .catch(() => {
-          set_state({ loading: false });
+        if (res_data.id) {
+          data[id_title] = res_data.id;
+        }
+        set_state({
+          data: { ...data },
+          loading: false
         });
+        notification.success({
+          message: 'Сохранено'
+        });
+        getData(data[id_title] || res_data.id, getData);
+        if (callback && typeof(callback) === 'function') {
+          callback()
+        }
+      }, (err) => {
+        set_state({ loading: false });
+      })
     },
     handlerAutoComplete: ({ origin, set_state }) => (search_string, item) => {
       getDataSelect();
       function getDataSelect() {
         let inputs = {};
-        PostMessage({
-          url: 'api/autocomplete',
-          data: JSON.stringify({
+        apishka('POST', {
             val: search_string,
             table: origin.table,
             col: item.col
-          })
-        }).then(res => {
-          let newconfig = [...origin.config];
+          }, '/api/autocomplete', (res) => {
+            let newconfig = [...origin.config];
 
-          newconfig.forEach((el, i) => {
-            if (newconfig[i].key === item.key)
-							newconfig[i]['selectdata'] = res.data.outjson;
-          });
+            newconfig.forEach((el, i) => {
+              if (newconfig[i].key === item.key)
+  							newconfig[i]['selectdata'] = res.outjson;
+            });
 
-          origin.config = newconfig;
-          set_state({
-            origin: origin
-          });
-        });
+            origin.config = newconfig;
+            set_state({
+              origin: origin
+            });
+        }, (err) => {}
+      )
       }
     },
     onChangeCollapse: ({ set_state }) => key => {

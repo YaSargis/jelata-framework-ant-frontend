@@ -3,7 +3,7 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose';
 import qs from 'query-string';
 import Select from 'react-select';
 
-import { PostMessage } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 const handleKeyDown = (evt)=>{
   switch(evt.key){
@@ -86,24 +86,22 @@ const enhance = compose(
   ),
   withHandlers({
     onFocusApi: ({ data, set_state, globalConfig }) => ( config,  inputs) => {
-      PostMessage({
-        url: config.select_api,
-        data: JSON.stringify({
+      apishka(
+        'POST',
+        {
           data: data,
           inputs:inputs,
           config: globalConfig
-        }),
-        params: {
-          substr: null
-        }
-      }).then((res) => {
-        let { data } = res;
-
-        let dat = _.sortBy(data.outjson, ['value']);
-        set_state({
-          options: dat,
-        });
-      });
+        },
+        config.select_api,
+        (res) => {
+          let dat = _.sortBy(res.outjson, ['value']);
+          set_state({
+            options: dat,
+          });
+        },
+        (err) => {}
+      );
     },
     onFocus: ({ data, location, set_state, config }) => (substr, id) => {
       getDataSelect();
@@ -124,21 +122,23 @@ const enhance = compose(
             });
           };
 
-          PostMessage({
-            url: 'api/select',
-            data: JSON.stringify({
+          apishka(
+            'POST',
+            {
               inputs: inputs,
               config: config,
               id: id,
               substr: substr
-            })
-          }).then((res) => {
-            let { data } = res,
-            _data = _.sortBy(data.outjson, ['value']);
-            set_state({
-              options: _data
-            });
-          });
+            },
+            '/api/select',
+            (res) => {
+              let _data = _.sortBy(res.outjson, ['value']);
+              set_state({
+                options: _data
+              });
+            },
+            (err) => {}
+          );
         }
       };
     },
@@ -156,9 +156,9 @@ const enhance = compose(
     componentDidUpdate(prevProps) {
       const { config, data, onFocusApi, onFocus, inputs } = this.props;
 
-      if(prevProps.data !== data) {
+      /*if(prevProps.data !== data) {
         if(config.type === 'select_api') onFocusApi(config, inputs); else onFocus(null , data[config.key]);
-      }
+      }*/
     }
   })
 )

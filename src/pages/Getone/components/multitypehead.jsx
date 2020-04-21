@@ -5,7 +5,7 @@ import qs from 'query-string';
 import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
 
-import { PostMessage } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 let timer = {};
 
@@ -15,7 +15,7 @@ const NoOptionsMessage = props => {
   if(loading) {
     return (
       <components.NoOptionsMessage {...props}>
-        <Spin tip={'loading'}/>
+        <Spin tip={'Загрузка данных'}/>
       </components.NoOptionsMessage>
     )
   } else {
@@ -89,7 +89,7 @@ const SelectBox = ({ name, onChange, onFocusApi, onFocus, data, inputs, config, 
           loading={loading}
           components={{ NoOptionsMessage, LoadingMessage: () => <div style={{textAlign: 'center'}}><Spin tip='Загрузка данных' /></div> }}
           isClearable
-          placeholder={'search'}
+          placeholder={'Введите для поиска'}
           cacheOptions
           isDisabled={config.read_only || false}
           value={ filtOptions }
@@ -109,7 +109,7 @@ const SelectBox = ({ name, onChange, onFocusApi, onFocus, data, inputs, config, 
 								} else {
 									data[config.key] = [args[1].option.value];
                 }
-                onFocusApi(null, data[config.key])
+                //onFocusApi(null, data[config.key])
 								break;
 							case 'pop-value':
 							case 'remove-value':
@@ -130,14 +130,10 @@ const enhance = compose(
   withStateHandlers(
     ({
       inState = {
-        options: [],
-        loading: false,
-        status: false
+        options: [], loading: false, status: false
       }
     }) => ({
-      options: inState.options,
-      loading: inState.loading,
-      status: inState.starus
+      options: inState.options, loading: inState.loading, status: inState.starus
     }),
     {
       set_state: (state) => (obj) => {
@@ -155,23 +151,21 @@ const enhance = compose(
       timer[name] ? clearTimeout(timer[name]) : null;
       const getDataSelect = new Promise ((resolve, reject) => {
         timer[name] = setTimeout( () => {
-          PostMessage({
-            url: config.select_api,
-            data: JSON.stringify({
-              data: data,
-              inputs: inputs,
-              config: globalConfig,
-            }),
-            params: {
-              substr: id || substr
-            }
-          }).then((res) => {
-            let { data } = res;
+          apishka(
+            'POST',
+            {
+              data: data, inputs: inputs,
+              config: globalConfig, val:substr,
+              id:id, ismulti:true
+            },
+            config.select_api,
+            (res) => {
+              let dat = _.sortBy(res.outjson, ['value']);
+              resolve(dat);
+            },
+            (err) => {}
+          );
 
-            let dat = _.sortBy(data.outjson, ['value']);
-
-            resolve(dat);
-          }).catch((err) => reject(err));
         }, substr ? 2000 : 1);
       });
 
@@ -204,7 +198,7 @@ const enhance = compose(
                   }
                 } else inputs[obj.col.value] = obj.const;
               });
-						};
+			};
 
 
             if(config.type === 'multitypehead' && ismulti === null) {
@@ -212,21 +206,20 @@ const enhance = compose(
               // substr = id;
               id = null;
             }
-
-            PostMessage({
-              url: 'api/select',
-              data: JSON.stringify({
-                inputs: inputs,
-                config: config,
-                val: substr,
-                id: id,
-                ismulti: ismulti
-              })
-            }).then((res) => {
-              let { data } = res,
-                _data = _.sortBy(data.outjson, ['value']);
-              resolve(_data);
-            });
+            apishka(
+              'POST',
+              {
+                inputs: inputs, config: config,
+                val: substr, id: id,
+                ismulti: true
+              },
+              '/api/select',
+              (res) => {
+                let _data = _.sortBy(res.outjson, ['value']);
+                resolve(_data);
+              },
+              (err) => {}
+            );
           }
         }, substr ? 1000 : 1);
       });
@@ -249,16 +242,17 @@ const enhance = compose(
   lifecycle({
     componentDidMount() {
 			const { config, options, data, onFocusApi, onFocus } = this.props;
-      if(config.type === 'multitypehead_api') onFocusApi(null, data[config.key]); else onFocus(null, data[config.key]);
+      if(config.type === 'multitypehead_api') onFocusApi(null, data[config.key]);
+      else onFocus(null, data[config.key]);
     },
-    componentDidUpdate(prevProps) {
+    /*componentDidUpdate(prevProps) {
       const {config, options, data, onFocusApi, onFocus } = this.props;
       if(data !== prevProps.data) {
         if(_.isEmpty(options) && data[config.key]) {
-          if(config.type === 'multitypehead_api') onFocusApi(null, data[config.key]); else onFocus(null, data[config.key]);
+          //if(config.type === 'multitypehead_api') onFocusApi(null, data[config.key]); else onFocus(null, data[config.key]);
         }
       }
-    }
+    }*/
   })
 )
 

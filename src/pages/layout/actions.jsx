@@ -10,7 +10,7 @@ import { Tooltip, Icon, Popconfirm, notification, Modal, Spin } from 'antd';
 
 import { visibleCondition, switchIcon, QueryBuilder, QueryBuilder2, bodyBuilder } from 'src/libs/methods';
 
-import { PostMessage, Delete, Get, Put } from 'src/libs/api';
+import { PostMessage, Delete, Get, Put, apishka } from 'src/libs/api';
 import { MyIcons } from 'src/libs/icons';
 
 import { toggleLoading } from 'src/redux/actions/helpers';
@@ -63,7 +63,6 @@ const ActionsBlock = ({
 
 		const FmButton = (props) => {
 			let el = props.el
-
 				return (
 					<button
 						className={'fm-btn fm-btn-sm ' + el.classname}
@@ -82,7 +81,6 @@ const ActionsBlock = ({
 						{ _value }
 					</button>
 				)
-
 		}
 
 		return (
@@ -111,7 +109,6 @@ const enhance = compose(
   ),
   withHandlers({
 
-
   }),
   withHandlers({
     goLink: ({ data, origin, location, history, checked }) => (el) => {
@@ -130,7 +127,6 @@ const enhance = compose(
       } else {
         url = QueryBuilder(data, el, origin.config, location ? qs.parse(location.search) : {}, checked);
       };
-
       window.open(el.act + url);
     },
     onCallApi: ({  getData, origin = {}, data, location, toggleLoading, params, checked }) => (config_one) => {
@@ -144,98 +140,30 @@ const enhance = compose(
           body = bodyBuilder(config_one, params.inputs, origin.config, data, checked);
         }
         let id_key = origin.config.filter((item) => item.col.toUpperCase() === 'ID' && !item.fn && !item.related )[0].key
-
-		switch (config_one.actapitype) {
-          case 'GET':
-            Get(uri, body).then((res) => {
-				if (res && res.data && res.data._redirect) {
-					window.location.href = res.data._redirect
-			    }
-				if (res && res.data && res.data.message) {
-					notification['success']({
-						message: res.data.message
-					});
-				}
-				if (!config_one.isforevery) {
-					getData(data[id_key], getData);
-				} else {
-					getData(getData, {});
-				}
-
-            }).catch( err => {
-              toggleLoading(false);
-            })
-            break;
-            case 'POST':
-              PostMessage({
-                url: uri,
-                data: body,
-            }).then(res => {
-				if (res && res.data && res.data._redirect) {
-					window.location.href = res.data._redirect
-			    }
-				if (res && res.data && res.data.message) {
-					notification['success']({
-						message: res.data.message
-					});
-				}
-				if (!config_one.isforevery) {
-					getData(data[id_key], getData);
-				} else {
-					getData(getData, {});
-				}
-            }).catch( err => {
-              toggleLoading(false);
-            })
-            break;
-            case 'PUT':
-              Put({
-                url: uri,
-                data: body
-              }).then(res => {
-				if (res && res.data && res.data.message) {
-					notification['success']({
-						message: res.data.message
-					});
-				}
-				if (res && res.data && res.data._redirect) {
-					window.location.href = res.data._redirect
-			    }
-				if (!config_one.isforevery) {
-					getData(data[id_key], getData);
-				} else {
-					getData(getData, {});
-				}
-				console.log('res:', res)
-	        }).catch( err => {
-                console.log('ERR POST API:', err)
-                toggleLoading(false); 
-              })
-            break;
-            case 'DELETE':
-              Delete({
-                url: uri,
-                data: body
-              }).then((res) => {
-				if (res && res.data && res.data.message) {
-					notification['success']({
-						message: res.data.message
-					});
-				}
-				if (res && res.data && res.data._redirect) {
-					window.location.href = res.data._redirect
-			    }
-		        if (!config_one.isforevery) {
-					getData(data[id_key], getData);
-				} else {
-					getData(getData, {});
-				}
-				toggleLoading(false)
-				console.log('res:', res)
-			}).catch(() => toggleLoading(false));
-            break;
-        }
-      }
+        apishka(
+          config_one.actapitype,
+          body,
+          uri,
+          (res) => {
+            if (res && res.message) {
+              notification['success']({
+                message: res.message
+              });
+            }
+            if (res && res._redirect) {
+              window.location.href = res._redirect
+            }
+            if (!config_one.isforevery) {
+              getData(data[id_key], getData);
+            } else {
+              getData(getData, {});
+            }
+          },
+          (err) => {
+            toggleLoading(false);
+          }
+        );
+	  }
       if (!config_one.actapimethod || config_one.actapimethod === 'simple') {
         call();
       } //else if(config_one.actapimethod === 'mdlp') {
@@ -246,20 +174,31 @@ const enhance = compose(
 
     },
     onDelete: ({ getData, data, origin, toggleLoading }) => () => {
-      toggleLoading(true); // запускаем прелоадер
+      toggleLoading(true); // start preloader
       let id_title = _.filter(origin.config, o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn)[0].key;
-      Delete({
-        url: '/api/deleterow',
-        data: {
-          tablename: origin.table,
-          id: data[id_title],
-          viewid: origin.viewid ||origin.id
-        }
-      }).then((res) => {
-        getData(getData);
-      }).catch( () => {
-        toggleLoading(false); 
-      })
+      apishka(
+        config_one.actapitype,
+        body,
+        uri,
+        (res) => {
+            if (res && res.data && res.data.message) {
+              notification['success']({
+                message: res.data.message
+              });
+            }
+            if (res && res.data && res.data._redirect) {
+              window.location.href = res.data._redirect
+            }
+            if (!config_one.isforevery) {
+              getData(data[id_key], getData);
+            } else {
+              getData(getData, {});
+            }
+          },
+          (err) => {
+            toggleLoading(false);
+          }
+      );
     },
     goBack: ({ history }) => () => {
       history.goBack();

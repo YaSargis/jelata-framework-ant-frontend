@@ -1,5 +1,5 @@
 import { compose, withState,withHandlers, lifecycle } from 'recompose';
-import { Get } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 const enhance = compose(
   withState('values', 'changeValues', {}),
@@ -8,32 +8,38 @@ const enhance = compose(
   withState('selections', 'changeSelections', []), // helper { ptitle: {} | [] } - для селекта []
   withHandlers({
     getData: ({ match, changeValues, changeParams }) => () => {
-      Get('/api/report', {
-        id: match.params.id
-      }).then((res) => {
-        document.title = res.data.outjson.title;
-
-        changeValues({...res.data.outjson});
-        changeParams([...res.data.outjson.params]);
-      });
+      apishka(
+        'GET', {},
+        '/api/report?id='+match.params.id,
+        (res) => {
+          document.title = res.outjson.title;
+          changeValues({...res.outjson});
+          changeParams([...res.outjson.params]);
+        },
+        (err) => {}
+      )
     },
     getSelectOptions: ({ changeSelections, selections }) => (ptitle, substr, api_id) => {
-      Get('/api/methodinfo', {
-        id: api_id
-      }).then((res) => {
-        const dataTypeString = res.data.outjson.methotypename;
-        if(dataTypeString === "get") {
-          Get(`/api/${res.data.outjson.methodname}`, {
-            substr:substr
-          }).then((res) => {
-            let sel = selections;
-            sel[ptitle] = res.data.outjson;
-            changeSelections(sel);
-          })
-        } else {
-          Error('Methotypename of data is not GET request');
-        }
-      })
+      apishka(
+        'GET', {},
+        '/api/methodinfo?id='+api_id,
+        (res) => {
+          const dataTypeString = res.data.outjson.methotypename;
+          if(dataTypeString === "get") {
+            apishka(
+              'GET', {}, `/api/${res.data.outjson.methodname}`,
+              (res) => {
+                let sel = selections;
+                sel[ptitle] = res.outjson;
+                changeSelections(sel);
+              }, (err) => {}
+            )
+          } else {
+            Error('Methotypename of data are not GET request');
+          }
+        },
+        (err) => {}
+      )
     },
     getReportFile: ({ inputs, values }) => () => {
       let params = '?';
