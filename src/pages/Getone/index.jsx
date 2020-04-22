@@ -178,6 +178,39 @@ const GetOne = ({
             </Form.Item>
           );
           break;
+        case 'tags':
+          return (
+            <Form.Item key='d4' label={item.title}>
+              <input
+                className = 'ant-input'
+                value = {data[item.key+item.key]}
+                onChange = {(e) => {
+                  let item2 = {key:item.key+item.key}
+                  onChangeData(e, item2)
+                }}
+                onKeyPress = {(event) => {
+                  if(event.key === 'Enter'){
+                    let v = data[item.key] || []
+                    v.push(event.target.value)
+                    let item2 = {key:item.key+item.key}
+                    onChangeData(v, item)
+                    onChangeData('', item2)
+                  }
+                }}
+              />
+              <button style={{display:'none'}} title = '+' />
+              <div>
+                {(data[item.key] || []).map((tag) => (
+                  <Tag key = {tag} closable onClose={() => {
+                    onChangeData(data[item.key].filter((x) => x != tag), item)
+                  }}>
+                    {tag}
+                  </Tag>
+                ))}
+              </div>
+            </Form.Item>
+          );
+          break;
         case 'password':
           return (
             <Form.Item key='d4.1' label={item.title}>

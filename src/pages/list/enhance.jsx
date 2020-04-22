@@ -4,7 +4,7 @@ import { compose, lifecycle, withHandlers, withStateHandlers, withState } from "
 import _ from 'lodash';
 import qs from 'query-string';
 import { ActsRender, Configer, saveUserSettings } from 'src/libs/methods';
-import { PostMessage } from "src/libs/api";
+import { apishka } from "src/libs/api";
 import { notification } from 'antd';
 import { set_composition_data } from 'src/redux/actions/composition';
 import { toggleLoading } from 'src/redux/actions/helpers';
@@ -106,120 +106,117 @@ const enhance = compose(
 
       const go = () => new Promise((resolve, reject) => {
         let _id = compo ? path : match.params.id
-        PostMessage({
-          url: '/schema/list?path='+_id,
-          data: {
+        apishka('POST', {
             pagination: pagination, print: print,
             filters: _filters || filters, inputs: params.inputs
-          }
-        }).then(res => {
-					//console.log('composition:', compo)
-					if (!compo && !params.inputs._doctitle_)
-          	document.title = res.data.title;
-					else if (params.inputs._doctitle_)
-						document.title = params.inputs._doctitle_;
+          },
+          '/schema/list?path=' + _id, (res) => {
+            res = {data:res}
+  			if (!compo && !params.inputs._doctitle_)
+            	document.title = res.data.title;
+  			else if (params.inputs._doctitle_)
+  				document.title = params.inputs._doctitle_;
 
-          pagination.foundcount = res.data.foundcount;
+            pagination.foundcount = res.data.foundcount;
 
-					if (res.data.subscrible ) {
-						 let ws = document.location.href.split('//')[1]
-						 ws = ws.split('/')[0]
-						 ws = 'ws://' + ws + '/ws'
-							let socket = new WebSocket(ws);
-							wss.push(socket)
-							socket.onopen = () => {
-								let idcol = (res.data.config.filter((x) => x.col.toUpperCase() === 'ID' && !x.related)[0] || {}).key
-								let ids = []
-								res.data.data.forEach((x) =>  ids.push(x[idcol]))
-								socket.send(JSON.stringify({'viewpath':_id, 'ids':ids}))
-							};
+  			if (res.data.subscrible ) {
+  				let ws = document.location.href.split('//')[1]
+  				ws = ws.split('/')[0]
+  				ws = 'ws://' + ws + '/ws'
+  				let socket = new WebSocket(ws);
+  				wss.push(socket)
+  				socket.onopen = () => {
+					let idcol = (res.data.config.filter((x) => x.col.toUpperCase() === 'ID' && !x.related)[0] || {}).key
+					let ids = []
+					res.data.data.forEach((x) =>  ids.push(x[idcol]))
+					socket.send(JSON.stringify({'viewpath':_id, 'ids':ids}))
+				};
 
-							socket.onclose = (event) => {
-								if (event.wasClean) {
-								console.log('clear closed (list)');
-								}
-								else {
-									console.log('ws message close failed')
-								}
-							};
+  				socket.onclose = (event) => {
+  					if (event.wasClean) {
+  						console.log('clear closed (list)');
+  					}
+  					else {
+  						console.log('ws message close failed')
+  					}
+  				};
 
-							socket.onmessage = (e) => {
-								let data = JSON.parse(e.data)
-								if (!data.error) {
-									data.forEach((x) => {
-										notification.success({
-											message: x.notificationtext,
-										})
-										PostMessage({
-						          url: '/api/setsended',
-						          data:  {id:x.id}
-						        }).then(res => {console.log('sended')})
-										getData(getData)
-									})
-								}	else {
-									console.log('ws message send error')
-								}
-							};
+  				socket.onmessage = (e) => {
+  					let data = JSON.parse(e.data)
+  					if (!data.error) {
+  						data.forEach((x) => {
+  							notification.success({
+  								message: x.notificationtext,
+							})
+							apishka('POST', {id:x.id}, '/api/setsended')
+  							getData(getData)
+  						})
+  					}	else {
+  						console.log('ws message send error')
+  					}
+  				};
 
-							socket.onerror = (error) => {
-								console.log('ws message send error')
-							};
-					}
+  				socket.onerror = (error) => {
+  					console.log('ws message send error')
+  				};
+  			}
 
-          if(Array.isArray(res.data.config)) {
-            let columns = [];
-            res.data.config.forEach((_el,i) => {
-              let el = {..._el};
-              let col = {
-                title: el.title,
-                onHeaderCell: (column) => {
-                  return {
-                    onClick: () => {
-                      if(column.sortOrder === false) {
-                        column.sortOrder = 'ascend';
-                        changeReady(true)
+            if(Array.isArray(res.data.config)) {
+              let columns = [];
+              res.data.config.forEach((_el,i) => {
+                let el = {..._el};
+                let col = {
+                  title: el.title,
+                  onHeaderCell: (column) => {
+                    return {
+                      onClick: () => {
+                        if(column.sortOrder === false) {
+                          column.sortOrder = 'ascend';
+                          changeReady(true)
+                        }
                       }
-                    }
-                  };
-                },
-                dataIndex: el.key, sorter:el.sorter, sortOrder:el.sortOrder,
-                width: el.width ? 100 : el.width
-              };
-              i === 0 ? col.key = 'key' : null;
-              el.visible ? columns.push(col) : null;
+                    };
+                  },
+                  dataIndex: el.key, sorter:el.sorter, sortOrder:el.sortOrder,
+                  width: el.width ? 100 : el.width
+                };
+                i === 0 ? col.key = 'key' : null;
+                el.visible ? columns.push(col) : null;
+              });
+
+              changeListColumns(columns);
+            }
+            composition.data_list = {...res.data};
+  			if (!expand)
+            	set_comp(composition)
+
+            let arr = res.data.data.map((ex)=> {
+              ex.key = Configer.nanoid(12)
+              return ex;
+            });
+            set_state({
+              origin: {...res.data},
             });
 
-            changeListColumns(columns);
-          }
-          composition.data_list = {...res.data};
-					if (!expand)
-          	set_comp(composition)
+  			if (res.data.acts.filter((a) => a.isforevery && a.type !== 'Expand' && a.type !== 'onLoad').length > 0 ) {
+  				res.data.config.push({col:'__actions__', title:'➥', key: '__actions__', visible:true, editable:false }) 
+  			}
+  			if (res.data.pagination)
+  				res.data.config.unshift({col:'rownum', title:'#', key: 'rownum', visible:true, editable:false }) 
+  			if (res.data.checker)
+  				res.data.config.unshift({col:'checker', title:'', key: '__checker__', visible:true, editable:false }) 
 
-          let arr = res.data.data.map((ex)=> {
-            ex.key = Configer.nanoid(12)
-            return ex;
-          });
-          set_state({
-            origin: {...res.data},
-          });
+  			changeListData(arr); changeListActions(res.data.acts);
+            changeListConfig(res.data.config); changePagination(pagination);
+            changeIsOrderBy(res.data.isorderby);
+            _basicConfig.table = res.data.table; _basicConfig.viewid = res.data.viewid;
+            changeBasicConfig(_basicConfig); changeAllProps(res.data);
 
-					if (res.data.acts.filter((a) => a.isforevery && a.type !== 'Expand' && a.type !== 'onLoad').length > 0 ) {
-							res.data.config.push({col:'__actions__', title:'➥', key: '__actions__', visible:true, editable:false })
-					}
-					if (res.data.pagination)
-						res.data.config.unshift({col:'rownum', title:'#', key: 'rownum', visible:true, editable:false })
-					if (res.data.checker)
-						res.data.config.unshift({col:'checker', title:'', key: '__checker__', visible:true, editable:false })
-
-					changeListData(arr); changeListActions(res.data.acts);
-          changeListConfig(res.data.config); changePagination(pagination);
-          changeIsOrderBy(res.data.isorderby);
-          _basicConfig.table = res.data.table; _basicConfig.viewid = res.data.viewid;
-          changeBasicConfig(_basicConfig); changeAllProps(res.data);
-
-          resolve();
-          changeLoading(false); toggleLoading(false);
-        })
+            resolve();
+            changeLoading(false); toggleLoading(false);
+          },
+          (err) => {}
+        )
       });
 
       go().then(()=> {
@@ -287,16 +284,15 @@ const enhance = compose(
         });
 
         go().then( _data => {
-          PostMessage({
-            url: 'api/saverow',
-            data: _data
-          }).then((res)=> {
-            let res_data = res.data.outjson;
-          	getData(getData);
-            notification.success({
-              message: 'OK',
-            });
-          })
+          apishka(
+            'POST', _data, '/api/saverow', (res) => {
+              let res_data = res.outjson;
+            	getData(getData);
+              notification.success({
+                message: 'Сохранено',
+              });
+            }
+          )
         }).catch((err) => {
           if(err) {
             console.log('Unknown error:',err)

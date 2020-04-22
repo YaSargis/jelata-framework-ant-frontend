@@ -1,28 +1,19 @@
 import {compose, withHandlers, lifecycle, withStateHandlers} from 'recompose';
-import { PostMessage } from "src/libs/api";
+import { apishka } from "src/libs/api";
 import qs from 'query-string';
 
 const enhance = compose(
   withStateHandlers(
     ({
       inState = {
-        startDate: {},
-        endDate: {},
-        title: {},
-        data: [],
-        params: { input: {}},
-        origin: {},
-        acts: [],
-        onlyDayDate: {}
+        startDate: {}, endDate: {}, title: {},
+        data: [], params: { input: {}},
+        origin: {}, acts: [], onlyDayDate: {}
       }
     }) => ({
-      startDate: inState.startDate,
-      endDate: inState.endDate,
-      title: inState.title,
-      data: inState.data,
-      params: inState.params,
-      origin: inState.origin,
-      acts: inState.acts,
+      startDate: inState.startDate, endDate: inState.endDate,
+      title: inState.title, data: inState.data,
+      params: inState.params, origin: inState.origin, acts: inState.acts,
       onlyDayDate: inState.onlyDayDate
     }),
     {
@@ -55,27 +46,18 @@ const enhance = compose(
       return {...params};
     },
     getData: ( { set_state, params, match } ) => () => {
-      PostMessage({
-        url: '/schema/list?path=' + match.params.id,
-        data: {
-          inputs: params.input
-        }     
-      }).then((res) => {
-        const filteredStartDate = res.data.config.find(item => item.type === 'calendarStartDate');
-        const filteredEndDate = res.data.config.find(item => item.type === 'calendarEndDate');
-        const filteredTitle = res.data.config.find(item => item.type === 'calendarTitle');
-        const filteredCurrentDay = res.data.config.find(item => item.type === 'date')
+      apishka('POST', {inputs: params.input}, '/schema/list?path=' + match.params.id, (res) => {
+        const filteredStartDate = res.config.find(item => item.type === 'calendarStartDate');
+        const filteredEndDate = res.config.find(item => item.type === 'calendarEndDate');
+        const filteredTitle = res.config.find(item => item.type === 'calendarTitle');
+        const filteredCurrentDay = res.config.find(item => item.type === 'date')
 
         set_state({
-          startDate: filteredStartDate,
-          endDate: filteredEndDate,
-          title: filteredTitle,
-          data: res.data.data,
-          origin: res.data,
-          acts: res.data.acts,
-          onlyDayDate: filteredCurrentDay
+          startDate: filteredStartDate, endDate: filteredEndDate,
+          title: filteredTitle, data: res.data, origin: res,
+          acts: res.acts, onlyDayDate: filteredCurrentDay
         })
-      });
+      })
     }
   }),
   lifecycle({

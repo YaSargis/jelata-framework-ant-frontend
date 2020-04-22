@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, withHandlers, lifecycle } from 'recompose';
 import { message, Divider, Button, Modal, notification } from 'antd'
-import { Get, PostMessage } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 import { Configer } from 'src/libs/methods';
 
 import qs from 'query-string';
@@ -10,10 +10,8 @@ import qs from 'query-string';
 const enhance = compose(
   connect(
     state => ({
-      viewtypes: state.settings.viewtypes,
-      tables: state.settings.tables,
-      columntypes: state.settings.columntypes,
-      filtertypes: state.settings.filtertypes
+      viewtypes: state.settings.viewtypes, tables: state.settings.tables,
+      columntypes: state.settings.columntypes, filtertypes: state.settings.filtertypes
     })
   ),
   withState('ready', 'changeReady', false),
@@ -23,30 +21,30 @@ const enhance = compose(
   withState('helper', 'changeHelper', {}),
   withHandlers({
     getData: ({ changeReady, changeValues, changeViews, location }) => () => {
-      Get('/api/compo', { id: qs.parse(location.search).id }).then((res) => {
-        document.title = res.data.outjson.title;
+      apishka( 'GET', {}, '/api/compo',
+        (res) => {
+          document.title = res.outjson.title;
 
-        changeValues(res.data.outjson);
-        Get('/api/views', {}).then((res) => {
-          changeViews(res.data.outjson);
-          changeReady(true);
-        });
-      });
+          changeValues(res.outjson);
+          apishka('GET', {}, '/api/views', (res)=>{
+            changeViews(res.outjson);
+            changeReady(true);
+          })
+        },
+        (err) => {}
+      )
+
     },
     handlerSaveForm: ({ values }) => () => {
       /*
         save view
       */
-      PostMessage({
-        url: 'api/compo',
-        data: JSON.stringify(values)
-      }).then((res) => {
+      apishka('POST', values, '/api/compo', (res) => {
         notification['success']({
-          message: 'Ok',
+          message: 'Сохранено',
           description: ''
         });
-      });
-
+      })
     }
   }),
   withHandlers({
@@ -64,45 +62,32 @@ const enhance = compose(
       // block: basic settings
       let config_basic = [
         {
-          block: 'row',
-          params: {
-            css: '',
-            gutter: 4
+          block: 'row', params: {
+            css: '', gutter: 4
           },
           content: [
-            {
-              block: 'col',
-              params: {
-                css: '',
-                span: 12
+		    {
+              block: 'col', params: {
+                css: '', span: 12
               },
               content: [
                 {
-                  block: 'input',
-                  binding: 'path',
-                  type: 'text',
-                  params: {
-                    css: '',
-                    label: 'compo path',
-                    placeholder: 'path',
+                  block: 'input', binding: 'path',
+                  type: 'text', params: {
+                    css: '', label: 'compo path', placeholder: 'path',
                   }
                 },
               ]
             },
             {
-              block: 'col',
-              params: {
-                css: '',
-                span: 12
+              block: 'col', params: {
+                css: '', span: 12
               },
               content: [
                 {
-                  block: 'input',
-                  binding: 'title',
-                  type: 'text',
-                  params: {
-                    css: '',
-                    label: 'compo title',
+                  block: 'input', binding: 'title',
+                  type: 'text', params: {
+                    css: '', label: 'compo title',
                     placeholder: 'title ',
                   }
                 }
@@ -114,31 +99,22 @@ const enhance = compose(
 
       let config_views = [
         {
-          block: 'row',
-          params: {
-            css: '',
-            gutter: 4
+          block: 'row', params: {
+            css: '', gutter: 4
           },
           content: [
             {
-              block: 'col',
-              params: {
-                css: '',
-                span: 24
+              block: 'col', params: {
+                css: '', span: 24
               },
               content: [
                 {
-                  block: 'select',
-                  binding: 'path',
+                  block: 'select', binding: 'path',
                   params: {
-                    css: '',
-                    showSearch: true,
-                    labelInValue: true,
-                    data: 'views',
-                    api_id: 'id',
-                    api_text: 'title',
-                    label: 'Выберите View',
-                    placeholder: 'view path',
+                    css: '', showSearch: true,
+                    labelInValue: true, data: 'views',
+                    api_id: 'id', api_text: 'title',
+                    label: 'Выберите View', placeholder: 'view path',
                     item_path: 'path'
                   }
                 }
@@ -147,19 +123,14 @@ const enhance = compose(
             {
               block: 'col',
               params: {
-                css: '',
-                span: 8
+                css: '', span: 8
               },
               content: [
                 {
-                  block: 'input',
-                  binding: 'width',
-                  type: 'number',
+                  block: 'input', binding: 'width', type: 'number',
                   params: {
-                    css: '',
-                    label: 'width',
-                    placeholder: 'width',
-                    min: 0,
+                    css: '', label: 'width',
+                    placeholder: 'width', min: 0,
                     max: 24
                   }
                 }

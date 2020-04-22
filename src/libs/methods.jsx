@@ -2,7 +2,7 @@ import React from 'react';
 import { bools, actions } from 'src/defaults';
 import qs from 'query-string';
 
-import { PostMessage, Delete, Get } from './api';
+import { apishka } from './api';
 //import { MDLP_API } from './user_methods';
 import { MyIcons } from './icons';
 
@@ -19,90 +19,30 @@ const { SubMenu } = Menu;
 export const saveUserSettings = (settings) => {
 	// save uersettings json ( some views settings )
 
-	PostMessage({
-			url: `api/saveusersettings`,
-			data: JSON.stringify({
-				settings: settings
-		})
-	}).then(res => {
+  apishka('POST', {settings: settings}, '/api/saveusersettings')
 
-	}).catch((err) => {
-				console.log('ERR IN usersettings SAVE', err)
-	})
 
 }
 
 export const switchIcon = (icon) => {
   let arr = [
-    {
-      fa: 'fa fa-arrow-left',
-      type: 'back',
-      icon: 'arrow-left'
-    },
-    {
-      fa: 'fa fa-edit',
-      icon: 'edit'
-    },
-    {
-      fa: 'fa fa-plus',
-      icon: 'plus'
-    },
-    {
-      fa: 'fa fa-trash',
-      icon: 'delete'
-    },
-    {
-      fa: 'fa fa-times',
-      icon: 'close'
-    },
-    {
-      fa: 'fa fa-pie-chart',
-      icon: 'pie-chart'
-    },
-    {
-      fa: 'fa fa-download',
-      icon: 'download'
-    },
-    {
-      fa: 'fa fa-eye',
-      icon: 'eye'
-    },
-    {
-      fa: 'fa fa-pencil',
-      icon: 'cn_pencil'
-    },
-    {
-      fa: 'fa fa-graduation-cap',
-      icon: 'cn_graduation-cap'
-    },
-    {
-      fa: 'fa fa-pencil-square-o',
-      icon: 'cn_pencil-square-o'
-    },
-    {
-      fa: 'fa fa-print',
-      icon: 'printer'
-    },
-    {
-      fa: 'fa fa-list',
-      icon: 'unordered-list'
-    },
-    {
-      fa: 'fa fa-list-alt',
-      icon: 'cn_list-alt'
-    },
-    {
-      fa: 'fa fa-check',
-      icon: 'check'
-    },
-    {
-      fa: 'fa fa-file-text-o',
-      icon: 'file-text'
-    },
-    {
-      fa: 'fa fa-paper-plane',
-      icon: 'cn_plane'
-    }
+    { fa: 'fa fa-arrow-left', type: 'back', icon: 'arrow-left'},
+    { fa: 'fa fa-edit', icon: 'edit' },
+	{ fa: 'fa fa-plus', icon: 'plus'},
+    { fa: 'fa fa-trash', icon: 'delete'},
+    { fa: 'fa fa-times', icon: 'close'},
+    { fa: 'fa fa-pie-chart', icon: 'pie-chart'},
+    { fa: 'fa fa-download', icon: 'download'},
+    { fa: 'fa fa-eye', icon: 'eye'},
+    { fa: 'fa fa-pencil', icon: 'cn_pencil'},
+    { fa: 'fa fa-graduation-cap', icon: 'cn_graduation-cap' },
+    { fa: 'fa fa-pencil-square-o', icon: 'cn_pencil-square-o' },
+    { fa: 'fa fa-print', icon: 'printer' },
+    { fa: 'fa fa-list', icon: 'unordered-list' },
+    { fa: 'fa fa-list-alt', icon: 'cn_list-alt' },
+    {  fa: 'fa fa-check', icon: 'check' },
+    {  fa: 'fa fa-file-text-o', icon: 'file-text' },
+    { fa: 'fa fa-paper-plane', icon: 'cn_plane' }
   ];
 
   let sw = _.find(arr, x => x.fa === icon);
@@ -259,8 +199,8 @@ export const QueryBuilder = (item, el, config, inputs, checked) => {
   if(parametrs) {
     //if(paramtype && paramtype === 'link') {
 
-			let link_parametrs = parametrs.filter((x) => x.query_type === 'link')
-			if (link_parametrs.length > 0) _query = '/';
+	  let link_parametrs = parametrs.filter((x) => x.query_type === 'link')
+	  if (link_parametrs.length > 0) _query = '/';
 
       link_parametrs.forEach((obj, index) => {
         if (obj.paramcolumn) {
@@ -270,19 +210,19 @@ export const QueryBuilder = (item, el, config, inputs, checked) => {
           _query += inputs[obj.paraminput] + '/'
         }
         else {
-					let cConst = obj.paramconst
-					if (cConst === '_checked_')
-						cConst = JSON.stringify(checked || [])
-          _query += cConst + '/';
+			let cConst = obj.paramconst
+			if (cConst === '_checked_')
+				cConst = JSON.stringify(checked || [])
+           _query += cConst + '/';
         }
         parametrs.length !== index+1 ? _query += '&' :  null
       })
 
-			let query_parametrs = parametrs.filter((x) => x.query_type === 'query')
-			if (query_parametrs.length > 0) _query += '?';
+	  let query_parametrs = parametrs.filter((x) => x.query_type === 'query')
+	  if (query_parametrs.length > 0) _query += '?';
 
       query_parametrs.forEach((obj, index) => {
-				if(!obj.paramt || obj.paramt === 'sample') {
+		if(!obj.paramt || obj.paramt === 'sample') {
           if(obj.paramcolumn) {
             _query += obj.paramtitle + '=' + item[(_.find(config, o => o.title === obj.paramcolumn.value) || {}).key]
           }
@@ -290,9 +230,9 @@ export const QueryBuilder = (item, el, config, inputs, checked) => {
             _query += obj.paramtitle + '=' + inputs[obj.paraminput]
           }
           else {
-						let cConst = obj.paramconst
-						if (cConst === '_checked_')
-							cConst = JSON.stringify(checked || [])
+			let cConst = obj.paramconst
+			if (cConst === '_checked_')
+				cConst = JSON.stringify(checked || [])
             _query += obj.paramtitle + '=' + cConst;
           }
           parametrs.length !== index+1 ? _query += '&' :  null
@@ -329,9 +269,9 @@ export function QueryBuilder2(item, itm, config, inputs, checked) {
         squery += obj.paramtitle + '=' + inputs[obj.paraminput] + '&'
       }
       else {
-				let cConst = obj.paramconst
-				if (cConst === '_checked_')
-					cConst = JSON.stringify(checked || [])
+		let cConst = obj.paramconst
+		if (cConst === '_checked_')
+			cConst = JSON.stringify(checked || [])
         squery += (obj.paramtitle ? obj.paramtitle + "=" : '') + cConst + '&'
       }
     })
@@ -349,32 +289,31 @@ export function bodyBuilder(itm, inputs, config, data, checked) {
     itm.parametrs.map((obj) => {
       if (!obj.paramt || obj.paramt === 'simple')
         if (obj.paramcolumn) {
-						if  (  data && data[0]) {
-								body[obj.paramtitle] = data[0][(config.filter((x)=> (
-									x.col === obj.paramcolumn.label || x.title === obj.paramcolumn.value
-								))[0] || {}).key];
-						};
+			if  (  data && data[0]) {
+				body[obj.paramtitle] = data[0][(config.filter((x)=> (
+					x.col === obj.paramcolumn.label || x.title === obj.paramcolumn.value
+				))[0] || {}).key];
+			};
 
-						if (!body[obj.paramtitle] && data) {
-							body[obj.paramtitle] = data[(config.filter((x)=> (
-	              x.col === obj.paramcolumn.label || x.title === obj.paramcolumn.value
+			if (!body[obj.paramtitle] && data) {
+			    body[obj.paramtitle] = data[(config.filter((x)=> (
+	                x.col === obj.paramcolumn.label || x.title === obj.paramcolumn.value
 	            ))[0] || {}).key];
-						}
+			}
 
-						if  ( !body[obj.paramtitle]) {
-									body[obj.paramtitle] = inputs[obj.paramcolumn.value];
-		        };
+			if  ( !body[obj.paramtitle]) {
+				body[obj.paramtitle] = inputs[obj.paramcolumn.value];
+		    };
         }
-				else if (obj.paraminput) {
+		else if (obj.paraminput) {
           	body[obj.paramtitle] = inputs[obj.paraminput]
         }
         else {
+			let cConst = obj.paramconst
+			if (cConst === '_checked_')
+				cConst = JSON.stringify(checked || [])
 
-						let cConst = obj.paramconst
-						if (cConst === '_checked_')
-							cConst = JSON.stringify(checked || [])
-
-						body[obj.paramtitle] = cConst;
+			body[obj.paramtitle] = cConst;
 
         }
     })
@@ -773,118 +712,6 @@ export const handlerGoLink = (item, el, config, inputs, history) => {
   history.push(el.act + url);
 };
 
-export const handlerCallApi = (el, itm,  config, inputs, history, getData, data) => {
-  // this.MDLP_API = u_methods.MDLP_API
-  let uri = itm.act;
-  function call() {
-    let body = {}
-    if (itm.actapitype === "GET") {
-      uri = uri + QueryBuilder(itm, el, config, inputs);
-    } else {
-      body = bodyBuilder(itm, el, config, data);
-    }
-    switch (itm.actapitype) {
-      case 'GET':
-        Get(uri, body).then((res) => {
-          getData(getData)
-        })
-        break;
-      case 'POST':
-        PostMessage({
-          url: uri,
-          data: body,
-        }).then(res => {
-          getData(getData)
-        })
-        break;
-    }
-  }
-  if (!itm.actapimethod || itm.actapimethod === 'simple') call()
-
-   else if (itm.actapimethod === 'mdlp')
-		MDLP_API(el, itm,  config, inputs, history, getData, data)
-};
-
-export const handlerDeleteRow = (item, el, config, table, viewid, getData) => {
-  let id = item[_.find(config, o => o.col.toLowerCase() === 'id' && !o.relation).title];
-  Delete({
-    url: '/api/deleterow',
-    data: {
-      tablename: table,
-      id: id,
-      viewid: viewid
-    }
-  }).then((res) => {
-    notification.success({
-      message: 'Deleted',
-      description: ''
-    });
-    getData(getData);
-  })
-};
-
-
-export const ActsRender = (props) => (el, i, item, getData, handlerSaveForm, typeTable = false) => {
-  const {listConfig, config, inputs, params, history, location, basicConfig,
-    listData,
-    getone
-  } = props;
-
-  let _inputs = qs.parse(location.search);
-  let men_icon = el.icon ? switchIcon(el.icon).split('_') : '';
-  let _value = !typeTable ? el.title || '' : null;
-  switch (el.type) {
-    case 'Link':
-      return <Tooltip key={'s1'+i} placement="topLeft" title={el.title || ''}>
-          <Button style={{ marginRight: '5px' }} size='small' type={ el.isforevery ? "primary" : 'dashed'}  onClick={()=>{
-            handlerGoLink(item, el, listConfig || config, _inputs, history)
-          }}>
-            { el.icon ? (men_icon[0] === 'cn') ?
-                <Icon component={MyIcons[men_icon[1]]} />
-                  : <Icon type={switchIcon(el.icon)} /> : <Icon type='' />  }
-            { _value }
-          </Button>
-        </Tooltip>
-      break;
-    case 'API':
-      let renButt = (st) => <Button style={{ marginRight: '5px' }} size='small' type={ el.isforevery ? "primary" : 'dashed'} onClick={()=>{
-            st ? handlerCallApi(item, el, listConfig || config, _inputs, history, getData, listData || getone || {}) : null;
-          }}>
-            { el.icon ? (men_icon[0] === 'cn') ?
-                <Icon component={MyIcons[men_icon[1]]} />
-                : <Icon type={switchIcon(el.icon)} /> : <Icon type='' />  }
-            { _value }
-          </Button>
-      return <Tooltip key={'s1'+i} placement="topLeft" title={el.title || ''}>
-        {
-          el.actapiconfirm ? <Popconfirm placement="bottom" title="Confirm" okText="Yes" cancelText="No" onConfirm={()=>{
-            handlerCallApi(item, el, listConfig || config, _inputs, history, getData, listData || getone || {})
-          }}>
-            { renButt() }
-          </Popconfirm> : renButt(true)
-        }
-        </Tooltip>
-      break;
-    case 'Delete':
-      return <Tooltip key={'s1'+i} placement="topLeft" title={el.title || ''}>
-          <Popconfirm placement="bottom" title="Delete?" okText="Yes" cancelText="No" onConfirm={()=>{
-            handlerDeleteRow(item, el, listConfig, basicConfig.table, basicConfig.viewid, getData )
-          }}>
-            <Button size='small' type={ el.isforevery ? "danger" : 'dashed'} style={{ marginRight: '5px' }}>
-              { el.icon ? (men_icon[0] === 'cn') ?
-                  <Icon component={MyIcons[men_icon[1]]} />
-                : <Icon type={switchIcon(el.icon)} /> : <Icon type='' />  }
-              { _value }
-            </Button>
-          </Popconfirm>
-        </Tooltip>
-      break;
-    case 'Save':
-      return <Tooltip key={'s1'+i} placement="topLeft" title={el.title || ''}>
-        <Button size='small' type='primary' icon='plus' style={{ marginRight: '5px' }} onClick={handlerSaveForm}>{el.title || ''}</Button>
-      </Tooltip>
-  }
-};
 
 export const menu_creator = () => (menu_creator, items, isParent) => {
     let model = {

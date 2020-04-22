@@ -7,7 +7,7 @@ import CommentList from './comment-list';
 import Editor from 'src/pages/chat/components/editor';
 import { Configer } from 'src/libs/methods';
 
-import { Get, PostMessage } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 import { set_chat_id, set_unreaded_status } from 'src/redux/actions/user';
 import Emoji from './emoji';
 
@@ -161,13 +161,9 @@ const enhance = compose(
           });
           resWS.forEach((item, ind) => {
             if(resWS.length -1 === ind) {
-              Get('api/dialog_message_setreaded', {
-                id: item.id
-              }).then(() => set_unreaded_status(true)); 
+              apishka('GET', {}, 'api/dialog_message_setreaded?id=' + item.id, () => {set_unreaded_status(true)})
             } else {
-              Get('api/dialog_message_setreaded', {
-                id: item.id
-              });
+              apishka('GET', {}, 'api/dialog_message_setreaded?id=' + item.id)
             }
           });
         } else {
@@ -183,15 +179,12 @@ const enhance = compose(
       if(typeMessage) {
         resultTrimValue = val.trimLeft();
 
-        val !== '' ? PostMessage({
-          url: 'api/dialog_message_send',
-          data: {
+        val !== '' ? apishka('POST', {
             dialogid: chatId,
             message_text: resultTrimValue
-          }
-        }).then(() => {
-          set_state({valueSign: ''});
-        }) : null;
+          }, '/api/dialog_message_send', () => {set_state({valueSign: ''});}
+        )
+        : null;
 
         for (let i in files) {
           if(i === 'length' || i === 'item') break;
@@ -201,19 +194,16 @@ const enhance = compose(
 
           if(i == (files.length - 1)) {
             _data.append('file_0', files[i]);
-            PostMessage({
-              url: 'api/dialog_message_send',
-              data: _data
-            }).then(() => {
-              refForm.current.reset();
-              refFormImg.current.reset();
-            }).catch(() => set_state({submitting: false}));
+            apishka('POST', _data, '/api/dialog_message_send', () => {
+                refForm.current.reset();
+                refFormImg.current.reset();
+              }, (err) => {
+                set_state({submitting: false})
+              }
+            )
           } else {
             _data.append('file_0', files[i]);
-            PostMessage({
-              url: 'api/dialog_message_send',
-              data: _data
-            });
+            apishka('POST', _data, '/api/dialog_message_send')
           }
         }
       } else {
@@ -223,26 +213,25 @@ const enhance = compose(
           message_text: resultTrimValue,
           reply_to: answerComment ? answerComment.id : null
         };
-
-        PostMessage({
-          url: 'api/dialog_message_send',
-          data: _data
-        }).then(() => {
-          set_state({value: '', valueSign: '', answerComment: null});
-          refForm.current.reset();
-          refFormImg.current.reset();
-        }).catch(() => set_state({submitting: false}));;
+        apishka('POST', _data, '/api/dialog_message_send', () => {
+            set_state({value: '', valueSign: '', answerComment: null});
+            refForm.current.reset();
+            refFormImg.current.reset();
+          }, (err) => {
+            set_state({submitting: false})
+          }
+        )
       }
     },
     handleEdit: ({commentForEdit, set_state}) => () => {
       set_state({submitting: true, isSubmit: true})
-      PostMessage({
-        url: 'api/dialog_message_edit',
-        data: {
-          id: commentForEdit.id,
-          message_text: commentForEdit.message_text
-        }
-      }).then(() => set_state({ commentForEdit: {}, isModalEditOpen: false}));
+      apishka('POST', {
+            id: commentForEdit.id,
+            message_text: commentForEdit.message_text
+          }, '/api/dialog_message_edit', () => {
+            set_state({ commentForEdit: {}, isModalEditOpen: false})
+          }
+      )
     },
     addEmoji: ({set_state, value, commentForEdit}) => (e) => {
       let sym = e.unified.split('-')

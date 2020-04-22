@@ -9,7 +9,7 @@ import { set_loading } from 'src/redux/actions/loader';
 import { set_settings } from 'src/redux/actions/settings';
 
 import { menu_creator, Configer } from 'src/libs/methods';
-import { Get, GetNM } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 import { api } from 'src/defaults';
 
 let chatSocket;
@@ -80,16 +80,20 @@ const enhance = compose(
             message:g_item.message
           })
         })
-        GetNM(`api/menus`).then(data_menu => {
-  			//	console.log('data_MENU:', data_menu.data.outjson.userdetail.usersettings)
-          getMenu(data_menu);
-  				localStorage.setItem('usersettings', JSON.stringify(data_menu.data.outjson.userdetail.usersettings))
-  				localStorage.setItem('homepage', JSON.stringify(data_menu.data.outjson.homepage))
-          //root_spin.setAttribute('style', 'display: none;');
-        }).catch((err) => {
-  					alert('err menus')
-  					console.log('err menus:', err)
-        });
+        apishka(
+          'GET',
+          {},
+          '/api/menus',
+          (res) => {
+            getMenu(res);
+            localStorage.setItem('usersettings', JSON.stringify(res.outjson.userdetail.usersettings))
+            localStorage.setItem('homepage', JSON.stringify(res.outjson.homepage))
+          },
+          (err) => {
+            alert('err menus')
+            console.log('err menus:', err)
+          }
+        )
       }
     },
     handleChatWS: ({ set_chat_id, set_unreaded_status, chatId, history, location, otherLocation, set_state }) => () => {
@@ -137,9 +141,9 @@ const enhance = compose(
                 }
               });
               item.messages.forEach(it => {
-                  Get('api/dialog_notif_setsended', {
-                    id: it.id
-                  });
+                  apishka(
+                    'GET',  {},  '/api/dialog_notif_setsended'
+                  )
                 });
               });
             }

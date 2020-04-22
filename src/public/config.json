@@ -1,8 +1,6 @@
 {
   "api": {
-    "url": "/",
-    "_url": "",
-    "ws": "/ws"
+    "_url": ""
   },
   "chat": true,
   "profile": true,

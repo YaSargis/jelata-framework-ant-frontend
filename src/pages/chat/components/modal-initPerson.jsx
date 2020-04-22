@@ -3,7 +3,7 @@ import { compose, withStateHandlers, withHandlers, lifecycle } from 'recompose';
 import { Modal, Button, notification, Select,
         Spin, Avatar } from 'antd';
 import { api } from 'src/defaults';
-import { Get, PostMessage } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 let timer = {};
 
@@ -76,13 +76,11 @@ const enhance = compose(
       timer['listUserSelect'] ? clearTimeout(timer['listUserSelect']) : null;
       const getDataSelect = new Promise(resolve => {
         timer['listUserSelect'] = setTimeout(() => {
-          Get('/api/dialogs_usersearch', {
-            substr: _substr
-          }).then(res => {
-            let { data } = res;
-            let dat = _.sortBy(data.outjson, ['login']);
+	  
+		  apishka('GET', {}, '/api/dialogs_usersearch?substr=' + _substr, (res) => {
+			let dat = _.sortBy(res.outjson, ['login']);
             resolve(dat);
-          });
+		  })
         }, 100)
       });
 
@@ -127,10 +125,7 @@ const enhance = compose(
           reciver_user_id: arrUserForSubmit[0],
         };
 
-      PostMessage({
-        url: 'api/dialog_personal_create',
-        data: _data
-      }).then(() => {
+	  apishka('POST', _data, '/api/dialog_personal_create', (res) => {
         getDataUpComp();
         set_stateUpComponent({ openModalInitPerson: false, statusCreateChat: true });
         notification['success']({
@@ -141,7 +136,7 @@ const enhance = compose(
           userData: [],
           valueSelect: []
         });
-      })
+      } )
     },
   })
 );

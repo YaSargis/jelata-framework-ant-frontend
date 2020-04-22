@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { compose, withState, withHandlers, lifecycle } from 'recompose';
 import qs from 'query-string';
 
-import { Get } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 import { Configer } from 'src/libs/methods';
 
@@ -24,35 +24,41 @@ const enhance = compose(
   }),
   withHandlers({
     getData: ({ history, location, match, changeView, changeValues, changeReady, changeMenu, changeRootKeys }) => () => {
-      Get('/api/treesbypath', {
-        path: match.params.id
-      }).then((res) => {
-        document.title = res.data.outjson.title;
-        
-        changeValues({...res.data.outjson});
-        let { branches, items } = res.data.outjson;
-        let rootKeys = [];
-        let h = location.hash ? true : false;
-        if(_.isArray(branches)) {
-          if(!_.isEmpty(branches)) {
-            branches.map((el, i) => {
-              if(el.ismain === true && !h) {
-                let _view = _.find(items, x => x.key === el.key) ;
-                history.push(location.pathname + location.search + '#' + _view.key);
+      apishka(
+        'GET',
+        {},
+        '/api/treesbypath?path=' + match.params.id,
+        (res) => {
+          document.title = res.outjson.title;
+
+          changeValues({...res.outjson});
+          let { branches, items } = res.outjson;
+          let rootKeys = [];
+          let h = location.hash ? true : false;
+          if(_.isArray(branches)) {
+            if(!_.isEmpty(branches)) {
+              branches.map((el, i) => {
+                if(el.ismain === true && !h) {
+                  let _view = _.find(items, x => x.key === el.key) ;
+                  history.push(location.pathname + location.search + '#' + _view.key);
+                  if(_view.path && _view.treeviewtype > 0) changeView(_view);
+                }
+                el.children ? rootKeys.push(el.key) : null
+              });
+              changeMenu(branches);
+              if(location.hash) {
+                let _view = _.find(items, x => ('#' + x.key) === location.hash);
                 if(_view.path && _view.treeviewtype > 0) changeView(_view);
               }
-              el.children ? rootKeys.push(el.key) : null
-            });
-            changeMenu(branches);
-            if(location.hash) {
-              let _view = _.find(items, x => ('#' + x.key) === location.hash);
-              if(_view.path && _view.treeviewtype > 0) changeView(_view);
             }
-          }
-        };
-        changeRootKeys(rootKeys);
-        changeReady(true);
-      });
+          };
+          changeRootKeys(rootKeys);
+          changeReady(true);
+
+        },
+        (err) => {}
+
+      )
     }
   }),
   withHandlers({

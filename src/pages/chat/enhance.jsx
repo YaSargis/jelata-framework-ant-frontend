@@ -8,7 +8,7 @@ import {
   set_first_id,
   set_unreaded_status
 } from 'src/redux/actions/user';
-import { Get } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 const enhance = compose(
   connect(
@@ -55,9 +55,9 @@ const enhance = compose(
   ),
   withHandlers({
     getData: ({ set_state }) => () => {
-      Get('/api/dialogs').then(res => {
-        set_state({ dataListChats: res.data.outjson, getStatus: true });
-      });
+      apishka('GET', {}, '/api/dialogs', (res) => {
+        set_state({ dataListChats: res.outjson, getStatus: true });
+      })
     }
   }),
   lifecycle({

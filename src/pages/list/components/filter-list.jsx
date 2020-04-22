@@ -1,6 +1,6 @@
 import React from 'react';
 import {compose, withHandlers, withState} from 'recompose';
-import { getTable } from "src/libs/api";
+import { apishka } from "src/libs/api";
 import _ from 'lodash';
 import moment from 'moment';
 import locale from 'antd/es/date-picker/locale/ru_RU';
@@ -264,10 +264,10 @@ const enhance = compose(
     },
     handlerGetTable: ({ listConfig, filters, apiData, changeApiData }) => (item) => {
 
-      getTable(item.id/*_table, tablecolums*/).then(res=>{
-        apiData[item.title] = res.data.outjson;
-        changeApiData(apiData);
-      })
+        apishka('GET', {}, '/api/gettable?id=' + item.id, (res) => {
+			apiData[item.title] = res.outjson;
+			changeApiData(apiData);
+	    })
     },
 	})
 );

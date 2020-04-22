@@ -5,10 +5,7 @@ const isDev = process.env.NODE_ENV === 'development';
 export const config = c.default;
 export const api = isDev
   ? {
-      url: 'http://127.0.0.1:8080/',
-      _url: 'http://127.0.0.1:8080',
-      schemaurl: '127.0.0.1:8080/',
-      ws: 'ws://127.0.0.1:8080/ws'
+      _url: 'http://127.0.0.1:8080'
     }
   : c.api;
 

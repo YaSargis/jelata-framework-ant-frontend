@@ -7,7 +7,7 @@ import { HashLink as Link } from 'react-router-hash-link';
 import {connect} from 'react-redux';
 
 import { api } from 'src/defaults';
-import { Delete, Get, PostMessage } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 import { get_chat_id, set_chat_id, set_first_id } from 'src/redux/actions/user';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 import { disableScroll, enableScroll } from 'src/libs/scroll-control';
@@ -70,12 +70,12 @@ const CommentList = ({ refList, comments, removeComment, set_state, setStateUpCo
                                         <div onClick={() => {
                                            const isAnchorExist = comments.some(it => it.id === item.reply_message.id);
                                            if(!isAnchorExist) {
-                                             Get('/api/dialog_messages', {
-                                               dialogid: chatId,
-                                               reply_to: item.reply_message.id
-                                             }).then(res => {
-                                               setStateUpComp({ comments: res.data.outjson});
-                                             });
+                                             apishka('GET', {}, '/api/dialog_messages?dialogid=' + chatId +
+                                                '&reply_to=' + item.reply_message.id,
+                                                (res) => {
+                                                  setStateUpComp({ comments: res.outjson});
+                                                }
+                                             )
                                            }
                                         }} style={{borderLeft: '3px solid #37a1de', margin: '5px 0 5px 20px', padding: '5px 0 5px 5px'}}>
                                           <span style={{...styles.comments__itemAuthor, backgroundColor: '#c8c8c8', color: '#4586c2', fontWeight: 'bolder'}}>{item.reply_message.login}</span>
@@ -286,12 +286,8 @@ const enhance = compose(
     removeComment: ({ setStateUpComp, set_state }) => (id) => {
       set_state({idDeleteComment: null, isModalDeleteOpen: false})
       setStateUpComp({isCommentDelete: id});
-      Delete({
-        url: 'api/dialog_delete_message',
-        data: {id: id}
-      }).catch(() => {
-        setStateUpComp({isCommentDelete: false})
-      });
+       apishka('DELETE', {id:id}, '/api/dialog_delete_message', () => {}, (err) => {  setStateUpComp({isCommentDelete: false})} )
+
     },
     replyComment: ({ setStateUpComp }) => comment => {
       setStateUpComp({answerComment: {
@@ -305,23 +301,20 @@ const enhance = compose(
       if(isFirstCommentExist) {
         set_state({elemTopScroll: null, isScrolled: false});
       } else {
-        Get('/api/dialog_messages', {
-          dialogid: chatId,
-          pagesize: sizeRow
-        }).then(res => {
-          setStateUpComp({ comments: res.data.outjson});
-        });
+        apishka(
+          'GET', {}, '/api/dialog_messages?dialogid=' + chatId + '&pagesize=' + sizeRow,
+          (res) => {
+            setStateUpComp({ comments: res.outjson});
+          }
+        )
       }
     },
     scrollToAnchor: ({comments, chatId, setStateUpComp}) => (elem, id) => {
       const isAnchorExist = comments.some(item => item.id === id);
       if(!isAnchorExist) {
-        Get('/api/dialog_messages', {
-          dialogid: chatId,
-          reply_to: id
-        }).then(res => {
-          setStateUpComp({ comments: res.data.outjson});
-        });
+        apishka('GET', {}, '/api/dialog_messages?dialogid=' + chatId + '&reply_to=' + id, (res) => {
+            setStateUpComp({ comments: res.outjson});
+        })
       }
       elem.scrollIntoView({ behavior: 'smooth', block: 'center' });
       elem.classList.add('color-change-2x');
@@ -331,16 +324,10 @@ const enhance = compose(
       }, 4000)
     },
     forwardMessage: ({commentForwardID, set_state, set_chat_id}) => id => {
-      PostMessage({
-        url: 'api/dialog_message_send',
-        data: {
-          dialogid: id,
-          forwarded_from: commentForwardID
-        }
-      }).then(() => {
+      apishka('POST', {dialogid: id, forwarded_from: commentForwardID}, '/api/dialog_message_send', (res) => {
         set_state({commentForwardID: null, valueSearch: '', dataFilteredChats: [], isModalForwardOpen: false});
         set_chat_id(id);
-      });
+      })
     },
     filterChatRooms: ({dataListChats, set_state}) => value => {
       const _value = value.toLocaleLowerCase();

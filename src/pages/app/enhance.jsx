@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { get_menu, set_login_status, get_chat_id } from 'src/redux/actions/user';
 import { set_loading } from 'src/redux/actions/loader';
 
-import { GetNM } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 const enhance = compose(
   connect(
     (state) => ({
@@ -26,22 +26,21 @@ const enhance = compose(
     getData: ({ getMenu, set_settings, isLogin, set_login_status }) => () => {
       let root_spin = document.getElementById('spin_app_root');
 
-      GetNM(`api/menus`).then(data_menu => {
-			//	console.log('data_MENU:', data_menu.data.outjson.userdetail.usersettings)
-        getMenu(data_menu);
-				localStorage.setItem('usersettings', JSON.stringify(data_menu.data.outjson.userdetail.usersettings))
-				localStorage.setItem('homepage', JSON.stringify(data_menu.data.outjson.homepage))
-        root_spin.setAttribute('style', 'display: none;');
-      }).catch((err) => {
-				if (err.status && err.status === 401) {
-					isLogin ? set_login_status(false) : null;
-	        root_spin.setAttribute('style', 'display: none;');
-				} else {
-					alert('err menus')
-					console.log('err menus:', err)
-				}
-
-      });
+      apishka( 'GET', {}, '/api/menus', (res) => {
+          getMenu({data:res});
+          localStorage.setItem('usersettings', JSON.stringify(res.outjson.userdetail.usersettings))
+          localStorage.setItem('homepage', JSON.stringify(res.outjson.homepage))
+          root_spin.setAttribute('style', 'display: none;');
+        }, (err) => {
+          if (err.status && err.status === 401) {
+            isLogin ? set_login_status(false) : null;
+            root_spin.setAttribute('style', 'display: none;');
+          } else {
+            alert('err menus')
+            console.log('err menus:', err)
+          }
+        }
+      )
     },
   }),
   lifecycle({

@@ -3,7 +3,7 @@ import { compose, withStateHandlers, withHandlers } from 'recompose';
 import { Modal, Button, Carousel, Input, notification, Select,
         Spin, Avatar } from 'antd';
 import { api } from 'src/defaults';
-import { Get, PostMessage } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 let timer = {};
 
@@ -115,25 +115,15 @@ const enhance = compose(
   withStateHandlers(
     ({
       inState = {
-        inputGroupName: '',
-        usersData: [],
-        valueSelect: [],
-        setUsersForSubmit: new Set(),
-        objAvatarFile: {},
-        imageUrl: '',
-        fetching: false,
-        listEmpty: false,
-        usersDataAccum: []
+        inputGroupName: '', usersData: [], valueSelect: [],
+        setUsersForSubmit: new Set(), objAvatarFile: {}, imageUrl: '',
+        fetching: false, listEmpty: false, usersDataAccum: []
       }
     }) => ({
-      inputGroupName: inState.inputGroupName,
-      usersData: inState.usersData,
-      valueSelect: inState.valueSelect,
-      setUsersForSubmit: inState.setUsersForSubmit,
-      objAvatarFile: inState.objAvatarFile,
-      imageUrl: inState.imageUrl,
-      fetching: inState.fetching,
-      listEmpty: inState.listEmpty,
+      inputGroupName: inState.inputGroupName, usersData: inState.usersData,
+      valueSelect: inState.valueSelect, setUsersForSubmit: inState.setUsersForSubmit,
+      objAvatarFile: inState.objAvatarFile, imageUrl: inState.imageUrl,
+      fetching: inState.fetching, listEmpty: inState.listEmpty,
       usersDataAccum: inState.usersDataAccum
     }),
     {
@@ -154,13 +144,10 @@ const enhance = compose(
       timer['listUserSelect'] ? clearTimeout(timer['listUserSelect']) : null;
       const getDataSelect = new Promise(resolve => {
         timer['listUserSelect'] = setTimeout(() => {
-          Get('/api/dialogs_usersearch', {
-            substr: _substr
-          }).then(res => {
-            let { data } = res;
-            let dat = _.sortBy(data.outjson, ['login']);
+          apishka('GET', {}, '/api/dialogs_usersearch?substr=' + _substr, (res) => {
+            let dat = _.sortBy(res.outjson, ['login']);
             resolve(dat);
-          });
+          })
         }, 100)
       });
 
@@ -243,23 +230,16 @@ const enhance = compose(
           users: arrUsersForSubmit,
           title: inputGroupName
         };
-
-      PostMessage({
-        url: 'api/dialog_group_create',
-        data: _data
-      }).then(() => {
+      apishka('POST', _data, (res) => {
         getDataUpComp();
         set_stateUpComponent({ openModalInit: false, statusCreateChat: true });
         notification['success']({
           message:'created'
         });
         set_state({
-          setUsersForSubmit: new Set(),
-          inputGroupName: '',
-          objAvatarFile: {},
-          usersData: [],
-          valueSelect: [],
-          imageUrl: '',
+          setUsersForSubmit: new Set(), inputGroupName: '',
+          objAvatarFile: {}, usersData: [],
+          valueSelect: [], imageUrl: '',
           usersDataAccum: []
         });
       })
@@ -272,9 +252,7 @@ const styles = {
     textAlign: 'center'
   },
   btn__secondContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: 100
+    display: 'flex', justifyContent: 'space-between', marginTop: 100
   },
   btn: {
     marginTop: 50
@@ -286,25 +264,17 @@ const styles = {
     width: '100%'
   },
   avatar_contain: {
-    textAlign: 'center',
-    display: 'flex',
+    textAlign: 'center', display: 'flex',
     justifyContent: 'center'
   },
   avatarNull: {
-    width: 100,
-    height: 100,
-    border: '1px dashed',
-    borderRadius: '50%',
-    display: 'inline-block',
-    textAlign: 'center',
-    position: 'relative',
-    top: '50%',
+    width: 100, height: 100, border: '1px dashed',
+    borderRadius: '50%', display: 'inline-block',
+    textAlign: 'center', position: 'relative', top: '50%',
     cursor: 'pointer'
   },
   avatarImg: {
-    borderRadius: '50%',
-    border: '1px solid',
-    cursor: 'pointer'
+    borderRadius: '50%', border: '1px solid', cursor: 'pointer'
   },
   listEmpty: {
     textAlign: 'center'

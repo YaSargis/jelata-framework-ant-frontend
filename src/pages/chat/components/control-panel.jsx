@@ -6,12 +6,14 @@ import moment from 'moment';
 import { Avatar, Button, Modal, List, Input, Popconfirm, Empty, Icon, notification } from 'antd';
 const { Search } = Input;
 
-import { Delete, Get, PostMessage } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 import { set_chat_id } from 'src/redux/actions/user';
 
-const ControlPanel = ({dataListChats, chatId, setStateUpComp, set_state, isModalDelMemberOpen, filterUsers, selectedUser, deleteSelf, isAddAdmin,
-                       deleteUser, valueSearch, showAllUsers, isModalAddMemberOpen, findUser, findedUsers, addUser, isModalAdminOpen, addAdmin,
-                       deleteAdmin, changeGroupSet, isModalMainOpen, valueTitle, isModalPicOpen, imageUrl, setStateFile, objAvatarFile}) => {
+const ControlPanel = ({
+	dataListChats, chatId, setStateUpComp, set_state, isModalDelMemberOpen, filterUsers, selectedUser, deleteSelf, isAddAdmin,
+    deleteUser, valueSearch, showAllUsers, isModalAddMemberOpen, findUser, findedUsers, addUser, isModalAdminOpen, addAdmin,
+    deleteAdmin, changeGroupSet, isModalMainOpen, valueTitle, isModalPicOpen, imageUrl, setStateFile, objAvatarFile
+}) => {
   const chat = dataListChats.find(obj => obj.id === chatId);
   const creator = chat.creator;
   const admins = chat.dialog_admins.filter(item => item !== creator.id);
@@ -347,67 +349,44 @@ const enhance = compose(
     },
     findUser: ({set_state}) => value => {
       if(value === '') return;
-      Get('/api/dialogs_usersearch',{
-        substr: value
-      }).then(res => {
-        let { data } = res;
-        let _data = _.sortBy(data.outjson, ['login']);
+      apishka('GET', {}, '/api/dialogs_usersearch', (res) => {
+        let _data = _.sortBy(res.outjson, ['login']);
         set_state({findedUsers: _data});
       })
     },
     addUser: ({chatId, getDataUpComp, set_chat_id, set_state}) => id => {
-      PostMessage({
-        url: 'api/dialog_adduser',
-        data: {
-          user_to_add: id,
-          id: chatId
-        }
-      }).then(() => {
+      apishka('POST', {user_to_add: id,id: chatId}, '/api/dialog_adduser', () => {
         set_state({findedUsers: [], isModalAddMemberOpen: false, valueSearch: ''});
         getDataUpComp();
         set_chat_id(chatId);
       })
     },
     deleteSelf: ({chatId, set_chat_id, getDataUpComp, setStateUpComp}) => () => {
-      PostMessage({
-        url: '/api/dialog_leave',
-        data: {
-          id: chatId
-        }
-      }).then(() => {
+      apishka('POST', {id: chatId}, '/api/dialog_leave', () => {
         setStateUpComp({openDrawerPanel: false});
         set_chat_id(false);
         getDataUpComp();
       })
     },
     addAdmin: ({chatId, set_state, getDataUpComp}) => id => {
-      PostMessage({
-        url: '/api/dialog_addadmin',
-        data : {
-          user_to_add: id,
-          id: chatId
-        }
-      }).then(() => {
+      apishka('POST', {user_to_add: id, id: chatId}, '/api/dialog_addadmin', () => {
         set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false});
         getDataUpComp();
         set_chat_id(chatId);
-      }).catch(() => {
+      }, (err) => {
         set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false})
       })
     },
     deleteAdmin: ({chatId, set_state, getDataUpComp}) => id => {
-      Delete({
-        url: '/api/dialog_removeadmin',
-        data : {
-          admin_to_remove: id,
-          id: chatId
+       apishka('DELETE', {admin_to_remove: id, id: chatId}, '/api/dialog_removeadmin',
+        () => {
+          set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false});
+          getDataUpComp();
+        },
+        (err) => {
+          set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false})
         }
-      }).then(() => {
-        set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false});
-        getDataUpComp();
-      }).catch(() => {
-        set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false})
-      })
+      )
     },
     setStateFile: ({set_state}) => event => {
       const reader = new FileReader;
@@ -422,34 +401,29 @@ const enhance = compose(
     },
     changeGroupSet: ({chatId, set_state, getDataUpComp, objAvatarFile}) => (type, value) => {
       if(type==='title') {
-        PostMessage({
-          url: '/api/dialog_edit',
-          data: {
-            id: chatId,
-            title: value
+        apishka('POST', {id: chatId, title: value}, '/api/dialog_edit', () => {
+            set_state({valueTitle: '', isModalMainOpen: false});
+            getDataUpComp();
+            notification['success']({
+              message: 'Done'
+            })
           }
-        }).then(() => {
-          set_state({valueTitle: '', isModalMainOpen: false});
-          getDataUpComp();
-          notification['success']({
-            message: 'Done'
-          })
-        })
+        )
       } else {
         let _data = new FormData();
         _data.append('file_0', objAvatarFile);
         _data.append('config', JSON.stringify({type:'image'}));
         _data.append('id', chatId);
-        PostMessage({
-          url: '/api/dialog_edit',
-          data: _data
-        }).then(()=> {
-          set_state({objAvatarFile: {}, isModalPicOpen: false, imageUrl: ''});
-          getDataUpComp();
-          notification['success']({
-            message: 'Done'
-          })
-        })
+		
+        apishka('POST', _data, '/api/dialog_edit', () => {
+            set_state({objAvatarFile: {}, isModalPicOpen: false, imageUrl: ''});
+            getDataUpComp();
+            notification['success']({
+              message: 'Изменено'
+            })
+          }
+        )
+
       }
     }
   })

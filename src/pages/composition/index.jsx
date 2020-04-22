@@ -5,7 +5,7 @@ import MyHeader from 'src/pages/layout/header';
 import List from 'src/pages/list';
 import GetOne from 'src/pages/Getone';
 
-import { Get } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 
 const CompositionNew = ({ history, path, compo, location, match }) => {
@@ -21,17 +21,22 @@ const CompositionNew = ({ history, path, compo, location, match }) => {
   };
 
   function getData(_id, type) {
-    Get('/api/compobypath', {
-      path: _id
-    }).then((res) => {
-			document.title = res.data.outjson.title;
-      set_state({
-        id_page: _id,
-        loading: false,
-        init: type ? true : init,
-        values: {...res.data.outjson}
-      });
-    });
+    apishka(
+      'GET',
+      {},
+      '/api/compobypath?path=' + _id,
+      (res) => {
+        document.title = res.outjson.title;
+        set_state({
+          id_page: _id,
+          loading: false,
+          init: type ? true : init,
+          values: {...res.outjson}
+        });
+      },
+      (err) => {}
+
+    )
   };
   let _id = compo ? path : match.params.id;
 
