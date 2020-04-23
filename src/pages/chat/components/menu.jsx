@@ -20,7 +20,7 @@ const MenuChat = ({ dataListChats, set_chat_id, chatId }) => {
         onClick={() => {set_chat_id(item.id)}}
       >
        <List.Item.Meta
-        avatar={item.photo.length > 0 ? <Avatar size={42}  className='chat__avatar' src={api._url + item.photo[0].uri}/> :
+        avatar={(item.photo && item.photo.length > 0) ? <Avatar size={42}  className='chat__avatar' src={api._url + item.photo[0].uri}/> :
                                            item.dialog_type_name === 'group' ? <Avatar  size={42} style={styles.list_avatarIcon} icon='team' /> : <Avatar size={42}  style={styles.list_avatarIcon} icon='user' />}
         title={<div style={{fontSize: 18, ...colorText}}>
                 <span>{item.dialog_type_name === 'group' ? <Icon type='team' style={{paddingRight: 10}} /> : null}{item.title}</span>

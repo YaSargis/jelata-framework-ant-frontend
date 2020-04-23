@@ -32,11 +32,11 @@ const enhance = compose(
           localStorage.setItem('homepage', JSON.stringify(res.outjson.homepage))
           root_spin.setAttribute('style', 'display: none;');
         }, (err) => {
-          if (err.status && err.status === 401) {
+          if (err.response && err.response.status === 401) {
             isLogin ? set_login_status(false) : null;
             root_spin.setAttribute('style', 'display: none;');
           } else {
-            alert('err menus')
+            alert('errrr menus')
             console.log('err menus:', err)
           }
         }

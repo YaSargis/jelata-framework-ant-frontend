@@ -67,7 +67,6 @@ const enhance = compose(
       let ws = document.location.href.split('//')[1];
       ws = ws.split('/')[0];
       ws = 'ws://' + ws + '/global_ws' //пока не работает в разных доменных именах
-      //ws = 'ws://' + '185.87.48.234:8080' + '/global_ws';
       let globalSocket = new WebSocket(ws);
       globalSocket.onopen = () => {
         globalSocket.send(JSON.stringify({}));
@@ -85,7 +84,7 @@ const enhance = compose(
           {},
           '/api/menus',
           (res) => {
-            getMenu(res);
+            getMenu({data:res});
             localStorage.setItem('usersettings', JSON.stringify(res.outjson.userdetail.usersettings))
             localStorage.setItem('homepage', JSON.stringify(res.outjson.homepage))
           },

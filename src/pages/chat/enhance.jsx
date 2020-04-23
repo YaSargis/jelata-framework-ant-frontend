@@ -104,7 +104,7 @@ const enhance = compose(
           const findedObj = dataListChats.find(item => item.id === chatId);
           try {
             set_state({
-              chatPhotoUri: findedObj.photo[0] ? findedObj.photo[0].uri : '',
+              chatPhotoUri: (findedObj.photo && findedObj.photo[0]) ? findedObj.photo[0].uri : '',
               chatName: findedObj.title
             });
           } catch (e) {

@@ -21,7 +21,7 @@ const enhance = compose(
   withState('helper', 'changeHelper', {}),
   withHandlers({
     getData: ({ changeReady, changeValues, changeViews, location }) => () => {
-      apishka( 'GET', {}, '/api/compo',
+      apishka( 'GET', {}, '/api/compo?id='+qs.parse(location.search).id ,
         (res) => {
           document.title = res.outjson.title;
 
