@@ -86,7 +86,7 @@ const enhance = compose(
           (res) => {
             getMenu({data:res});
             localStorage.setItem('usersettings', JSON.stringify(res.outjson.userdetail.usersettings))
-            localStorage.setItem('homepage', JSON.stringify(res.outjson.homepage))
+            localStorage.setItem('homepage', res.outjson.homepage)
           },
           (err) => {
             alert('err menus')

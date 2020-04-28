@@ -232,11 +232,11 @@ const enhance = compose(
     },
     componentDidUpdate(prevProps) {
       const {config, options, data, onFocusApi, onFocus } = this.props;
-      /*if(data !== prevProps.data) {
-        if(_.isEmpty(options) && data[config.key]) {
+      if(data !== prevProps.data) {
+        if(data[config.key] !== prevProps.data[config.key]) { // need to refactor to one select component related of getData method
           if(config.type === 'typehead_api') onFocusApi(null, data[config.key]); else onFocus(null, data[config.key]);
         }
-      }*/
+      }
     }
   })
 )

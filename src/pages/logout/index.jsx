@@ -25,8 +25,10 @@ const enhance = compose(
         'POST',
         {}, '/auth/logout',
         (res) => {
-          reset_app();
-          set_loading(false);
+			set_loading(false);
+			localStorage.removeItem('sesid')
+			window.location.replace('/')
+			
         }, (err) => {
           set_loading(false);
         }

@@ -12,7 +12,7 @@ import MyHeader from 'src/pages/layout/header';
 const Home = ({ favorits_menu, custom_menu, handlerDeleteButton, usermenu, set_favorits_menu }) => {
   document.title= 'Home';
 
-	location.href=JSON.parse(localStorage.getItem('homepage')) || '/composition/home'
+	location.href = localStorage.getItem('homepage') || '/composition/home'
 
   return [
     <MyHeader key='s1' />,

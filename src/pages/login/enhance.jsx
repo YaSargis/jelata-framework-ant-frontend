@@ -107,7 +107,7 @@ const enhance = compose(
               '/auth/auth_f',
               (res) => {
                 set_login_status(true);
-  							location.href='/'
+  				location.href='/'
               }
             )
           }

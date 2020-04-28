@@ -16,7 +16,7 @@ const App = (props) => {
   return _.isBoolean(isLogin) ? isLogin ? <Switch><Route component={Dashboard} location={location} /><Redirect to='/dashboard' /></Switch>
     : <Switch>
         <Route path='/login' component={LoginForm} exact />
-        <Redirect to='/login' />
+        <Redirect to={localStorage.getItem('login_url') || '/login'} />
       </Switch> : <Spin />
 }
 

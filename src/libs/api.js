@@ -12,7 +12,8 @@ export const apishka = (type, data, methodname, cb, err) => {
     url: api._url + methodname,
     data: data,
     //params: params,
-    withCredentials: true
+    withCredentials: true,
+	headers: {'Auth':localStorage.getItem('sesid')}
   })
   .then(
     function(response) {
@@ -33,14 +34,13 @@ export const apishka = (type, data, methodname, cb, err) => {
         message: 'Ошибка',
         description: errText
       });
+	  let redirect401 = localStorage.getItem('redirect401')
       if (
-          error.response &&
-          error.response.status === 401 && !(
-            window.location.href.indexOf('/login') === -1 ||
-            window.location.href.indexOf('/home') === -1
-          )
+        error.response &&
+        error.response.status === 401 &&
+        window.location.pathname !== redirect401
       ) {
-        window.location.replace('/login')
+        window.location.replace(redirect401);
       }
   });
 }
