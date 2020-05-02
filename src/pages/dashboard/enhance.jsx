@@ -78,6 +78,9 @@ const enhance = compose(
           notification.success({
             message:g_item.message
           })
+          apishka(
+            'GET',  {id: g_item.id},  '/api/setsended'
+          )
         })
         apishka(
           'GET',

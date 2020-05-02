@@ -154,34 +154,22 @@ const TableComp = ({
           },
           headerTitle: true,
           editable: item.editable,
-          style:
-            listConfig.length - 1 !== ind
-              ? {
+          style: {
                   maxWidth: item.width,
                   minWidth: item.width,
-                  border: '1px solid #c8c8c8'
-                }
-              : {
-                  hover: 'black', maxWidth: item.width,
-                  minWidth: item.width, background: '#ffe8c9',
-                  border: '1px solid #c8c8c8', paddingLeft: '.857em',
-                  position: 'sticky',  right: 0
+                  //border: '1px solid #c8c8c8'
                 },
+
           searchable: true,
-          headerStyle:
-            listConfig.length - 1 !== ind
-              ? {
+          headerStyle: {
                   width: item.width, maxWidth: item.width,
-                  minWidth: item.width, border: '1px solid #c8c8c8'
-                }
-              : {
-                  maxWidth: item.width, minWidth: item.width,
-                  background: '#ffe8c9', color: 'black',
-                  border: '1px solid #c8c8c8', paddingLeft: '.857em',
-                  position: 'sticky', right: 0
+                  minWidth: item.width,
+                  //border: '1px solid #c8c8c8'
                 },
-          classes: classname,
-          headerClasses: 'ant-table-header-column ant-table-column-has-actions',
+          classes: item.col === '__actions__'? 'tab_actions' : classname ,
+          headerClasses: item.col === '__actions__'?
+          'tab_actions ant-table-header-column ant-table-column-has-actions'
+          : 'ant-table-header-column ant-table-column-has-actions',
           sort: isorderby,
           sortCaret: (order, column) => {
             if (!order)
@@ -625,6 +613,8 @@ const TableComp = ({
           }
         }
       },
+	  showExpandColumn: true,
+      expandByColumnOnly: true,
       expanded: expandState,
       onExpand: (row, isExpand, rowIndex, e) => {
         let expandAct = origin.acts.filter(x => x.type === 'Expand')[0];
