@@ -66,7 +66,7 @@ const enhance = compose(
     handleGlobalWS: ({ getMenu}) => () => {
       let ws = document.location.href.split('//')[1];
       ws = ws.split('/')[0];
-      ws = 'ws://' + ws + '/global_ws' //пока не работает в разных доменных именах
+      ws = 'ws://' + ws + '/global_ws' 
       let globalSocket = new WebSocket(ws);
       globalSocket.onopen = () => {
         globalSocket.send(JSON.stringify({}));
@@ -101,8 +101,7 @@ const enhance = compose(
     handleChatWS: ({ set_chat_id, set_unreaded_status, chatId, history, location, otherLocation, set_state }) => () => {
       let ws = document.location.href.split('//')[1];
       ws = ws.split('/')[0];
-         ws = 'ws://' + ws + '/chats' //пока не работает в разных доменных именах
-      //ws = 'ws://' + '94.230.251.78:8080' + '/chats';
+         ws = 'ws://' + ws + '/chats' 
       chatSocket = new WebSocket(ws);
       chatSocket.onopen = () => {
         chatSocket.send(JSON.stringify({}));
@@ -129,9 +128,12 @@ const enhance = compose(
                   <div className="notif__content">
                     <div className="notif__login">{it.login}</div>
                     <div>
-                      { it.message_text.length > 100 ?  it.message_text.split('\n').map((peace, key) => {
-                                                        return <span key={key}>{peace.slice(0, 100).concat('...')}<br/></span>
-                                                      }) : it.message_text }
+                      { 
+						it.message_text.length > 100 ?  
+							it.message_text.split('\n').map((peace, key) => {
+                                return <span key={key}>{peace.slice(0, 100).concat('...')}<br/></span>
+                            }) : it.message_text 
+					  }
                     </div>
                   </div>
                 </div>
@@ -163,10 +165,9 @@ const enhance = compose(
     },
     componentWillMount() {
       let { get_favorits_menu } = this.props;
-      // удаляем класс логин с body
       let body = document.getElementsByTagName('body')[0];
       body.classList.remove("login_bckg");
-      get_favorits_menu(); // получаем список избр. меню
+      get_favorits_menu(); 
     },
     componentDidUpdate(prevProps){
       const { chatId, set_first_id, location, handleChatWS, set_chat_id, handleGlobalWS } = this.props;

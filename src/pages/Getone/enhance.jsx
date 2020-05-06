@@ -83,6 +83,7 @@ const enhance = compose(
         switch (item_config.type) {
           case 'text':
           case 'date':
+          case 'rate':
           case 'autocomplete':
           case 'textarea':
           case 'number': {
@@ -250,7 +251,7 @@ const enhance = compose(
                 }
               }
               notification.success({
-                message: 'Сохранено',
+                message: 'OK',
                 duration: 2
               });
               },
@@ -454,7 +455,7 @@ const enhance = compose(
 
             newconfig.forEach((el, i) => {
               if (newconfig[i].key === item.key)
-  							newconfig[i]['selectdata'] = res.outjson;
+  				newconfig[i]['selectdata'] = res.outjson;
             });
 
             origin.config = newconfig;
@@ -494,6 +495,7 @@ const enhance = compose(
         nextParams = get_params(nextProps);
 
       if (!compo) {
+        // just data
         if (params.id_page !== nextParams.id_page) {
           getData();
         }

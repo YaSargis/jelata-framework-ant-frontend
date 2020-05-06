@@ -31,7 +31,7 @@ export const apishka = (type, data, methodname, cb, err) => {
         console.log(methodname,':',error)
       }
       notification['error']({
-        message: 'Ошибка',
+        message: 'Error',
         description: errText
       });
 	  let redirect401 = localStorage.getItem('redirect401')
@@ -40,7 +40,7 @@ export const apishka = (type, data, methodname, cb, err) => {
         error.response.status === 401 &&
         window.location.pathname !== redirect401
       ) {
-        window.location.replace(redirect401);
+        //window.location.replace(redirect401);
       }
   });
 }

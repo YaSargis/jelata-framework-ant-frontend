@@ -9,7 +9,7 @@ import {
   Input, DatePicker, Upload,
   Modal, Progress, Icon,
   Tooltip, AutoComplete, TimePicker,
-  Button, List, Avatar, InputNumber
+  Button, List, Avatar, InputNumber, Rate 
 } from 'antd';
 const { Content } = Layout;
 
@@ -17,7 +17,6 @@ import ColorPicker from './components/colorpicker';
 import TextEditor from './components/text-editor';
 
 //import locale from 'antd/es/date-picker/locale/ru_RU';
-
 import { api } from 'src/defaults';
 
 import ActionsBlock from 'src/pages/layout/actions';
@@ -178,9 +177,23 @@ const GetOne = ({
             </Form.Item>
           );
           break;
+        case 'rate':
+          return (
+            <Form.Item key={item.key} label={item.title}>
+				<Rate 
+					allowHalf 
+					defaultValue={data[item.key] === null ? 0 : data[item.key]}
+					onChange={event => {
+					
+						onChangeData(event, item);
+					}}
+				/> 
+            </Form.Item>
+          );
+          break; 
         case 'tags':
           return (
-            <Form.Item key='d4' label={item.title}>
+            <Form.Item key={item.key} label={item.title}>
               <input
                 className = 'ant-input'
                 value = {data[item.key+item.key]}

@@ -26,6 +26,7 @@ const Compo = ({
   return [
     <MyHeader key='s1' title={''}>
       <Button type='dashed' icon='save' onClick={handlerSaveForm}>Save</Button>
+      <Button type='dashed' icon='arrow-left' onClick={()=>document.location.href = '/list/compos'}>go back</Button>
     </MyHeader>,
     <Spin key='s2' spinning={!ready}>
       <Content

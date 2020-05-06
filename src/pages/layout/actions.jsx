@@ -32,69 +32,66 @@ const ActionsBlock = ({
       _val = el.title,
       place_tooltip = (type !== 'table') ? 'topLeft' : 'left'; // текст на кнопку
 
-		const onAction = (el) => {
-			switch (el.type) {
-				case 'Link':
-						goLink(el)
-						break;
-				case 'LinkTo':
-						goLinkTo(el)
-						break;
-				case 'Back':
-					 goBack(el)
-					 break;
-				case 'API':
-					 onCallApi(el)
-					 break;
-				case 'Save':
-					 onSave(el)
-					 break;
-				case 'Save&Redirect':
-	 			   onSave(()=>goLink(el));
-					 //goLink(el);
-	 				 break;
-				case 'Delete':
-					 onDelete(el)
-					 break;
-				case undefined:
-					 goLink(el)
-					 break;
-		}}
+	const onAction = (el) => {
+		switch (el.type) {
+			case 'Link':
+				goLink(el)
+				break;
+			case 'LinkTo':
+				goLinkTo(el)
+				break;
+			case 'Back':
+				goBack(el)
+				break;
+			case 'API':
+				onCallApi(el)
+				break;
+			case 'Save':
+				onSave(el)
+				break;
+			case 'Save&Redirect':
+			    onSave(()=>goLink(el));
+				 //goLink(el);
+	         	break;
+			case 'Delete':
+			    onDelete(el)
+				break;
+			case undefined:
+				goLink(el)
+				break;
+	}}
 
-		const FmButton = (props) => {
-			let el = props.el
-				return (
-					<button
-						className={'fm-btn fm-btn-sm ' + el.classname}
-						size='small'
-						title={el.title}
-						onClick={()=>{
-							if (props.confirmed)
-								onAction(el)
-						}}
-
-					>
-						{ el.icon ? (men_icon[0] === 'cn') ?
-								<Icon component={MyIcons[men_icon[1]]} />
-							: <Icon type={switchIcon(el.icon)} /> : <Icon type='' />
-						}
-						{ _value }
-					</button>
-				)
-		}
-
+	const FmButton = (props) => {
+		let el = props.el
 		return (
-			<Tooltip key={'s1'+i} placement={place_tooltip} title={el.title || ''}>
-					{((el.actapiconfirm === true &&  el.type === 'API') || el.type === 'Delete')? (
-						<Popconfirm placement="bottom" title="Confirm" okText="Yes" cancelText="No" onConfirm = {()=>onAction(el)}>
-							<a style={{display:'hide'}}/>
-							<FmButton confirmed={false} el = {el} />
-						</Popconfirm>
-					) : <FmButton confirmed={true} el = {el} />
+			<button
+				className={'fm-btn fm-btn-sm ' + el.classname}
+				size='small'
+				title={el.title}
+				onClick={()=>{
+					if (props.confirmed)
+						onAction(el)
+				}}
+			>
+				{ el.icon ? (men_icon[0] === 'cn') ?
+					<Icon component={MyIcons[men_icon[1]]} />
+					: <Icon type={switchIcon(el.icon)} /> : <Icon type='' />
 				}
-
-			</Tooltip>
+				{ _value }
+			</button>
 		)
+	}
+
+	return (
+		<Tooltip key={'s1'+i} placement={place_tooltip} title={el.title || ''}>
+			{((el.actapiconfirm === true &&  el.type === 'API') || el.type === 'Delete')? (
+				<Popconfirm placement="bottom" title="Confirm" okText="Yes" cancelText="No" onConfirm = {()=>onAction(el)}>
+					<a style={{display:'hide'}}/>
+						<FmButton confirmed={false} el = {el} />
+				</Popconfirm>
+			) : <FmButton confirmed={true} el = {el} />}
+		</Tooltip>
+	)
   });
 };
 
@@ -174,30 +171,21 @@ const enhance = compose(
 
     },
     onDelete: ({ getData, data, origin, toggleLoading }) => () => {
-      toggleLoading(true); // start preloader
+      toggleLoading(true); 
       let id_title = _.filter(origin.config, o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn)[0].key;
       apishka(
-        config_one.actapitype,
-        body,
-        uri,
+        'DELETE', {
+          tablename: origin.table,
+          id: data[id_title],
+          viewid: origin.viewid ||origin.id
+        },
+        '/api/deleterow',
         (res) => {
-            if (res && res.data && res.data.message) {
-              notification['success']({
-                message: res.data.message
-              });
-            }
-            if (res && res.data && res.data._redirect) {
-              window.location.href = res.data._redirect
-            }
-            if (!config_one.isforevery) {
-              getData(data[id_key], getData);
-            } else {
-              getData(getData, {});
-            }
-          },
-          (err) => {
-            toggleLoading(false);
-          }
+          getData(getData);
+        },
+        (err) => {
+          toggleLoading(false);
+        }
       );
     },
     goBack: ({ history }) => () => {

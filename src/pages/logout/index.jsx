@@ -20,15 +20,13 @@ const enhance = compose(
     componentWillMount() {
       let { reset_app, set_loading, set_login_status } = this.props;
       set_loading(true);
-	  
-	   apishka(
+	  apishka(
         'POST',
         {}, '/auth/logout',
         (res) => {
 			set_loading(false);
 			localStorage.removeItem('sesid')
 			window.location.replace('/')
-			
         }, (err) => {
           set_loading(false);
         }

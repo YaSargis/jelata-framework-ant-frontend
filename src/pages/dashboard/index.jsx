@@ -26,7 +26,6 @@ import Error_404 from 'src/pages/error_404';
 import Chat from 'src/pages/chat';
 import _ from 'lodash';
 
-let ver = 'Version: [AIV]{version}_{date}[/AIV]';
 
 const Dashboard = ({
   isLogin, user_detail, loading, collapsed,
@@ -57,14 +56,14 @@ const Dashboard = ({
           </div>
         </Modal>
 
-				{(
-						custom_menu &&
-						custom_menu.filter((mn) => mn.menutype === 'Left Menu').length>0 &&
-						custom_menu.filter((mn) => mn.menutype === 'Left Menu')[0].menu &&
-						custom_menu.filter((mn) => mn.menutype === 'Left Menu')[0].menu.length > 0
-				)? (
-		        <Sider collapsible collapsed={collapsed} onCollapse={collapsed => set_state({ collapsed })}>
-		          {config.profile === true ? (
+		{(
+			custom_menu &&
+			custom_menu.filter((mn) => mn.menutype === 'Left Menu').length>0 &&
+			custom_menu.filter((mn) => mn.menutype === 'Left Menu')[0].menu &&
+			custom_menu.filter((mn) => mn.menutype === 'Left Menu')[0].menu.length > 0
+		)? (
+		    <Sider collapsible collapsed={collapsed} onCollapse={collapsed => set_state({ collapsed })}>
+		        {config.profile === true ? (
 		            <Row className='profile'>
 		              <Avatar size={72} shape='cyrcle' src={user_detail.photo || null} icon='user' />
 		              <Row>
@@ -92,9 +91,7 @@ const Dashboard = ({
 
 
 		        </Sider>
-					)
-					: null
-				}
+		) : null}
         <Layout>
           <Header style={{ padding: '0' }}>
             {custom_menu ? (
@@ -152,7 +149,6 @@ const Dashboard = ({
                 </Menu>
               ) : null
             ) : null}
-            <span className='version'>{ver}</span>
           </Footer>
         </Layout>
         <BackTop>

@@ -41,9 +41,11 @@ const enhance = compose(
       */
       apishka('POST', values, '/api/compo', (res) => {
         notification['success']({
-          message: 'Сохранено',
+          message: 'OK',
           description: ''
         });
+		if (qs.parse(location.search).id == '0') 
+			document.location.href = '/compo/l?id=' + res._id
       })
     }
   }),

@@ -62,8 +62,6 @@ const enhance = compose(
 			}
 			/* redirect401 */
 
-
-
 			/* login url */
 			let login_url = localStorage.getItem('login_url')
 			if (!login_url) {

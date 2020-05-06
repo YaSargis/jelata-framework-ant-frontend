@@ -20,7 +20,7 @@ const Home = ({ favorits_menu, custom_menu, handlerDeleteButton, usermenu, set_f
       key='s2'
       className='content_app'
     >
-      <h3>Избранное</h3>
+      <h3>Favorite</h3>
       { !(_.isEmpty(favorits_menu)) ? favorits_menu.map((item) => {
 
         return (
@@ -52,7 +52,7 @@ const Home = ({ favorits_menu, custom_menu, handlerDeleteButton, usermenu, set_f
                   <Link to={item.path}>
                     <Button>
                       {
-                        !(_.isEmpty(custom_menu)) ? _.find(custom_menu[0].menu, (it) => it.path === item.path) !== undefined ? _.find(custom_menu[0].menu, (it) => it.path === item.path).title : item.path : null  // Надо доделать названия кнопок из меню
+                        !(_.isEmpty(custom_menu)) ? _.find(custom_menu[0].menu, (it) => it.path === item.path) !== undefined ? _.find(custom_menu[0].menu, (it) => it.path === item.path).title : item.path : null  
                       }
                     </Button>
                   </Link>

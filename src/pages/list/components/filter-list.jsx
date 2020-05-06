@@ -43,6 +43,19 @@ const FilterList = ({
                         </Col>
                       ];
                       break;
+                    case 'date_between':
+                      return [
+                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
+                        <Col key='s2' span={24}>
+                          <input placeholder={p.title || '...'}
+                            value={filters[p.column]}
+							type='date'
+							className = 'ant-input'
+                            onChange={(event) => handlerFilters(p.column, event.target.value) }
+                          />
+                        </Col>
+                      ];
+                      break;
                     case 'multijson':
                     case 'select':
                       let s_value;
