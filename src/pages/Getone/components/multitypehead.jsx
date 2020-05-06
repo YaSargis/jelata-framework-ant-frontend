@@ -156,7 +156,7 @@ const enhance = compose(
             {
               data: data, inputs: inputs,
               config: globalConfig, val:substr,
-              id:id, ismulti:true
+              id:id, ismulti:true, substr: id || substr
             },
             config.select_api,
             (res) => {
