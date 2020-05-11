@@ -558,7 +558,10 @@ const TableComp = ({
 
     const expandRow = {
 		renderer: (row, rowIndex) => {
-			let expandAct = origin.acts.filter(x => x.type === 'Expand')[0];
+			let expandAct = origin.acts.filter(
+				x => x.type === 'Expand' &&
+				visibleCondition(listData[rowIndex], x.act_visible_condition, params.inputs)
+			)[0];
 			let inputs = {};
 			let search = {};
 
