@@ -195,7 +195,7 @@ const enhance = compose(
     }
   }),
   withHandlers({
-    onSaveRow: ({ getData, onChangeData, set_state, data, origin, global = {} }) => (
+    onSaveRow: ({ getData, onChangeData, set_state, data, origin, global = {}, compo, history, get_params }) => (
       value,
       item_config
     ) => {
@@ -230,34 +230,58 @@ const enhance = compose(
         go()
           .then(_data => {
             apishka ('POST', _data, '/api/saverow', (res) => {
-              let res_data = res.outjson;
-              if (!item_config.related) {
-                if (!data[id_title] & !res_data || item_config.updatable) {
-                  getData(data[id_title] || res_data.id, getData);
-                } else {
-                  if (res_data.id) {
-                    data[id_title] = res_data.id;
-                    data[item_config.key] = value;
-                  } else {
-                    data = res_data;
-                  }
-                  set_state({
-                    data: { ...data }
-                  });
-                }
-              } else {
-                if (item_config.updatable) {
-                  getData(data[id_title] || res_data.id, getData);
-                }
-              }
-              notification.success({
-                message: 'OK',
-                duration: 2
-              });
-              },
+				let res_data = res.outjson;
+				if (!item_config.related) {
+					if (!data[id_title] & !res_data || item_config.updatable) {
+					  getData(data[id_title] || res_data.id, getData);
+					} else {
+					  if (res_data.id) {
+						data[id_title] = res_data.id;
+						data[item_config.key] = value;
+					  } else {
+						data = res_data;
+					  }
+					  set_state({
+						data: { ...data }
+					  });
+					}
+				} else {
+					if (item_config.updatable) {
+					  getData(data[id_title] || res_data.id, getData);
+					}
+				}
+				
+				/* update compo if updatable */
+				let params = get_params()
+				let IdTitle = _.filter(
+					origin.config,
+					o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+				)[0].title
+    			if (
+					item_config.updatable && compo && (
+						data[id_title] === params.inputs[IdTitle] ||
+						data[id_title] === null ||
+						data[id_title] === undefined
+					)
+				) {
+					let search_updater = '___hashhhh___=0.11'
+					if (location.search.indexOf('?') === -1)
+						search_updater = '?' + search_updater
+					else
+						search_updater = '&' + search_updater
+					history.push(location.pathname + location.search + search_updater)
+				}
+				/* update compo if updatable */		
+
+				
+				notification.success({
+					message: 'OK',
+					duration: 2
+				});
+            },
               (err) => {}
             )
-          })
+		  })
           .catch(err => {
             if (err)
               notification.error({
@@ -409,7 +433,7 @@ const enhance = compose(
 
       }, (err) => {})
     },
-    onSave: ({ data, set_state, global, origin, getData }) => (callback = null) => {
+    onSave: ({ data, set_state, global, origin, getData, compo,  get_params, history  }) => (callback = null) => {
       set_state({
         loading: true
       });
@@ -423,8 +447,32 @@ const enhance = compose(
         relationobj: global.relationobj
       }, '/api/savestate', (res) => {
         let res_data = res.outjson;
+		
+		/* update compo if updatable */
+		let params = get_params()
+		let IdTitle = _.filter(
+			origin.config,
+			o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+		)[0].title
 
-        if (res_data.id) {
+		if (
+		    origin.config.filter((conf) => conf.updatable ).length > 0 && 
+			compo && (
+				data[id_title] == params.inputs[IdTitle] ||
+				data[id_title] === null ||
+				data[id_title] === undefined
+			)
+		) {
+			let search_updater = '___hashhhh___=0.11'
+			if (location.search.indexOf('?') === -1)
+				search_updater = '?' + search_updater
+			else
+				search_updater = '&' + search_updater
+			history.push(location.pathname + location.search + search_updater)
+		}
+		/* update compo if updatable */
+        
+		if (res_data.id) {
           data[id_title] = res_data.id;
         }
         set_state({

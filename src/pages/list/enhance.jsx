@@ -264,7 +264,7 @@ const enhance = compose(
 	}
   }),
   withHandlers({
-    onSaveRow: ({ getData, onChangeData, set_state, listData, origin, global = {} }) => (value, item_config, dataRowIndex) => {
+    onSaveRow: ({ getData, onChangeData, set_state, listData, origin, global = {}, history, compo }) => (value, item_config, dataRowIndex) => {
 
       let id_title = _.filter(origin.config, o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn)[0].key;
       let data = listData[dataRowIndex]
@@ -291,6 +291,14 @@ const enhance = compose(
               notification.success({
                 message: 'Сохранено',
               });
+			  if (item_config.updatable && compo) {
+				let search_updater = '___hashhhh___=0.11'
+				if (location.search.indexOf('?') === -1)
+					search_updater = '?' + search_updater
+				else
+					search_updater = '&' + search_updater
+				history.push(location.pathname + location.search + search_updater)
+			  }
             }
           )
         }).catch((err) => {

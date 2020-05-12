@@ -166,13 +166,13 @@ export function visibleCondition(data,visible_condition, inputs) {
         }
       }
       else if (item.operation.js === "in") {
-        if ( item.value.split(',').filter((x) => data[item.col.key] && x === data[item.col.key].toString()).length > 0) {
+        if ( item.value.split(',').filter((x) => data[item.col.key] !== null && data[item.col.key] !== undefined  && x.toString() === data[item.col.key].toString()).length > 0) {
           a = true && a
         } else {
           a = false
         }
       } else if (item.operation.js === "not in") {
-        if ( item.value.split(',').filter((x) => data[item.col.key] && x === data[item.col.key].toString()).length === 0) {
+        if ( item.value.split(',').filter((x) => data[item.col.key] !== null && data[item.col.key] !== undefined && x === data[item.col.key].toString()).length === 0) {
           a = true && a
         } else {
           a = false
