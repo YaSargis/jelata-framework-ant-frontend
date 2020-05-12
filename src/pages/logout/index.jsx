@@ -25,7 +25,8 @@ const enhance = compose(
         {}, '/auth/logout',
         (res) => {
 			set_loading(false);
-			localStorage.removeItem('sesid')
+			localStorage.clear()
+			//localStorage.removeItem('sesid')
 			window.location.replace('/')
         }, (err) => {
           set_loading(false);
