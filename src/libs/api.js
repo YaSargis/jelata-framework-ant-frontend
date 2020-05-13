@@ -5,7 +5,7 @@ import axios from 'axios';
 
 
 
-export const apishka = (type, data, methodname, cb, err) => {
+export const apishka = (type, data, methodname, cb = () => {}, err = () => {}) => {
   // all API methods call functions
   axios({
     method: type,

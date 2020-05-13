@@ -232,7 +232,7 @@ const enhance = compose(
             apishka ('POST', _data, '/api/saverow', (res) => {
 				let res_data = res.outjson;
 				if (!item_config.related) {
-					if (!data[id_title] & !res_data || item_config.updatable) {
+					if (!data[id_title] && !res_data || item_config.updatable) {
 					  if (!data[id_title]) {
 						data[id_title] = res_data.id
 					  }
