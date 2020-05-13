@@ -233,6 +233,9 @@ const enhance = compose(
 				let res_data = res.outjson;
 				if (!item_config.related) {
 					if (!data[id_title] & !res_data || item_config.updatable) {
+					  if (!data[id_title]) {
+						data[id_title] = res_data.id
+					  }
 					  getData(data[id_title] || res_data.id, getData);
 					} else {
 					  if (res_data.id) {
@@ -269,7 +272,7 @@ const enhance = compose(
 						search_updater = '?' + search_updater
 					else
 						search_updater = '&' + search_updater
-					history.push(location.pathname + location.search + search_updater)
+					history.push(location.pathname + location.search + search_updater + location.hash)
 				}
 				/* update compo if updatable */		
 
@@ -468,7 +471,7 @@ const enhance = compose(
 				search_updater = '?' + search_updater
 			else
 				search_updater = '&' + search_updater
-			history.push(location.pathname + location.search + search_updater)
+			history.push(location.pathname + location.search + search_updater + location.hash)
 		}
 		/* update compo if updatable */
         

@@ -297,7 +297,7 @@ const enhance = compose(
 					search_updater = '?' + search_updater
 				else
 					search_updater = '&' + search_updater
-				history.push(location.pathname + location.search + search_updater)
+				history.push(location.pathname + location.search + search_updater + location.hash)
 			  }
             }
           )
