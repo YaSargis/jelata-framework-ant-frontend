@@ -698,7 +698,7 @@ const GetOne = ({
             <Form.Item key='2t' label={item.title}>
               <AceEditor
                 mode='python'
-                value={data[item.key]}
+                value={data[item.key] || ''}
                 onChange={event => onChangeData(event, item)}
                 fontSize={14}
                 showPrintMargin={true}
