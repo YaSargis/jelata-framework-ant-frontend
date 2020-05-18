@@ -725,6 +725,16 @@ const GetOne = ({
               />
             </Form.Item>
           );
+        case 'multidate':
+          return <Form.Item key='multidate' label={item.title}>
+              <MultiDate
+                config={item}
+                data={data}
+                onChangeInput={onChangeInput}
+                onChangeData={onChangeData}
+                origin={origin}
+              />
+          </Form.Item>  
         default:
           return (
             <Form.Item key='d22' label={item.title}>
@@ -777,7 +787,7 @@ const GetOne = ({
       activeKey={localChangeCollapse ? localActiveKey : collapseAll ? [] : ['1']}
       onChange={onChangeCollapse}
     >
-      <Panel header={(origin.title || '').toUpperCase()} key='1'>
+      <Panel className = {origin.classname || ''} header={(origin.title || '').toUpperCase()} key='1'>
         <h3>{params.inputs._sub_title}</h3>
         {loading ? (
           <Spin key='sk' spinning={true} tip='Loading...'>
