@@ -122,7 +122,7 @@ const Dashboard = ({
               <Route path='/chat' component={Chat} exact />
               <Route component={Error_404} />
             </Switch>
-            {config.chat === true ? (
+            {(localStorage.getItem('ischat') === true || localStorage.getItem('ischat') === 'true') ? (
               <Link to='/chat'>
                 <Icon
                   className='dashboard__icon-chat'

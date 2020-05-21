@@ -24,9 +24,11 @@ const enhance = compose(
     getData: ({ getMenu, set_settings, isLogin, set_login_status }) => () => {
       let root_spin = document.getElementById('spin_app_root');
       apishka( 'GET', {}, '/api/menus', (res) => {
+
           getMenu({data:res});
           localStorage.setItem('usersettings', JSON.stringify(res.outjson.userdetail.usersettings))
           localStorage.setItem('homepage', res.outjson.homepage)
+          localStorage.setItem('ischat', res.outjson.ischat)
           localStorage.setItem('redirect401', res.outjson.redirect401)
           localStorage.setItem('login_url', res.outjson.login_url)
           root_spin.setAttribute('style', 'display: none;');
