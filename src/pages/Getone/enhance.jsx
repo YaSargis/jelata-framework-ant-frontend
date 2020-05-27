@@ -10,12 +10,12 @@ import qs from 'query-string';
 
 import { apishka } from 'src/libs/api';
 
-import { toggleLoading } from 'src/redux/actions/helpers';
+//import { toggleLoading } from 'src/redux/actions/helpers';
 
 let wss = []; // ws array
 
 const enhance = compose(
-  connect(
+  /*onnect(
     state => ({
       user_detail: state.user.user_detail,
       loading: true
@@ -23,7 +23,7 @@ const enhance = compose(
     dispatch => ({
       toggleLoading: status => dispatch(toggleLoading(status))
     })
-  ),
+  ),*/
   withStateHandlers(
     ({
       inState = {
@@ -65,6 +65,11 @@ const enhance = compose(
       }
       return { ...params };
     },
+		setLoading:({loading, set_state}) => (loadstatus) => {
+				set_state({
+		       loading: loadstatus
+		    });
+		},
     onChangeData: ({ set_state, data = {} }) => (event, item_config) => {
       let value = event,
         _data,
@@ -99,7 +104,7 @@ const enhance = compose(
     }
   }),
   withHandlers({
-    getData: ({ get_params, toggleLoading, origin, set_state, compo }) => (id, getData) => {
+    getData: ({ get_params, origin, set_state, compo, setLoading }) => (id, getData) => {
       let params = get_params();
 
       if (id) {
@@ -115,10 +120,10 @@ const enhance = compose(
         {inputs: params.inputs},
         `/schema/getone?path=${params.id_page}`,
         (res) => {
-		  if (!compo && !params.inputs._doctitle_)
-			document.title = res.title;
-		  else if (params.inputs._doctitle_)
-			document.title = params.inputs._doctitle_;
+				  if (!compo && !params.inputs._doctitle_)
+					document.title = res.title;
+				  else if (params.inputs._doctitle_)
+					document.title = params.inputs._doctitle_;
 
           let _r = res,
             s_parsed = qs.parse(location.search),
@@ -187,9 +192,9 @@ const enhance = compose(
             data: { ...res.data[0] }, origin: { ...res },
             global: { ...data }, loading: false
           });
-          toggleLoading(false);
+          setLoading(false);
         },
-        (err) => {toggleLoading(false);}
+        (err) => {setLoading(false);}
 
       )
     }
@@ -253,7 +258,7 @@ const enhance = compose(
 					  getData(data[id_title] || res_data.id, getData);
 					}
 				}
-				
+
 				/* update compo if updatable */
 				let params = get_params()
 				let IdTitle = _.filter(
@@ -274,9 +279,9 @@ const enhance = compose(
 						search_updater = '&' + search_updater
 					history.push(location.pathname + location.search + search_updater + location.hash)
 				}
-				/* update compo if updatable */		
+				/* update compo if updatable */
 
-				
+
 				notification.success({
 					message: 'OK',
 					duration: 2
@@ -436,10 +441,9 @@ const enhance = compose(
 
       }, (err) => {})
     },
-    onSave: ({ data, set_state, global, origin, getData, compo,  get_params, history  }) => (callback = null) => {
-      set_state({
-        loading: true
-      });
+
+    onSave: ({ data, set_state, global, origin, getData, compo,  get_params, history, setLoading  }) => (callback = null) => {
+      setLoading(true)
       let id_title = _.filter(
         origin.config,
         o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
@@ -450,7 +454,7 @@ const enhance = compose(
         relationobj: global.relationobj
       }, '/api/savestate', (res) => {
         let res_data = res.outjson;
-		
+
 		/* update compo if updatable */
 		let params = get_params()
 		let IdTitle = _.filter(
@@ -459,7 +463,7 @@ const enhance = compose(
 		)[0].title
 
 		if (
-		    origin.config.filter((conf) => conf.updatable ).length > 0 && 
+		    origin.config.filter((conf) => conf.updatable ).length > 0 &&
 			compo && (
 				data[id_title] == params.inputs[IdTitle] ||
 				data[id_title] === null ||
@@ -474,7 +478,7 @@ const enhance = compose(
 			history.push(location.pathname + location.search + search_updater + location.hash)
 		}
 		/* update compo if updatable */
-        
+
 		if (res_data.id) {
           data[id_title] = res_data.id;
         }
@@ -483,7 +487,7 @@ const enhance = compose(
           loading: false
         });
         notification.success({
-          message: 'Сохранено'
+          message: 'Ok'
         });
         getData(data[id_title] || res_data.id, getData);
         if (callback && typeof(callback) === 'function') {

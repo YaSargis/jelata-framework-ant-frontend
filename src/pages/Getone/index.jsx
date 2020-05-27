@@ -9,7 +9,7 @@ import {
   Input, DatePicker, Upload,
   Modal, Progress, Icon,
   Tooltip, AutoComplete, TimePicker,
-  Button, List, Avatar, InputNumber, Rate 
+  Button, List, Avatar, InputNumber, Rate
 } from 'antd';
 const { Content } = Layout;
 
@@ -45,7 +45,7 @@ const GetOne = ({
   previewFile = false, collapseAll, localActiveKey,
   localChangeCollapse, compo = false, loading = true,
   data = {}, origin = {}, handlerAutoComplete, onRemoveFile,
-  visibleModal = false
+  visibleModal = false, setLoading
 }) => {
   let { config = {} } = origin,
     params = get_params(),
@@ -116,7 +116,6 @@ const GetOne = ({
                 disabled={item.read_only || false}
                 value={data[item.key] ? moment(data[item.key], 'DD.MM.YYYY') : null}
                 onChange={(f, ev) => onChangeInput(ev, item)}
-
                 format='DD.MM.YYYY'
               />
             </Form.Item>
@@ -158,7 +157,6 @@ const GetOne = ({
                 disabled={item.read_only || false}
                 value={data[item.key] ? moment(data[item.key], 'DD.MM.YYYY HH:mm') : null}
                 onChange={(f, ev) => onChangeInput(ev, item)}
-
                 format='DD.MM.YYYY HH:mm'
               />
             </Form.Item>
@@ -180,17 +178,17 @@ const GetOne = ({
         case 'rate':
           return (
             <Form.Item key={item.key} label={item.title}>
-				<Rate 
-					allowHalf 
+				<Rate
+					allowHalf
 					defaultValue={data[item.key] === null ? 0 : data[item.key]}
 					onChange={event => {
-					
+
 						onChangeData(event, item);
 					}}
-				/> 
+				/>
             </Form.Item>
           );
-          break; 
+          break;
         case 'tags':
           return (
             <Form.Item key={item.key} label={item.title}>
@@ -264,12 +262,9 @@ const GetOne = ({
           data[item.key]
             ? _.forEach(data[item.key], (file, file_index, files) => {
                 fileList.push({
-                  row: item,
-                  uid: '-1',
-                  name: file.filename,
-                  status: 'done',
-                  file_url: file.uri,
-                  url: api._url + file.uri
+                  row: item, uid: '-1',
+                  name: file.filename, status: 'done',
+                  file_url: file.uri, url: api._url + file.uri
                 });
               })
             : [];
@@ -336,8 +331,7 @@ const GetOne = ({
                         <div className='getone__filelist-buttons'>
                           <Tooltip title='Download' placement='topLeft'>
                             <Button
-                              icon='download'
-                              size='small'
+                              icon='download' size='small'
                               shape='circle'
                               style={{ border: '1px solid grey' }}
                               onClick={() => window.open(api._url + file.uri)}
@@ -345,8 +339,7 @@ const GetOne = ({
                           </Tooltip>
                           <Tooltip title='Delete' placement='topLeft'>
                             <Button
-                              icon='delete'
-                              size='small'
+                              icon='delete' size='small'
                               shape='circle'
                               style={{ border: '1px solid grey', backgroundColor: 'crimson' }}
                               onClick={() => onRemoveFile(data[item.key], file.uri, item)}
@@ -455,18 +448,14 @@ const GetOne = ({
                           <div className='getone__imageslist-buttons'>
                             <Tooltip title='Show' placement='topLeft'>
                               <Button
-                                icon='eye'
-                                size='small'
-                                shape='circle'
+                                icon='eye' size='small' shape='circle'
                                 style={{ border: '1px solid grey' }}
                                 onClick={() => window.open(api._url + file.uri)}
                               />
                             </Tooltip>
                             <Tooltip title='Slider' placement='topLeft'>
                               <Button
-                                icon='picture'
-                                size='small'
-                                shape='circle'
+                                icon='picture' size='small' shape='circle'
                                 style={{ border: '1px solid grey', background: 'GreenYellow' }}
                                 onClick={() => {
                                   set_state({ visibleModal: true });
@@ -484,8 +473,7 @@ const GetOne = ({
                   : null}
               </div>
               <Modal
-                width={1300}
-                visible={visibleModal}
+                width={1300} visible={visibleModal}
                 onCancel={() => set_state({ visibleModal: false })}
                 footer={null}
               >
@@ -494,8 +482,7 @@ const GetOne = ({
                   arrows={true}
                   nextArrow={<CustomArrowNext />}
                   prevArrow={<CustomArrowPrev />}
-                  infinite={true}
-                  speed={500}
+                  infinite={true} speed={500}
                   slidesToShow={1}
                   slidesToScroll={1}
                   initialSlide={initIndex}
@@ -513,10 +500,8 @@ const GetOne = ({
           return (
             <Form.Item key='5.b' label={item.title}>
               <Select
-                name={Configer.nanoid(5)}
-                config={item}
-                data={data}
-                inputs={params.inputs}
+                name={Configer.nanoid(5)} config={item}
+                data={data} inputs={params.inputs}
                 onChangeInput={onChangeInput}
                 location={location}
                 globalConfig={config}
@@ -530,8 +515,7 @@ const GetOne = ({
             <Form.Item key='12.b' label={item.title}>
               <MultiSelect
                 name={Configer.nanoid(5)}
-                config={item}
-                data={data}
+                config={item} data={data}
                 inputs={params.inputs}
                 onChangeInput={onChangeInput}
                 location={location}
@@ -545,8 +529,7 @@ const GetOne = ({
             <Form.Item key={item.key} label={item.title}>
               <Typeahead
                 name={Configer.nanoid(5)}
-                config={item}
-                data={data}
+                config={item} data={data}
                 inputs={params.inputs}
                 onChangeInput={onChangeInput}
                 location={location}
@@ -561,8 +544,7 @@ const GetOne = ({
             <Form.Item key='7.b' label={item.title}>
               <MultiTypehead
                 name={Configer.nanoid(5)}
-                config={item}
-                data={data}
+                config={item} data={data}
                 inputs={params.inputs}
                 onChangeInput={onChangeInput}
                 location={location}
@@ -629,9 +611,7 @@ const GetOne = ({
             <Form.Item key='24c' label={item.title}>
               <div
                 style={{
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: '50%',
+                  width: '30px', height: '30px', borderRadius: '50%',
                   backgroundColor: `${data[item.key]}`,
                   border: '2px solid grey'
                 }}
@@ -718,8 +698,7 @@ const GetOne = ({
           return (
             <Form.Item key='phone'>
               <InputMask
-                mask='+9 (999) 999-99-99'
-                value={data[item.key]}
+                mask='+9 (999) 999-99-99' value={data[item.key]}
                 onChange={e => onChangeData(e)}
                 onBlur={e => onChangeInput(e)}
               />
@@ -728,13 +707,12 @@ const GetOne = ({
         case 'multidate':
           return <Form.Item key='multidate' label={item.title}>
               <MultiDate
-                config={item}
-                data={data}
+                config={item} data={data}
                 onChangeInput={onChangeInput}
                 onChangeData={onChangeData}
                 origin={origin}
               />
-          </Form.Item>  
+          </Form.Item>
         default:
           return (
             <Form.Item key='d22' label={item.title}>
@@ -766,14 +744,12 @@ const GetOne = ({
           </Col>
           <Col span={24}>
             <ActionsBlock
-              actions={origin.acts}
-              origin={origin}
-              data={data}
-              params={params}
-              history={history}
-              location={location}
-              getData={getData}
-              onSave={onSave}
+              actions={origin.acts} origin={origin}
+              data={data} params={params}
+              history={history} location={location}
+              getData={getData} onSave={onSave}
+							setLoading = {setLoading}
+
             />
           </Col>
         </Row>

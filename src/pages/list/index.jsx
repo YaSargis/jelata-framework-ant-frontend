@@ -57,38 +57,36 @@ const TableComp = ({
     function showTotal(total) {
       return allProps.isfoundcount ? `count: ${total}` : '';
     }
-    let filter_show = _.isArray(allProps.filters)? 
+    let filter_show = _.isArray(allProps.filters)?
 		!_.isEmpty(allProps.filters)? true: false
       : false;
     // -----------------------------
     let pagin = f => (
         <Row >
-			<Col span={20}>
-				{allProps.pagination ? (
-					<Pagination
-					  pageSizeOptions={['10', '20', '30', '40', '100']}
-					  current={pagination.pagenum} pageSize={pagination.pagesize}
-					  total={pagination.foundcount} showSizeChanger={allProps.ispagesize}
-					  size='small' showTotal={showTotal}
-					  onChange={handlerPaginationPage} onShowSizeChange={handlerPaginationPage}
-					/>
-				) : null}
-			</Col>
-			<Col span={4}>
+					<Col span={20}>
+						{allProps.pagination ? (
+							<Pagination
+							  pageSizeOptions={['10', '20', '30', '40', '100']}
+							  current={pagination.pagenum} pageSize={pagination.pagesize}
+							  total={pagination.foundcount} showSizeChanger={allProps.ispagesize}
+							  size='small' showTotal={showTotal}
+							  onChange={handlerPaginationPage} onShowSizeChange={handlerPaginationPage}
+							/>
+						) : null}
+					</Col>
+					<Col span={4}>
 			<Button
-				type='dashed'
-				style={{ float: 'right' }}
-				icon='filter'
-				onClick={() => changeFilter(!filter)}
+				type='dashed' style={{ float: 'right' }}
+				icon='filter' onClick={() => changeFilter(!filter)}
 			 />
 			 <FilterList
-				getData={getData} allProps={allProps} path={location.pathname}
-				filter={filter} changeFilter={changeFilter} filters={filters}
-				changeFilters={changeFilters} listConfig={listConfig}
-				listColumns={listColumns} changeLoading={changeLoading}
-				arr_hide={arr_hide} handlerGetTable={handlerGetTable}
-				changeTS={changeTS} basicConfig={basicConfig}
-				pagination = {pagination}	changePagination = {changePagination}
+					getData={getData} allProps={allProps} path={location.pathname}
+					filter={filter} changeFilter={changeFilter} filters={filters}
+					changeFilters={changeFilters} listConfig={listConfig}
+					listColumns={listColumns} changeLoading={changeLoading}
+					arr_hide={arr_hide} handlerGetTable={handlerGetTable}
+					changeTS={changeTS} basicConfig={basicConfig}
+					pagination = {pagination}	changePagination = {changePagination}
 			 />
 			</Col>
 		</Row>
@@ -129,7 +127,7 @@ const TableComp = ({
 			}
         }
         let classname = item.classname + ' ' + isEditableClass(item.editable)
-		columns2.push({
+				columns2.push({
             dataField: item.key, text: item.title, title: () => item.title,
             events: {
                 onDoubleClick: (e, column, columnIndex, row, rowIndex) => {
@@ -149,19 +147,15 @@ const TableComp = ({
 			headerTitle: true,
 			editable: item.editable,
 			style: {
-                maxWidth: item.width,
-                minWidth: item.width,
-                  //border: '1px solid #c8c8c8'
-            },
+           maxWidth: item.width, minWidth: item.width,
+      },
 			searchable: true,
 			headerStyle: {
-                width: item.width, maxWidth: item.width,
-                minWidth: item.width,
-                  //border: '1px solid #c8c8c8'
-            },
-            classes: item.col === '__actions__'? 'tab_actions' : classname ,
-            headerClasses: item.col === '__actions__'?
-				'tab_actions ant-table-header-column ant-table-column-has-actions'
+					width: item.width, maxWidth: item.width, minWidth: item.width,
+      },
+      classes: item.col === '__actions__'? 'tab_actions' : classname ,
+      headerClasses: item.col === '__actions__'?
+						'tab_actions ant-table-header-column ant-table-column-has-actions'
 				: 'ant-table-header-column ant-table-column-has-actions',
             sort: isorderby,
             sortCaret: (order, column) => {
@@ -205,7 +199,7 @@ const TableComp = ({
             let colValItem = listData[rowIndex];
             let colVal = colValItem[column.dataField];
 
-            switch (item.type) {
+      switch (item.type) {
 				case 'text':
 				case 'number':
 				case 'password':
@@ -396,7 +390,7 @@ const TableComp = ({
 					);
 				} else if (config.type === 'color' || config.type === 'colorpicker') {
 					newItem[k] = <div style={{ width: 20, height: 20, backgroundColor: value }} />;
-				} else if (config.type === 'select') {
+				} else if (config.type === 'select' || config.type === 'typehead') {
 					if (
 						config.relation && config.relationcolums &&
 						config.relationcolums.length > 0 &&
@@ -488,19 +482,15 @@ const TableComp = ({
 							//JSON.stringify()
 							<span>{JSON.stringify(value)}</span>
 						  ) : (
-							value
-							  .toString()
-							  .split('\n')
-							  .map((it, key) => {
+							value.toString().split('\n').map((it, key) => {
 								return (
-								  <span key={key}>
-									{it}
-									<br />
+								  <span key={key}> {it}
+										<br />
 								  </span>
 								);
-							  })
-						  )
-						) : (
+					    })
+					   )
+					 ) : (
 						  ''
 						)}
 					  </div>
@@ -515,7 +505,7 @@ const TableComp = ({
 			  data={item || {}} params={paramS}
 			  history={history} location={location}
 			  getData={() => getData(getData, filters)}
-			  type='table' checked={checked}
+			  type='table' checked={checked} setLoading = {changeLoading}
 			/>
 		);
 		newItem['id'] = ind;
@@ -575,20 +565,19 @@ const TableComp = ({
 					  return (
 						<div>
 						  <List
-							compo={true} location={search}
-							path={expandAct.act.split('/')[2]}
-							id_page={expandAct.act.split('/')[2]}
+								compo={true} location={search} history={history}
+								path={expandAct.act.split('/')[2]}
+								id_page={expandAct.act.split('/')[2]}
 						  />
 						</div>
 					  );
 					case 'getone':
 					  return (
 						<div>
-						  tabForm
 						  <Getone
-							compo={true} location={search}
-							path={expandAct.act.split('/')[2]}
-							id_page={expandAct.act.split('/')[2]}
+								compo={true} location={search} history={history}
+								path={expandAct.act.split('/')[2]}
+								id_page={expandAct.act.split('/')[2]}
 						  />
 						</div>
 					  );
@@ -634,7 +623,7 @@ const TableComp = ({
               origin={origin} data={listData}
               params={params} history={history}
               location={location} getData={getData}
-							checked={checked}
+							checked={checked} setLoading = {changeLoading}
             />
           ) : null}
           {pagin(filter_show)}
@@ -668,24 +657,23 @@ const TableComp = ({
 												}
 											}
 										}}
-		                            >
+		                >
 										<div>
 											<div><b>{conf.title + ': '}</b></div>
 			                                <div>{el[conf.key]}</div>
 										</div>
 		                            </Col>
 								) : (
-									<Col
-		                                span={24} key={'lfa_' + ind}
-		                                style={{ borderBottom: '1px dashed #ececec' }}
-		                             >
-			                            <div className='tiles_actions'>{el[conf.key]}</div>
-		                            </Col>
+										<Col span={24} key={'lfa_' + ind}
+			                   style={{ borderBottom: '1px dashed #ececec' }}
+			              >
+				            		<div className='tiles_actions'>{el[conf.key]}</div>
+			              </Col>
 								)
 							}
 
 						</div>
-                    ) : null;})}
+          ) : null;})}
                 </Col>
              </Card>
         );})}
@@ -733,6 +721,7 @@ const TableComp = ({
                   data={listData} params={params}
                   history={history} location={location}
                   getData={getData} checked={checked}
+									setLoading = {changeLoading}
                 />
               </MyHeader>
             )}
@@ -773,4 +762,5 @@ const TableComp = ({
     );
 };
 
-export default enhance(withRouter(TableComp));
+export default enhance(TableComp);
+	//withRouter(TableComp));

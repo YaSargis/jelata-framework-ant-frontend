@@ -17,7 +17,7 @@ import Logout from 'src/pages/logout';
 //import projectSettings from 'src/pages/projectSettings';
 
 import List from 'src/pages/list';
-import Compo from 'src/pages/compo';
+//import Compo from 'src/pages/compo';
 import Composition from 'src/pages/composition';
 import Trees from 'src/pages/trees';
 import Report from 'src/pages/report';
@@ -114,7 +114,6 @@ const Dashboard = ({
               <Route path='/getone/:id_page' component={GetOne} exact />
               <Route path='/list/:id' component={List} exact />
               <Route path='/tiles/:id' component={List} exact />
-              <Route path='/compo/:id' component={Compo} exact />
               <Route path='/composition/:id' component={Composition} exact />
               <Route path='/trees/:id' component={Trees} exact />
               <Route path='/report/:id' component={Report} />

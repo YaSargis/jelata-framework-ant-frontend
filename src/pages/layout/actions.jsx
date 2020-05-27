@@ -13,12 +13,16 @@ import { visibleCondition, switchIcon, QueryBuilder, QueryBuilder2, bodyBuilder 
 import { PostMessage, Delete, Get, Put, apishka } from 'src/libs/api';
 import { MyIcons } from 'src/libs/icons';
 
-import { toggleLoading } from 'src/redux/actions/helpers';
+import Getone from 'src/pages/Getone';
+import List from 'src/pages/list';
+
+//import { toggleLoading } from 'src/redux/actions/helpers';
 
 const ActionsBlock = ({
   actions, data, params,
   loading, type = 'form', checked,
-  onSave, goBack, goLink,goLinkTo, onDelete, onCallApi, popup, calendar
+  onSave, goBack, goLink,goLinkTo, onDelete,
+	onCallApi, popup, calendar, onModal//, toggleLoading
 }) => {
   if(calendar) type = 'table';
   let _actions = _.filter(actions, x => {
@@ -30,7 +34,7 @@ const ActionsBlock = ({
     let men_icon = el.icon ? switchIcon(el.icon).split('_') : '',
       _value = (type !== 'table') ? <span>{el.title}</span> : null,
       _val = el.title,
-      place_tooltip = (type !== 'table') ? 'topLeft' : 'left'; // текст на кнопку
+      place_tooltip = (type !== 'table') ? 'topLeft' : 'left';
 
 	const onAction = (el) => {
 		switch (el.type) {
@@ -50,11 +54,14 @@ const ActionsBlock = ({
 				onSave(el)
 				break;
 			case 'Save&Redirect':
-			    onSave(()=>goLink(el));
+			  onSave(()=>goLink(el));
 				 //goLink(el);
-	         	break;
+	      break;
 			case 'Delete':
-			    onDelete(el)
+			  onDelete(el)
+				break;
+			case 'Modal':
+			  onModal(el)
 				break;
 			case undefined:
 				goLink(el)
@@ -96,14 +103,14 @@ const ActionsBlock = ({
 };
 
 const enhance = compose(
-  connect(
+  /*connect(
     state => ({
       loading: state.helpers.loading
     }),
     dispatch => ({
       toggleLoading: (status) => dispatch(toggleLoading(status)),
     })
-  ),
+  ),*/
   withHandlers({
 
   }),
@@ -126,8 +133,11 @@ const enhance = compose(
       };
       window.open(el.act + url);
     },
-    onCallApi: ({  getData, origin = {}, data, location, toggleLoading, params, checked }) => (config_one) => {
-      toggleLoading(true); 
+    onCallApi: ({
+				getData, origin = {}, data, location,
+				params, checked, setLoading
+		}) => (config_one) => {
+      setLoading(true);
       let uri = config_one.act;
       function call() {
         let body = {}
@@ -138,9 +148,7 @@ const enhance = compose(
         }
         let id_key = origin.config.filter((item) => item.col.toUpperCase() === 'ID' && !item.fn && !item.related )[0].key
         apishka(
-          config_one.actapitype,
-          body,
-          uri,
+          config_one.actapitype, body, uri,
           (res) => {
             if (res && res.message) {
               notification['success']({
@@ -157,7 +165,7 @@ const enhance = compose(
             }
           },
           (err) => {
-            toggleLoading(false);
+            setLoading(false);
           }
         );
 	  }
@@ -167,11 +175,11 @@ const enhance = compose(
         // (el, itm,  config, inputs, history, getData, data) => {
         //MDLP_API(config_one)
       //}
-      else toggleLoading(false); //
+      else setLoading(false); //
 
     },
-    onDelete: ({ getData, data, origin, toggleLoading }) => () => {
-      toggleLoading(true); 
+    onDelete: ({ getData, data, origin, setLoading }) => () => {
+      setLoading(true);
       let id_title = _.filter(origin.config, o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn)[0].key;
       apishka(
         'DELETE', {
@@ -184,10 +192,82 @@ const enhance = compose(
           getData(getData);
         },
         (err) => {
-          toggleLoading(false);
+          setLoading(false);
         }
       );
     },
+		onModal: ({getData, origin, data, history}) => (act) => {
+			const typeContent = act.act.split('/')[1];
+
+			let inputs = QueryBuilder(data, act, origin.config, history);
+			let search = { search: inputs, pathname: act.act };
+
+			const ModalContent =  (typeContent, search, act) => {
+				switch (typeContent) {
+					case 'list':
+						return (
+						<div>
+							<List
+								compo={true} location={search}
+								history = {history}
+								path={act.act.split('/')[2]}
+								id_page={act.act.split('/')[2]}
+							/>
+						</div>
+						);
+					case 'tiles':
+							return (
+							<div>
+								<List
+									compo={true} location={search}
+									history = {history}
+									path={act.act.split('/')[2]}
+									id_page={act.act.split('/')[2]}
+								/>
+							</div>
+							);
+					case 'getone':
+						return (
+						<div>
+							<Getone
+								compo={true} location={search}
+								history = {history}
+								path={act.act.split('/')[2]}
+								id_page={act.act.split('/')[2]}
+							/>
+						</div>
+						);
+					default:
+						const openNotification = () => {
+						notification.open({
+							message: `type ${typeContent} not correct  `,
+							description: 'use list or getone'
+						});
+						};
+					return openNotification;
+				}
+
+			}
+			Modal.success({
+		    title: act.title,
+				width:'85%',
+		    content: (
+					<div style = {{width:'100%'}}>
+
+						{ModalContent(typeContent, search, act)}
+
+					</div>
+				)
+				,
+				okText:'Close',
+		    onOk() {
+		      console.log('OK');
+		    },
+		    onCancel() {
+		      console.log('Cancel');
+		    },
+		  })
+		},
     goBack: ({ history }) => () => {
       history.goBack();
     }
