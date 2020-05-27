@@ -128,8 +128,7 @@ const Dashboard = ({
                   title='Chat'
                   type='message'
                   style={{
-                    fontSize: 40, color: '#1890ff',
-                    position: 'fixed', bottom: 20,
+                    fontSize: 40, color: '#1890ff', position: 'fixed', bottom: 20,
                     right: 30
                   }}
                 />

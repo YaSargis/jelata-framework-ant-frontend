@@ -66,7 +66,7 @@ const enhance = compose(
     handleGlobalWS: ({ getMenu}) => () => {
       let ws = document.location.href.split('//')[1];
       ws = ws.split('/')[0];
-      ws = 'ws://' + ws + '/global_ws' 
+      ws = 'ws://' + ws + '/global_ws'
       let globalSocket = new WebSocket(ws);
       globalSocket.onopen = () => {
         globalSocket.send(JSON.stringify({}));
@@ -88,10 +88,12 @@ const enhance = compose(
           '/api/menus',
           (res) => {
             getMenu({data:res});
-			
-            localStorage.setItem('usersettings', JSON.stringify(res.outjson.userdetail.usersettings))
-            localStorage.setItem('homepage', res.outjson.homepage)
-            localStorage.setItem('ischat', res.outjson.ischat)
+
+						localStorage.setItem('usersettings', JSON.stringify(res.outjson.userdetail.usersettings))
+	          localStorage.setItem('homepage', res.outjson.homepage)
+	          localStorage.setItem('ischat', res.outjson.ischat)
+	          localStorage.setItem('redirect401', res.outjson.redirect401)
+	          localStorage.setItem('login_url', res.outjson.login_url)
           },
           (err) => {
             alert('err menus')
@@ -103,7 +105,7 @@ const enhance = compose(
     handleChatWS: ({ set_chat_id, set_unreaded_status, chatId, history, location, otherLocation, set_state }) => () => {
       let ws = document.location.href.split('//')[1];
       ws = ws.split('/')[0];
-         ws = 'ws://' + ws + '/chats' 
+         ws = 'ws://' + ws + '/chats'
       chatSocket = new WebSocket(ws);
       chatSocket.onopen = () => {
         chatSocket.send(JSON.stringify({}));
@@ -130,11 +132,11 @@ const enhance = compose(
                   <div className="notif__content">
                     <div className="notif__login">{it.login}</div>
                     <div>
-                      { 
-						it.message_text.length > 100 ?  
+                      {
+						it.message_text.length > 100 ?
 							it.message_text.split('\n').map((peace, key) => {
                                 return <span key={key}>{peace.slice(0, 100).concat('...')}<br/></span>
-                            }) : it.message_text 
+                            }) : it.message_text
 					  }
                     </div>
                   </div>
@@ -169,7 +171,7 @@ const enhance = compose(
       let { get_favorits_menu } = this.props;
       let body = document.getElementsByTagName('body')[0];
       body.classList.remove("login_bckg");
-      get_favorits_menu(); 
+      get_favorits_menu();
     },
     componentDidUpdate(prevProps){
       const { chatId, set_first_id, location, handleChatWS, set_chat_id, handleGlobalWS } = this.props;

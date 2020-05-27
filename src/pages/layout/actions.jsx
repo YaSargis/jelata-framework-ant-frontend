@@ -196,10 +196,13 @@ const enhance = compose(
         }
       );
     },
-		onModal: ({getData, origin, data, history}) => (act) => {
+		onModal: ({getData, origin, data, location, history}) => (act) => {
 			const typeContent = act.act.split('/')[1];
-
 			let inputs = QueryBuilder(data, act, origin.config, history);
+
+			if(!act.isforevery)
+        inputs = QueryBuilder2(data, act, origin.config, location ? qs.parse(location.search) : {});
+
 			let search = { search: inputs, pathname: act.act };
 
 			const ModalContent =  (typeContent, search, act) => {
@@ -208,10 +211,8 @@ const enhance = compose(
 						return (
 						<div>
 							<List
-								compo={true} location={search}
-								history = {history}
-								path={act.act.split('/')[2]}
-								id_page={act.act.split('/')[2]}
+								compo={true} location={search} history = {history}
+								path={act.act.split('/')[2]} id_page={act.act.split('/')[2]}
 							/>
 						</div>
 						);
@@ -219,10 +220,8 @@ const enhance = compose(
 							return (
 							<div>
 								<List
-									compo={true} location={search}
-									history = {history}
-									path={act.act.split('/')[2]}
-									id_page={act.act.split('/')[2]}
+									compo={true} location={search} history = {history}
+									path={act.act.split('/')[2]} id_page={act.act.split('/')[2]}
 								/>
 							</div>
 							);
@@ -230,10 +229,8 @@ const enhance = compose(
 						return (
 						<div>
 							<Getone
-								compo={true} location={search}
-								history = {history}
-								path={act.act.split('/')[2]}
-								id_page={act.act.split('/')[2]}
+								compo={true} location={search} history = {history}
+								path={act.act.split('/')[2]} id_page={act.act.split('/')[2]}
 							/>
 						</div>
 						);
@@ -250,6 +247,7 @@ const enhance = compose(
 			}
 			Modal.success({
 		    title: act.title,
+				okType:'dashed',
 				width:'85%',
 		    content: (
 					<div style = {{width:'100%'}}>
@@ -259,13 +257,17 @@ const enhance = compose(
 					</div>
 				)
 				,
-				okText:'Close',
-		    onOk() {
-		      console.log('OK');
-		    },
-		    onCancel() {
-		      console.log('Cancel');
-		    },
+				okText:<Icon type ='close' />,
+				onOk: () => {
+					let id_key = origin.config.filter((item) => item.col.toUpperCase() === 'ID' && !item.fn && !item.related )[0].key
+					if (!act.isforevery) {
+						getData(data[id_key], getData);
+					} else {
+						getData(getData, {});
+					}
+
+				}
+
 		  })
 		},
     goBack: ({ history }) => () => {
