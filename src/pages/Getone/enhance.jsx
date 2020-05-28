@@ -127,8 +127,16 @@ const enhance = compose(
 
           let _r = res,
             s_parsed = qs.parse(location.search),
-            rel = s_parsed.relation ? s_parsed.relation.split(',') : [],
+						rel,
             rel_obj = {};
+						if (s_parsed.relation)
+						    rel = s_parsed.relation.split(',')
+
+						if (!s_parsed.relation && params.inputs.relation)
+							 rel = params.inputs.relation.split(',')
+
+						if (!rel)
+							rel = []
 
           if (res.subscrible) {
             let ws = document.location.href.split('//')[1];
@@ -185,7 +193,7 @@ const enhance = compose(
           let data = {};
           data.viewid = _r.id;
           data.tablename = _r.table;
-          data.relation = s_parsed.relation || null;
+					data.relation = s_parsed.relation || params.inputs.relation || null;
           data.relationobj = rel_obj || {};
 
           set_state({
