@@ -21,165 +21,162 @@ const FilterList = ({
       maskStyle={{backgroundColor: 'rgba(0,0,0, 0.12)'}}
     >
       <Row key='sawad1' gutter={4}>
-          {allProps.filters ? Array.isArray(allProps.filters) ? allProps.filters.map((p, ixs)=> {
-              return <Col key={ixs + 's'} span={ parseInt(p.width) || 24}>
-                {(() => {
-                  switch (p.type) {
-                    case 'substr':
-                      return [
-                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
-                        <Col key='s2' span={24}>
-                          <Input placeholder={p.title || '...'}
-                            value={filters[p.column]}
-                            onKeyUp={(event) => {
-                              if(event.keyCode === 13) {
-                                getData(getData);
-                                changeLoading(true);
-                                changeFilter(false);
-                              }
-                            }}
-                            onChange={(event) => handlerFilters(p.column, event.target.value) }
-                          />
-                        </Col>
-                      ];
-                      break;
-                    case 'date_between':
-                      return [
-                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
-                        <Col key='s2' span={24}>
-                          <input placeholder={p.title || '...'}
-                            value={filters[p.column]}
-							type='date'
-							className = 'ant-input'
-                            onChange={(event) => handlerFilters(p.column, event.target.value) }
-                          />
-                        </Col>
-                      ];
-                      break;
-                    case 'multijson':
-                    case 'select':
-                      let s_value;
-                      if(p.type === 'multijson') {
-                        filters[p.column] ?
-                          Array.isArray(filters[p.column]) ?
-                            s_value = filters[p.column].map((x, i_c)=> x.key = i_c)
-                          : s_value = []
-                          : s_value = [];
-                      } else s_value = filters[p.column];
-                      return [
-                        <Col key='s3' span={24}><label >{p.title}</label></Col>,
-                        <Col key='s4' span={24}>
-                          <Select
-                            labelInValue={p.type === 'multijson' ? true : false}
-                            mode={ p.type === 'multijson' ? 'multiple' : 'default' }
-                            showSearch={true}
-                            value={filters[p.column]}
-                            placeholder={p.title}
-                            style={{ width: '100%' }}
-                            onFocus={()=>handlerGetTable(p)}
-                            onDeselect={(_val) => {
-                              if(p.type === 'multijson') {
-                                filters[p.column] = _.filter(s_value, o => o.key !== _val.key)
-                                handlerFilters(p.column, filters[p.column]);
-                              }
-                            }}
-                            onSelect={(_val, option) => {
-                              if(p.type === 'multijson') {
-                                if(Array.isArray(filters[p.column]))
-                                  filters[p.column].push(option.props.item);
-                                  else filters[p.column] = [option.props.item];
-                              } else filters[p.column] = _val;
-                              handlerFilters(p.column, filters[p.column]);
-                            }}
-                          >
-                            {
-                              apiData[p.title] ? Array.isArray(apiData[p.title]) ? (()=> {
-                                return apiData[p.title].map((it_m, i_arr) => {
-                                  return <Option key={i_arr} item={it_m} value={it_m.value}>{ it_m.label }</Option>
-                                })
-                              })() : null : null
-                            }
-                          </Select>
-                        </Col>
-                        ];
-                      break;
-                    case 'typehead':
-                      return [
-                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
-                        <Col key='s2' span={24}>
-                          <Input
-                            placeholder={p.title || '...'}
-                            value={filters[p.title]}
-                            onKeyUp={(event) => {
-                              if(event.keyCode === 13) {
-                                getData(getData);
-                                changeLoading(true);
-                                changeFilter(false);
-                              }
-                            }}
-                            onChange={(event) => handlerFilters(p.title, event.target.value) }
-                          />
-                        </Col>
-                      ]
-                      break;
-                    case 'period':
-                      let _dates = [],
-                          _format = 'YYYY-MM-DD';
-                      filters[p.column] ? filters[p.column].date1 ? _dates.push(moment(filters[p.column].date1, _format)) : null : null;
-                      filters[p.column] ? filters[p.column].date2 ? _dates.push(moment(filters[p.column].date2, _format)) : null : null;
-                      return [
-                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
-                        <Col key='s2' span={24}>
-                          {/*
-                            value = [start date, end date];
-                          */}
-                          <DatePicker.RangePicker
-                            value={_dates}
-                            format={_format}
-                            onKeyUp={(event) => {
-                              if(event.keyCode === 13) {
-                                getData(getData);
-                                changeLoading(true);
-                                changeFilter(false);
-                              }
-                            }}
-                            locale={locale}
-                            onChange={(momentDates, dates) => {
-                              //  docdate: {
-                              //   date1: '',
-                              //   date2: ''
-                              // }
-                              let v = {
-                                date1: dates[0],
-                                date2: dates[1],
-                              }
-                              handlerFilters(p.column, v)
-                            }}
-                          />
-                        </Col>
-                      ]
-                      break;
-                    case 'check':
-                      return [
-                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
-                        <Col key='s2' span={24}>
-                          <Tooltip placement="topLeft" title={p.title || ''}>
-                            <Checkbox
-                              checked={filters[p.column] || null}
-                              indeterminate={indeterminate}
-                              onClick={()=>{
-                                handlerTriCheck(p.column, filters[p.column])
-                              }}
-                            >{p.title}</Checkbox>
-                          </Tooltip>
-                        </Col>
-                      ];
-                      break;
-                    default:
-                      return <Col>{p.type}</Col>
-                  }})()
-                }
-              </Col>
+          {allProps.filters ? (
+								Array.isArray(allProps.filters) &&
+								allProps.filters.filter((f) => f.position === 1).length > 0
+							) ?
+							allProps.filters.filter((f) => f.position === 1).map((p, ixs)=> {
+	              return (
+									<Col key={ixs + 's'} span={ parseInt(p.width) || 24}>
+		                {(() => {
+		                  switch (p.type) {
+		                    case 'substr':
+		                      return [
+		                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
+		                        <Col key='s2' span={24}>
+		                          <Input placeholder={p.title || '...'}
+		                            value={filters[p.column]}
+		                            onKeyUp={(event) => {
+		                              if(event.keyCode === 13) {
+		                                getData(getData);
+		                                changeLoading(true);
+		                                changeFilter(false);
+		                              }
+		                            }}
+		                            onChange={(event) => handlerFilters(p.column, event.target.value) }
+		                          />
+		                        </Col>
+		                      ];
+		                      break;
+		                    case 'date_between':
+		                      return [
+		                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
+		                        <Col key='s2' span={24}>
+		                          <input placeholder={p.title || '...'}
+		                            value={filters[p.column]} type='date'
+																className = 'ant-input'
+		                            onChange={(event) => handlerFilters(p.column, event.target.value) }
+		                          />
+		                        </Col>
+		                      ];
+		                      break;
+		                    case 'multijson':
+		                    case 'select':
+		                      let s_value;
+		                      if(p.type === 'multijson') {
+		                        filters[p.column] ?
+		                          Array.isArray(filters[p.column]) ?
+		                            s_value = filters[p.column].map((x, i_c)=> x.key = i_c)
+		                          : s_value = []
+		                          : s_value = [];
+		                      } else s_value = filters[p.column];
+		                      return [
+		                        <Col key='s3' span={24}><label >{p.title}</label></Col>,
+		                        <Col key='s4' span={24}>
+		                          <Select
+		                            labelInValue={p.type === 'multijson' ? true : false}
+		                            mode={ p.type === 'multijson' ? 'multiple' : 'default' }
+		                            showSearch={true}
+		                            value={filters[p.column]} placeholder={p.title}
+		                            style={{ width: '100%' }}
+		                            onFocus={()=>handlerGetTable(p)}
+		                            onDeselect={(_val) => {
+		                              if(p.type === 'multijson') {
+		                                filters[p.column] = _.filter(s_value, o => o.key !== _val.key)
+		                                handlerFilters(p.column, filters[p.column]);
+		                              }
+		                            }}
+		                            onSelect={(_val, option) => {
+		                              if(p.type === 'multijson') {
+		                                if(Array.isArray(filters[p.column]))
+		                                  filters[p.column].push(option.props.item);
+		                                  else filters[p.column] = [option.props.item];
+		                              } else filters[p.column] = _val;
+		                              handlerFilters(p.column, filters[p.column]);
+		                            }}
+		                          >
+		                            {
+		                              apiData[p.title] ? Array.isArray(apiData[p.title]) ? (()=> {
+		                                return apiData[p.title].map((it_m, i_arr) => {
+		                                  return <Option key={i_arr} item={it_m} value={it_m.value}>{ it_m.label }</Option>
+		                                })
+		                              })() : null : null
+		                            }
+		                          </Select>
+		                        </Col>
+		                        ];
+		                      break;
+		                    case 'typehead':
+		                      return [
+		                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
+		                        <Col key='s2' span={24}>
+		                          <Input
+		                            placeholder={p.title || '...'}
+		                            value={filters[p.title]}
+		                            onKeyUp={(event) => {
+		                              if(event.keyCode === 13) {
+		                                getData(getData);
+		                                changeLoading(true);
+		                                changeFilter(false);
+		                              }
+		                            }}
+		                            onChange={(event) => handlerFilters(p.title, event.target.value) }
+		                          />
+		                        </Col>
+		                      ]
+		                      break;
+		                    case 'period':
+		                      let _dates = [],
+		                          _format = 'YYYY-MM-DD';
+		                      filters[p.column] ? filters[p.column].date1 ? _dates.push(moment(filters[p.column].date1, _format)) : null : null;
+		                      filters[p.column] ? filters[p.column].date2 ? _dates.push(moment(filters[p.column].date2, _format)) : null : null;
+		                      return [
+		                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
+		                        <Col key='s2' span={24}>
+		                          {/*
+		                            value = [start date, end date];
+		                          */}
+		                          <DatePicker.RangePicker
+		                            value={_dates} format={_format}
+		                            onKeyUp={(event) => {
+		                              if(event.keyCode === 13) {
+		                                getData(getData); changeLoading(true);
+		                                changeFilter(false);
+		                              }
+		                            }}
+		                            locale={locale}
+		                            onChange={(momentDates, dates) => {
+		                              let v = {
+		                                date1: dates[0], date2: dates[1],
+		                              }
+		                              handlerFilters(p.column, v)
+		                            }}
+		                          />
+		                        </Col>
+		                      ]
+		                      break;
+		                    case 'check':
+		                      return [
+		                        <Col key='s1' span={24}><label >{p.title}</label></Col>,
+		                        <Col key='s2' span={24}>
+		                          <Tooltip placement="topLeft" title={p.title || ''}>
+		                            <Checkbox
+		                              checked={filters[p.column] || null}
+		                              indeterminate={indeterminate}
+		                              onClick={()=>{
+		                                handlerTriCheck(p.column, filters[p.column])
+		                              }}
+		                            >{p.title}</Checkbox>
+		                          </Tooltip>
+		                        </Col>
+		                      ];
+		                      break;
+		                    default:
+		                      return <Col>{p.type}</Col>
+		                  }})()
+		                }
+	              </Col>
+							)
             }) : null : null
           }
       </Row>
@@ -188,15 +185,13 @@ const FilterList = ({
         <Button type='link' icon='check' onClick={()=>{
 					pagination.pagenum = 1
 					changePagination(pagination)
-          getData(getData);
-          changeLoading(true);
+          getData(getData); changeLoading(true);
 
           // changeFilter(false)
         }}>ok</Button>
         <Button type='link' icon='delete' onClick={()=>{
           filters = {};
-          changeFilters(filters);
-          changeLoading(true);
+          changeFilters(filters); changeLoading(true);
           // changeFilter(false)
 					pagination.pagenum = 1
 					changePagination(pagination)
@@ -207,10 +202,8 @@ const FilterList = ({
       <Row key='sawad5' gutter={4}>
         <br/>
         <List
-          size="small"
-          header={<div>SHOW/HIDE COLUMNS</div>}
-          bordered
-          dataSource={listColumns}
+          size="small" header={<div>SHOW/HIDE COLUMNS</div>}
+          bordered dataSource={listColumns}
           renderItem={item => {
             return <List.Item>
               <Checkbox
@@ -229,8 +222,6 @@ const enhance = compose(
 	withHandlers({
     handlerColumnHider: ({ basicConfig, changeTS,  path }) => (ev, item) => {
 			// userSettings from global
-
-			console.log('params', path)
 
 			let userSettings = JSON.parse(localStorage.getItem('usersettings')) || {}
 			let viewsSettings = {}
@@ -276,11 +267,10 @@ const enhance = compose(
       }
     },
     handlerGetTable: ({ listConfig, filters, apiData, changeApiData }) => (item) => {
-
-        apishka('GET', {}, '/api/gettable?id=' + item.id, (res) => {
-			apiData[item.title] = res.outjson;
-			changeApiData(apiData);
-	    })
+	     apishka('GET', {}, '/api/gettable?id=' + item.id, (res) => {
+					apiData[item.title] = res.outjson;
+					changeApiData(apiData);
+		   })
     },
 	})
 );
