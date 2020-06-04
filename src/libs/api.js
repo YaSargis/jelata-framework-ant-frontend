@@ -49,7 +49,7 @@ export const apishka = (type, data, methodname, cb = () => {}, err = () => {}) =
         error.response.status === 401 &&
         window.location.pathname !== redirect401
       ) {
-        //window.location.replace(redirect401);
+        window.location.replace(redirect401);
       }
   });
 }

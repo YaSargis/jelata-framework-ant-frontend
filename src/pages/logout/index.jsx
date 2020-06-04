@@ -5,7 +5,7 @@ import { compose, withState, withHandlers, lifecycle } from 'recompose';
 import { reset_app, set_login_status } from 'src/redux/actions/user';
 import { set_loading } from 'src/redux/actions/loader';
 
-import { Get, Post } from 'src/libs/api';
+import { apishka } from 'src/libs/api';
 
 const enhance = compose(
   connect(
