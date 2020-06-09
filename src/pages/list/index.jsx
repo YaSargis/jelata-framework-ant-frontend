@@ -294,7 +294,7 @@ const TableComp = ({
 																	data={colValItem} inputs={params.inputs}
 																	onChangeInput={e => {
 																		listData[rowIndex][column.dataField] = e; //.target.value
-																		onChangeInput(e.value, item, rowIndex);
+																		onChangeInput(e, item, rowIndex);
 																		set_state({ listData: listData });
 																	}}
 																	location={location} globalConfig={listConfig}

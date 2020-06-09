@@ -76,7 +76,7 @@ const CompositionNew = ({ history, path, compo, location, match }) => {
         {
           id_page === _id ? !loading ? values.config ? _.isArray(values.config) ? values.config.map((Item, ikf) => {
             return (
-				<Row key={ikf} gutter={8} type='flex' justify='center' align='middle'>
+				<Row key={ikf} gutter={8} type='flex' justify='center' >
 				  {Item.cols.map((x, isk) => {
 					if (
 						!values.visible_views || (

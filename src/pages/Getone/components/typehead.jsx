@@ -5,7 +5,7 @@ import qs from 'query-string';
 import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
 
-import { apishka } from 'src/libs/api';
+import { PostMessage , apishka} from 'src/libs/api';
 
 let timer = {};
 
@@ -15,7 +15,7 @@ const NoOptionsMessage = props => {
   if(loading) {
     return (
       <components.NoOptionsMessage {...props}>
-        <Spin tip={'loading'}/>
+        <Spin tip={'...'}/>
       </components.NoOptionsMessage>
     )
   } else {
@@ -83,9 +83,9 @@ const SelectBox = ({ name, onChange, onFocusApi, onFocus, data, inputs, config, 
           menuPlacement='auto'
           menuPortalTarget={document.body}
           loading={loading}
-          components={{ NoOptionsMessage, LoadingMessage: () => <div style={{textAlign: 'center'}}><Spin tip='loading' /></div> }}
+          components={{ NoOptionsMessage, LoadingMessage: () => <div style={{textAlign: 'center'}}><Spin tip='Загрузка данных' /></div> }}
           isClearable
-          placeholder={'search'}
+          placeholder={'Введите для поиска'}
           cacheOptions
           isDisabled={config.read_only || false}
           value={options[ind] || null}
@@ -108,14 +108,10 @@ const enhance = compose(
   withStateHandlers(
     ({
       inState = {
-        options: {},
-        loading: false,
-        status: false
+        options: {}, loading: false, status: false
       }
     }) => ({
-      options: inState.options,
-      loading: inState.loading,
-      status: inState.starus
+      options: inState.options, loading: inState.loading, status: inState.starus
     }),
     {
       set_state: (state) => (obj) => {
@@ -134,42 +130,33 @@ const enhance = compose(
       const getDataSelect = new Promise ((resolve, reject) => {
         timer[name] = setTimeout( () => {
           apishka(
-            'POST',
-            {
-              data: data, inputs: inputs,
-              config: globalConfig
-            },
-            config.select_api+'?substr='+(id || substr),
+            'POST', {
+              data: data, inputs: inputs, config: globalConfig
+            }, config.select_api+'?substr='+(id || substr),
             (res) => {
               let dat = _.sortBy(res.outjson, ['value']);
               resolve(dat);
-            },
-            (err) => { }
+            }, (err) => { }
           );
 
         }, substr ? 2000 : 1);
       });
 
-
       return getDataSelect.then( res => {
         if(substr) {
           set_state({
-            loading: false,
-            options: res
+            loading: false, options: res
           });
           return res;
         } else {
           set_state({
-            options: res,
-            loading: false,
-            status: true
+            options: res, loading: false, status: true
           });
         };
       });
 
     },
     onFocus: ({ data, location, set_state, config }) => (substr, id) => {
-
 
       const getDataSelect = new Promise ((resolve, reject) => {
         timer[name] = setTimeout( () => {
@@ -226,14 +213,14 @@ const enhance = compose(
   lifecycle({
     componentDidMount() {
       const { config, options, data, onFocusApi, onFocus } = this.props;
-      if(_.isEmpty(options) && data[config.key]) {
+      //if(_.isEmpty(options) && data[config.key]) {
         if(config.type === 'typehead_api') onFocusApi(null, data[config.key]); else onFocus(null, data[config.key]);
-      }
+      // }
     },
     componentDidUpdate(prevProps) {
       const {config, options, data, onFocusApi, onFocus } = this.props;
       if(data !== prevProps.data) {
-        if(data[config.key] !== prevProps.data[config.key]) { // need to refactor to one select component related of getData method
+        if(data[config.key] !== prevProps.data[config.key]) {
           if(config.type === 'typehead_api') onFocusApi(null, data[config.key]); else onFocus(null, data[config.key]);
         }
       }

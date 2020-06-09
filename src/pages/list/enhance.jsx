@@ -314,7 +314,7 @@ const enhance = compose(
   }),
   withHandlers({
     onChangeInput: ({ onSaveRow }) => (event, item, dataRowIndex) => {
-      let value = event.target ? event.target.value : event;
+      let value = (event && event.target) ? event.target.value : event;
       onSaveRow(value, item, dataRowIndex);
     },
     onChangeCollapse: ({set_state}) => (key) => {
@@ -360,7 +360,7 @@ const enhance = compose(
         match, getData, changeListColumns, changeReady, set_state,
         filters, changeFilters, path, compo, params, changeParams, pagination
       } = this.props;
-			if (nextProps) 
+			if (nextProps)
 	      if(compo) {
 	        if((params.path !== nextProps.params.path) || (this.props.location.search !== nextProps.location.search)) {
 	          params.inputs = qs.parse(nextProps.location.search);
