@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { compose, lifecycle, withHandlers, withStateHandlers, withState } from "recompose";
 import _ from 'lodash';
 import qs from 'query-string';
-import { ActsRender, Configer, saveUserSettings } from 'src/libs/methods';
+import { /*ActsRender,*/ Configer, saveUserSettings } from 'src/libs/methods';
 import { apishka } from "src/libs/api";
 import { notification } from 'antd';
 //import { set_composition_data } from 'src/redux/actions/composition';
@@ -72,7 +72,7 @@ const enhance = compose(
 	withState('ts', 'changeTS', {}//JSON.parse(localStorage.getItem("view_settings")) || {}
 	),
   withHandlers({
-    actsRender: ActsRender,
+    //actsRender: ActsRender,
     get_params: (props) => (_props) => {
       let params = {},
         _p = _props || props; // _props = nextProps or prevProps
@@ -191,7 +191,7 @@ const enhance = compose(
 			         //   	set_comp(composition)
 
 			        let arr = res.data.data.map((ex)=> {
-			              ex.key = Configer.nanoid(12)
+			              ex.key = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16))
 			              return ex;
 			        });
 			        set_state({

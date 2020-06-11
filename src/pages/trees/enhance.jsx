@@ -4,7 +4,7 @@ import qs from 'query-string';
 
 import { apishka } from 'src/libs/api';
 
-import { Configer } from 'src/libs/methods';
+// import { Configer } from 'src/libs/methods';
 
 const enhance = compose(
   withState('values', 'changeValues', {}),
@@ -63,7 +63,18 @@ const enhance = compose(
   }),
   withHandlers({
     handlerSelectMenu: ({ changeReady, history, values, location, changeView }) => (item) => {
-      let _item = Configer.searchByString(item, 'item,props,data'),
+      const searchByString = (obj, propString) => {
+          // deep search in object
+          if(!propString) return obj;
+          var prop, props = propString.split(',');
+          for (var i = 0, iLen = props.length - 1; i < iLen; i++) {
+            prop = props[i];
+            var candidate = obj[prop];
+            if(candidate) obj = candidate; else break;
+          };
+          return obj[props[i]];
+      }
+      let _item = searchByString(item, 'item,props,data'),
           _view = _.find(values.items, x => x.key === _item.key) ;
       if(location.hash !== ('#'+_view.key)) {
         changeReady(false);
@@ -90,7 +101,7 @@ const enhance = compose(
       };
       if(prevProps.location.search !== this.props.location.search) {
         this.props.getData();
-        this.props.changeReady(false);  
+        this.props.changeReady(false);
       }
     }
   })

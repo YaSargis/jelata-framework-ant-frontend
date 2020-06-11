@@ -24,7 +24,7 @@ const File_gallery = ({
       >
         {
           files.map(el => {
-            return <div key={Configer.nanoid()}>
+            return <div key={JSON.stringify(el)}>
               <img key='s1' width={350} src={api._url + el.uri}/>
             </div>
           })

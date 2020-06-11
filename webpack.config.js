@@ -60,7 +60,7 @@ const babelOptions = presets => {
 
   return opts;
 };
- 
+
 const jsLoaders = () => {
   const loaders = [
     {
@@ -94,11 +94,7 @@ const plugins = () => {
         to: path.resolve(__dirname, 'dist')
       },
       {
-        from: path.resolve(__dirname, 'static/crypto.min.js'),
-        to: path.resolve(__dirname, 'dist')
-      },
-      {
-        from: path.resolve(__dirname, 'static/cadesplugin_api.js'),
+        from: path.resolve(__dirname, 'static/user.css'),
         to: path.resolve(__dirname, 'dist')
       },
       {

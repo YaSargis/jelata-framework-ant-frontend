@@ -1,91 +1,101 @@
-import { connect } from 'react-redux';
-import { compose, lifecycle, withHandlers } from 'recompose';
+import React from 'react';
+import { compose, withHandlers, lifecycle, withState } from 'recompose';
 import _ from 'lodash';
+import { notification, Avatar, Icon } from 'antd';
 
-import { get_menu, set_login_status, get_chat_id } from 'src/redux/actions/user';
-import { set_loading } from 'src/redux/actions/loader';
-
+import { menu_creator } from 'src/libs/methods';
 import { apishka } from 'src/libs/api';
-const enhance = compose(
-  connect(
-    (state) => ({
-      isLogin: state.user.isLogin, isLoading: state.loader.isLoading,
-      state: state, custom_menu: state.user.custom_menu,
-      chatId: state.user.custom_menu
-    }),
-    dispatch => ({
-      getMenu: (data) => dispatch(get_menu(data)),
-      set_loading: (status) => dispatch(set_loading(status)),
-      set_login_status: (status) => dispatch(set_login_status(status)),
-      get_chat_id: () => dispatch(get_chat_id())
-    })
-  ),
-  withHandlers({
-    getData: ({ getMenu, set_settings, isLogin, set_login_status }) => () => {
-      let root_spin = document.getElementById('spin_app_root');
-      apishka( 'GET', {}, '/api/menus', (res) => {
+import { api } from 'src/defaults';
 
-          getMenu({data:res});
+let chatSocket;
+
+
+const enhance = compose(
+  withState('custom_menu', 'changeMenu', []), // menus array
+  withState('user_detail', 'changeUserDetail', {}), // user details
+  withState('collapsed', 'changeCollapsed', false), // preloader
+
+  withHandlers({
+    getMenu: ({ changeMenu, changeUserDetail, changeLoading }) => () => {
+      apishka( 'GET', {}, '/api/menus', (res) => {
+          changeMenu(res.outjson.menus)
+          changeUserDetail(res.outjson.userdetail)
           localStorage.setItem('usersettings', JSON.stringify(res.outjson.userdetail.usersettings))
           localStorage.setItem('homepage', res.outjson.homepage)
           localStorage.setItem('ischat', res.outjson.ischat)
           localStorage.setItem('redirect401', res.outjson.redirect401)
           localStorage.setItem('login_url', res.outjson.login_url)
-          root_spin.setAttribute('style', 'display: none;');
-        }, (err) => {
-          if (err.response && err.response.status === 401) {
-            isLogin ? set_login_status(false) : null;
-            root_spin.setAttribute('style', 'display: none;');
-          } else {
-            alert('errrr menus')
-            console.log('err menus:', err)
-          }
+
+        },
+        (err) => {
+          console.log('err menus:', err)
         }
       )
     },
+    menu_creator: menu_creator,
+    handleGlobalWS: ({ getMenu}) => () => {
+      let ws = document.location.href.split('//')[1];
+      ws = ws.split('/')[0];
+      ws = 'ws://' + ws + '/global_ws'
+      let globalSocket = new WebSocket(ws);
+      globalSocket.onopen = () => {
+        globalSocket.send(JSON.stringify({}));
+      };
+      globalSocket.onmessage = (e) => {
+        let globalData = JSON.parse(e.data)
+
+        globalData.forEach((g_item) => {
+          notification.success({
+            message:g_item.message
+          })
+          apishka(
+            'GET',  {id: g_item.id},  '/api/setsended'
+          )
+        })
+        getMenu()
+      }
+    }
   }),
   lifecycle({
-    componentDidMount() {
-      const { get_chat_id } = this.props;
+    componentDidMount(){
+      const { /*handleChatWS,*/ handleGlobalWS, getMenu} = this.props;
 
-			/* create client session */
+      /* create client session */
 			let sesid = localStorage.getItem('sesid')
 			if (!sesid) {
 				sesid = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16))
 				localStorage.setItem('sesid', sesid)
 			}
 			document.cookie = 'sesid=' + sesid
-			/* create client session */
 
 			/* redirect401 */
 			let redirect401 = localStorage.getItem('redirect401')
 			if (!redirect401) {
 				localStorage.setItem('redirect401', '/login')
 			}
-			/* redirect401 */
 
 			/* login url */
 			let login_url = localStorage.getItem('login_url')
 			if (!login_url) {
 				localStorage.setItem('login_url', '/login')
 			}
-			/* login url */
 
-      get_chat_id();
+      getMenu();
+      // handleChatWS();
+      handleGlobalWS();
     },
     componentWillMount() {
-      const { getData,  isLogin, getMenu } = this.props;
-      isLogin ? (()=>{
-        getData()
-      })() : null;
+      let body = document.getElementsByTagName('body')[0];
+      body.classList.remove("login_bckg");
     },
-    componentDidUpdate(prevProps) {
-      const { getData, custom_menu, isLogin, state } = this.props;
-      if(!prevProps.isLogin ) { 
-        isLogin ? ( ()=> {
-          getData()
-        })() : null;
+    componentDidUpdate(prevProps){
+      const { chatId, set_first_id, location, handleChatWS, set_chat_id, handleGlobalWS } = this.props;
+
+      if(prevProps.chatId !== chatId) {
+        chatSocket.close();
+        handleChatWS();
       }
+
     }
   })
 )

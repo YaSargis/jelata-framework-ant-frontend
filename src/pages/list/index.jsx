@@ -14,7 +14,7 @@ import {
 
 const { Content } = Layout;
 
-import { handlerGoLink, visibleCondition, Configer } from 'src/libs/methods';
+import { handlerGoLink, visibleCondition/*, Configer */ } from 'src/libs/methods';
 import MyHeader from 'src/pages/layout/header';
 import ActionsBlock from 'src/pages/layout/actions';
 import enhance from './enhance';
@@ -35,7 +35,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 
 const { Panel } = Collapse;
-const keyTable = Configer.nanoid();
+const keyTable = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16));
+//Configer.nanoid();
 
 const TableComp = ({
   origin = {}, history, ready, allProps, getData,
@@ -261,7 +262,14 @@ const TableComp = ({
 													case 'select_api':
 															return (
 																<Select
-																	name={Configer.nanoid(5)} config={item}
+																	name={
+                                      ([1e7]+-1e3+-4e3+-8e3+-1e11)
+                                      .replace(/[018]/g,c=>(
+                                          c^crypto.getRandomValues(
+                                            new Uint8Array(1))[0]&15 >> c/4
+                                          ).toString(16))
+                                  }
+                                  config={item}
 																	data={colValItem} inputs={params.inputs}
 																	onChangeInput={e => {
 																		listData[rowIndex][column.dataField] = e; //.target.value
@@ -276,7 +284,13 @@ const TableComp = ({
 													case 'multiselect_api':
 															return (
 																<MultiSelect
-																	name={Configer.nanoid(5)} config={item}
+                                  name={
+                                      ([1e7]+-1e3+-4e3+-8e3+-1e11)
+                                      .replace(/[018]/g,c=>(
+                                          c^crypto.getRandomValues(
+                                            new Uint8Array(1))[0]&15 >> c/4
+                                          ).toString(16))
+                                  }  config={item}
 																	data={colValItem} inputs={params.inputs}
 																	onChangeInput={e => {
 																		listData[rowIndex][column.dataField] = e; //.target.value
@@ -290,7 +304,13 @@ const TableComp = ({
 													case 'typehead_api':
 															return (
 																<Typeahead
-																	name={Configer.nanoid(5)} config={item}
+                                  name={
+                                      ([1e7]+-1e3+-4e3+-8e3+-1e11)
+                                      .replace(/[018]/g,c=>(
+                                          c^crypto.getRandomValues(
+                                            new Uint8Array(1))[0]&15 >> c/4
+                                          ).toString(16))
+                                  }  config={item}
 																	data={colValItem} inputs={params.inputs}
 																	onChangeInput={e => {
 																		listData[rowIndex][column.dataField] = e; //.target.value
@@ -305,7 +325,13 @@ const TableComp = ({
 													case 'multitypehead_api':
 															return (
 																<MultiTypehead
-																	name={Configer.nanoid(5)} config={item}
+                                  name={ 
+                                      ([1e7]+-1e3+-4e3+-8e3+-1e11)
+                                      .replace(/[018]/g,c=>(
+                                          c^crypto.getRandomValues(
+                                            new Uint8Array(1))[0]&15 >> c/4
+                                          ).toString(16))
+                                  }  config={item}
 																	data={colValItem} inputs={params.inputs}
 																	onChangeInput={e => {
 																		listData[rowIndex][column.dataField] = e; //.target.value

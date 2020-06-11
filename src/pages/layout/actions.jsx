@@ -11,7 +11,7 @@ import { Tooltip, Icon, Popconfirm, notification, Modal, Spin } from 'antd';
 import { visibleCondition, switchIcon, QueryBuilder, QueryBuilder2, bodyBuilder } from 'src/libs/methods';
 
 import { PostMessage, Delete, Get, Put, apishka } from 'src/libs/api';
-import { MyIcons } from 'src/libs/icons';
+//import { MyIcons } from 'src/libs/icons';
 
 import Getone from 'src/pages/Getone';
 import List from 'src/pages/list';
@@ -81,7 +81,7 @@ const ActionsBlock = ({
 				}}
 			>
 				{ el.icon ? (men_icon[0] === 'cn') ?
-					<Icon component={MyIcons[men_icon[1]]} />
+					<Icon component={men_icon[1]} />
 					: <Icon type={switchIcon(el.icon)} /> : <Icon type='' />
 				}
 				{ _value }

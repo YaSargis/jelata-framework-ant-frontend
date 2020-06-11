@@ -30,11 +30,12 @@ import Certificate from './components/certificate';
 import { CustomArrowNext, CustomArrowPrev } from './components/custom-arrows';
 import AceEditor from 'react-ace';
 
-import { visibleCondition, Configer } from 'src/libs/methods';
+import { visibleCondition /*Configer*/ } from 'src/libs/methods';
 import TextArea from 'antd/lib/input/TextArea';
 const { Panel } = Collapse;
 
-const keyCollapse = Configer.nanoid();
+const keyCollapse = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16))
+
 
 const GetOne = ({
   location, history, set_state,
@@ -500,7 +501,13 @@ const GetOne = ({
           return (
             <Form.Item key='5.b' label={item.title}>
               <Select
-                name={Configer.nanoid(5)} config={item}
+                name={
+                    ([1e7]+-1e3+-4e3+-8e3+-1e11)
+                    .replace(/[018]/g,c=>(
+                        c^crypto.getRandomValues(
+                          new Uint8Array(1))[0]&15 >> c/4
+                        ).toString(16))
+                }  config={item}
                 data={data} inputs={params.inputs}
                 onChangeInput={onChangeInput}
                 location={location}
@@ -514,7 +521,13 @@ const GetOne = ({
           return (
             <Form.Item key='12.b' label={item.title}>
               <MultiSelect
-                name={Configer.nanoid(5)}
+                name={
+                    ([1e7]+-1e3+-4e3+-8e3+-1e11)
+                    .replace(/[018]/g,c=>(
+                        c^crypto.getRandomValues(
+                          new Uint8Array(1))[0]&15 >> c/4
+                        ).toString(16))
+                }
                 config={item} data={data}
                 inputs={params.inputs}
                 onChangeInput={onChangeInput}
@@ -528,7 +541,13 @@ const GetOne = ({
           return (
             <Form.Item key={item.key} label={item.title}>
               <Typeahead
-                name={Configer.nanoid(5)}
+                name={
+                    ([1e7]+-1e3+-4e3+-8e3+-1e11)
+                    .replace(/[018]/g,c=>(
+                        c^crypto.getRandomValues(
+                          new Uint8Array(1))[0]&15 >> c/4
+                        ).toString(16))
+                }
                 config={item} data={data}
                 inputs={params.inputs}
                 onChangeInput={onChangeInput}
@@ -543,7 +562,13 @@ const GetOne = ({
           return (
             <Form.Item key='7.b' label={item.title}>
               <MultiTypehead
-                name={Configer.nanoid(5)}
+                name={
+                    ([1e7]+-1e3+-4e3+-8e3+-1e11)
+                    .replace(/[018]/g,c=>(
+                        c^crypto.getRandomValues(
+                          new Uint8Array(1))[0]&15 >> c/4
+                        ).toString(16))
+                }
                 config={item} data={data}
                 inputs={params.inputs}
                 onChangeInput={onChangeInput}

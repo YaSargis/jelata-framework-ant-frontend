@@ -25,4 +25,9 @@ ReactDOM.render(
   document.getElementById('container')
 );
 
+/*ReactDOM.render(
+  <App />,
+  document.getElementById('container')
+);*/
+
 if(module && module.hot) module.hot.accept()

@@ -8,20 +8,22 @@ import qs from 'query-string';
 
 import { apishka } from 'src/libs/api';
 
-
 const CompositionNew = ({ history, path, compo, location, match }) => {
 
   let [_state, setState] = useState({}), {
 			loading = false,  values = {},
-			id_page = null,  init = false,
-			btnCollapseAll = false
+			id_page = null,  // pathname
+      init = false,
+			btnCollapseAll = false,
+      inputs = {}
 	} = _state;
+
   function set_state(obj) {
     let st = {..._state}, keys = _.keys(obj);
     keys.map( k => { st[k] = obj[k] });
     setState(st);
   };
-
+  let _inputs = qs.parse(location.search);
   function getData(_id, type) {
     apishka(
       'GET', {},
@@ -31,20 +33,22 @@ const CompositionNew = ({ history, path, compo, location, match }) => {
         set_state({
           id_page: _id, loading: false,
           init: type ? true : init,
-          values: {...res.outjson}
+          values: {...res.outjson},
+          inputs: qs.parse(location.search)
         });
       },
       (err) => {}
     )
   };
-  let _id = compo ? path : match.params.id;
+  let _id = compo ? path : match.params.id; // if tree or composition in another component
 
   function collapseActivityState(){
     set_state({btnCollapseAll: !btnCollapseAll});
   }
 
   useEffect(() => {
-    if(id_page !== _id && id_page !== null) {
+    console.log('inputs', inputs,'_inputs', _inputs)
+    if((id_page !== _id && id_page !== null) /*|| (values.refresh && )*/) {
       setState({
         loading: true, values: {}
       });
@@ -72,7 +76,7 @@ const CompositionNew = ({ history, path, compo, location, match }) => {
           { !btnCollapseAll ? '+' : '-' }
         </Button>
       </div>
-      <Spin tip='Loading...' spinning={loading || false}>
+      <Spin tip='...' spinning={loading || false}>
         {
           id_page === _id ? !loading ? values.config ? _.isArray(values.config) ? values.config.map((Item, ikf) => {
             return (
