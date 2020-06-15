@@ -3,7 +3,7 @@ import { compose, withHandlers, lifecycle, withState } from 'recompose';
 import _ from 'lodash';
 import { notification, Avatar, Icon } from 'antd';
 
-import { menu_creator } from 'src/libs/methods';
+import { menu_creator, saveUserSettings } from 'src/libs/methods';
 import { apishka } from 'src/libs/api';
 import { api } from 'src/defaults';
 
@@ -54,11 +54,23 @@ const enhance = compose(
         })
         getMenu()
       }
+    },
+    menuCollapseStateSave: ({changeCollapsed}) => (collapseState) => {
+      let userSettings = JSON.parse(localStorage.getItem('usersettings')) || {views:{}}
+      userSettings['menuCollapse'] = collapseState
+      saveUserSettings(userSettings)
+      localStorage.setItem('usersettings',JSON.stringify(userSettings))
+      changeCollapsed(collapseState)
     }
+
   }),
   lifecycle({
     componentDidMount(){
-      const { /*handleChatWS,*/ handleGlobalWS, getMenu} = this.props;
+      const { changeCollapsed, handleGlobalWS, getMenu} = this.props;
+      let userSettings = JSON.parse(localStorage.getItem('usersettings'))
+      if (userSettings && userSettings.menuCollapse !== undefined) {
+          changeCollapsed(userSettings.menuCollapse)
+      }
 
       /* create client session */
 			let sesid = localStorage.getItem('sesid')

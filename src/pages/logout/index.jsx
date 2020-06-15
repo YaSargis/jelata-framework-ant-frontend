@@ -12,9 +12,7 @@ const enhance = compose(
           (res) => {
       			localStorage.clear()
       			window.location.replace('/')
-          }, (err) => {
-
-          }
+          }, (err) => {}
         )
     }
   })

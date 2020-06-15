@@ -28,13 +28,12 @@ const ActionsBlock = ({
   let _actions = _.filter(actions, x => {
     x.isforevery = x.isforevery || false;
     x.isforevery = _.isNumber(x.isforevery) ? x.isforevery === 1 ? true : false : x.isforevery;
-    if(x.isforevery === (type === 'table') && visibleCondition(data, x.act_visible_condition, params.inputs)) return x;
+    if (x.isforevery === (type === 'table') && visibleCondition(data, x.act_visible_condition, params.inputs)) return x;
   });
   return _actions.filter((act)=>act.type !== 'onLoad' &&  act.type !== 'Expand').map( (el, i) => {
-    let men_icon = el.icon ? switchIcon(el.icon).split('_') : '',
-      _value = (type !== 'table') ? <span>{el.title}</span> : null,
-      _val = el.title,
-      place_tooltip = (type !== 'table') ? 'topLeft' : 'left';
+    let _value = (type !== 'table') ? <span>{el.title}</span> : null,
+        _val = el.title,
+        place_tooltip = (type !== 'table') ? 'topLeft' : 'left';
 
 	const onAction = (el) => {
 		switch (el.type) {
@@ -80,10 +79,7 @@ const ActionsBlock = ({
 						onAction(el)
 				}}
 			>
-				{ el.icon ? (men_icon[0] === 'cn') ?
-					<Icon component={men_icon[1]} />
-					: <Icon type={switchIcon(el.icon)} /> : <Icon type='' />
-				}
+				<Icon type={el.icon} />
 				{ _value }
 			</button>
 		)

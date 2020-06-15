@@ -1,4 +1,3 @@
-import { connect } from 'react-redux';
 import React from 'react';
 import { compose, withHandlers, lifecycle, withStateHandlers } from 'recompose';
 import _ from 'lodash';

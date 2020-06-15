@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { compose, lifecycle, withHandlers, withStateHandlers, withState } from "recompose";
 import _ from 'lodash';
 import qs from 'query-string';

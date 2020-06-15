@@ -10,16 +10,12 @@ import 'src/styles/index.scss';
 import enhance from './enhance';
 
 let config = {
-  title: 'Log in',
-  login: 'Login',
-  pass: 'Password',
-  remember: {
-    visible: true,
-    title: 'Remember me',
+  title: 'Log in', login: 'Login',
+  pass: 'Password', remember: {
+    visible: true, title: 'Remember me',
   },
   forgot: {
-    visible: true,
-    title: 'Forgot the password'
+    visible: true, title: 'Forgot the password'
   }
 }
 
@@ -107,7 +103,7 @@ const LoginForm = ({
             }}>
               <span>
                 <span style={{ color: '#afb1be' }}>Or </span>
-                {/* <a href=''>Зарегистрироваться</a> */}
+                {}
               </span>
               <Button style={{ margin: '7px 0' }} size='small' type='dashed' ghost disabled={!ready} onClick={onECP}>
                 { !legacy ? 'Log in by login/password' : 'Log in by digital signature'}

@@ -3,12 +3,14 @@ import enhance from './enhance';
 import { Card, Button, Input, AutoComplete, Col } from 'antd';
 import Select from 'react-select';
 
-const Report = ({ values, params, changeInputs,
-								 inputs, selections, getSelectOptions,
-								getReportFile }) => {
+const Report = ({
+	values, params, changeInputs,
+	inputs, selections, getSelectOptions,
+	getReportFile
+}) => {
 	const { title } = values;
 	const { Option } = Select;
-	
+
   return [
     <Card key='1l'>
         <h2>{title}</h2>
@@ -36,7 +38,7 @@ const Report = ({ values, params, changeInputs,
 												defaultValue = {inputs[item.func_paramtitle]}
 												onFocus = {() => getSelectOptions(ptitle,null,item.apimethod)}
 												options={selections[ptitle]}
-											/>	
+											/>
 										</Col>
 									)
 								case "multiselect":
@@ -48,7 +50,7 @@ const Report = ({ values, params, changeInputs,
 												styles={{container: base => ({
 													...base,
 													width: '70%'
-												  }),}}												
+												  }),}}
 												onChange = {(...args) => {
 													let inp = inputs,
 														e = args[0];
@@ -60,14 +62,14 @@ const Report = ({ values, params, changeInputs,
 												devaultValue = {inputs[item.func_paramtitle]}
 												onFocus = {() => getSelectOptions(ptitle,null,item.apimethod)}
 												options={selections[ptitle]}
-											/>		
-										</div>)									
-								case "typehead":					// Надо проверить Autocomplete, когда Getone будет готов			
+											/>
+										</div>)
+								case "typehead":
 									return (
 										<div key = {item.title}>
 											<div><b>{item.ptitle}</b></div>
-											<div>	
-												<AutoComplete																							
+											<div>
+												<AutoComplete
 													onFocus={() => getSelectOptions(ptitle, null, item.apimethod)}
 													placeholder={item.ptitle}
 													filterOption={(inputValue, option) =>
@@ -87,11 +89,11 @@ const Report = ({ values, params, changeInputs,
 														return <Option key={it.id+it.label} value={it.label}>{it.label}</Option>
 													}) : null : null
 												}
-												</AutoComplete>	
+												</AutoComplete>
 											</div>
-										</div>)	
+										</div>)
 								default:
-									return ( 
+									return (
 										<div key={item.ptitle+item.id}>
 											<div><b>{item.ptitle}</b></div>
 												<Input
@@ -104,19 +106,16 @@ const Report = ({ values, params, changeInputs,
 													defaultValue={inputs[item.func_paramtitle]}
 													type = {item.typename}
 													placeholder = {item.ptitle} />
-										</div>			
-									)										
+										</div>
+									)
 								}})()}
-							</div>	
+							</div>
 						)}
 				)}
-				<Button 
-					onClick={ getReportFile }
-					style={{ marginTop: '10px'}}
-				>
-						Сформировать отчет
+				<Button onClick={ getReportFile } style={{ marginTop: '10px'}}>
+						Generate
 				</Button>
-	</Card>	
+	</Card>
   ]
 };
 

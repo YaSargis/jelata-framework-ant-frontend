@@ -21,7 +21,7 @@ import Error_404 from 'src/pages/error_404';
 
 const App = ({
   user_detail, collapsed, custom_menu,
-  menu_creator, changeCollapsed
+  menu_creator, menuCollapseStateSave
 }) => {
     return (
         <Layout className='lay' style={{ minHeight: '100vh' }}>
@@ -34,7 +34,7 @@ const App = ({
               custom_menu.filter((mn) => mn.menutype === 'Left Menu')[0].menu &&
               custom_menu.filter((mn) => mn.menutype === 'Left Menu')[0].menu.length > 0
             )? (
-              <Sider collapsible collapsed={collapsed} onCollapse={collapsed => changeCollapsed(collapsed)}>
+              <Sider collapsible collapsed={collapsed} onCollapse={collapsed => {menuCollapseStateSave(collapsed)}}>
                   {config.profile === true ? (
                       <Row className='profile'>
                           <Avatar size={72} shape='cyrcle' src={user_detail.photo || null} icon='user' />

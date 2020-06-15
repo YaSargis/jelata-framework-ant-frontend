@@ -16,35 +16,7 @@ const { SubMenu } = Menu;
 
 /* save uersettings json ( some views settings ) */
 export const saveUserSettings = (settings) => {
-
   apishka('POST', {settings: settings}, '/api/saveusersettings')
-}
-
-export const switchIcon = (icon) => {
-  let arr = [
-    { fa: 'fa fa-arrow-left', type: 'back', icon: 'arrow-left'},
-    { fa: 'fa fa-edit', icon: 'edit' },
-	{ fa: 'fa fa-plus', icon: 'plus'},
-    { fa: 'fa fa-trash', icon: 'delete'},
-    { fa: 'fa fa-times', icon: 'close'},
-    { fa: 'fa fa-pie-chart', icon: 'pie-chart'},
-    { fa: 'fa fa-download', icon: 'download'},
-    { fa: 'fa fa-eye', icon: 'eye'},
-    { fa: 'fa fa-pencil', icon: 'cn_pencil'},
-    { fa: 'fa fa-graduation-cap', icon: 'cn_graduation-cap' },
-    { fa: 'fa fa-pencil-square-o', icon: 'cn_pencil-square-o' },
-    { fa: 'fa fa-print', icon: 'printer' },
-    { fa: 'fa fa-list', icon: 'unordered-list' },
-    { fa: 'fa fa-list-alt', icon: 'cn_list-alt' },
-    {  fa: 'fa fa-check', icon: 'check' },
-    {  fa: 'fa fa-file-text-o', icon: 'file-text' },
-    { fa: 'fa fa-paper-plane', icon: 'cn_plane' }
-  ];
-
-  let sw = _.find(arr, x => x.fa === icon);
-
-  if(sw) return sw.icon; else return icon;
-
 }
 
 export function visibleCondition(data,visible_condition, inputs) {
@@ -309,7 +281,7 @@ export function bodyBuilder(itm, inputs, config, data, checked) {
 }
 
 
-/**
+/*
 
  * @param {*} item
  * @param {*} el
@@ -331,38 +303,33 @@ export const handlerGoLink = (item, el, config, inputs, history) => {
 
 
 export const menu_creator = () => (menu_creator, items, isParent) => {
-    let model = {
-      id: null, title: 'label',
-      to: 'to', icon: 'icon'
-    };
     if(Array.isArray(items)) if(items.length > 0) {
       return items.map((el,i) => {
-        let men_icon = el[model.icon] ? switchIcon(el[model.icon]).split('_') : '';
         if(el.childs && el.childs > 0) {
-          return <SubMenu
+          return (
+            <SubMenu
               key={el.id || i+'user'}
               title={
                 <span>
-                  { el[model.icon] ? (men_icon[0] === 'cn') ?
-                      <Icon component={men_icon[1]} />
-                    : <Icon type={switchIcon(el[model.icon])} /> : <Icon type='' />  }
-                    <span>{(el.istitle)? el[model.title] : null }</span>
-                    {(el.ws)? <b style={{color:'blue'}}>{' ' + el.notif_count}</b> : null}
+                  <Icon type={el.icon} />
+                  <span>{(el.istitle)? el.title : null }</span>
+                  {(el.ws)? <b style={{color:'blue'}}>{' ' + el.notif_count}</b> : null}
                 </span>
               }
             >
               { menu_creator(menu_creator, el.items || [], el.childs > 0) }
             </SubMenu>
+          )
         } else {
-          return <Menu.Item key={el.id || i+'user'}>
-            <Link to={el[model.to]} title={ el[model.title] }>
-              { el[model.icon] ? (men_icon[0] === 'cn') ?
-                  <Icon component={men_icon[1]} />
-                : <Icon type={switchIcon(el[model.icon])} /> : <Icon type='' />  }
-              <span>{(el.istitle)? el[model.title] : null }</span>
-              {(el.ws)? <b style={{color:'blue'}}>{' ' + el.notif_count}</b> : null}
-            </Link>
-          </Menu.Item>
+          return (
+            <Menu.Item key={el.id || i+'user'}>
+              <Link to={el.to} title={ el.title }>
+                <Icon type={el.icon} />
+                <span>{(el.istitle)? el.title : null }</span>
+                {(el.ws)? <b style={{color:'blue'}}>{' ' + el.notif_count}</b> : null}
+              </Link>
+            </Menu.Item>
+           )
         }
       })
     } else return null;

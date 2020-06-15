@@ -1,11 +1,8 @@
 
-import { compose, withState, withHandlers, lifecycle } from 'recompose';
+import { compose } from 'recompose';
 
 const enhance = compose(
 
-  withHandlers({
-
-  }),
 )
 
 export default enhance;

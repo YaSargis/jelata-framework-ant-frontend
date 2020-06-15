@@ -1,4 +1,3 @@
-import { connect } from 'react-redux';
 import { compose, withState, withHandlers, lifecycle } from 'recompose';
 import qs from 'query-string';
 
@@ -23,14 +22,14 @@ const enhance = compose(
     }
   }),
   withHandlers({
-    getData: ({ history, location, match, changeView, changeValues, changeReady, changeMenu, changeRootKeys }) => () => {
+    getData: ({
+        history, location, match, changeView, changeValues,
+        changeReady, changeMenu, changeRootKeys
+    }) => () => {
       apishka(
-        'GET',
-        {},
-        '/api/treesbypath?path=' + match.params.id,
+        'GET', {}, '/api/treesbypath?path=' + match.params.id,
         (res) => {
           document.title = res.outjson.title;
-
           changeValues({...res.outjson});
           let { branches, items } = res.outjson;
           let rootKeys = [];
