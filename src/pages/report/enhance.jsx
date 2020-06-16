@@ -9,8 +9,7 @@ const enhance = compose(
   withHandlers({
     getData: ({ match, changeValues, changeParams }) => () => {
       apishka(
-        'GET', {},
-        '/api/report?id='+match.params.id,
+        'GET', {}, '/api/report?id='+match.params.id,
         (res) => {
           document.title = res.outjson.title;
           changeValues({...res.outjson});
@@ -21,8 +20,7 @@ const enhance = compose(
     },
     getSelectOptions: ({ changeSelections, selections }) => (ptitle, substr, api_id) => {
       apishka(
-        'GET', {},
-        '/api/methodinfo?id='+api_id,
+        'GET', {}, '/api/methodinfo?id='+api_id,
         (res) => {
           const dataTypeString = res.data.outjson.methotypename;
           if(dataTypeString === "get") {

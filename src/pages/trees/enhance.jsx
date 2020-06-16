@@ -23,8 +23,8 @@ const enhance = compose(
   }),
   withHandlers({
     getData: ({
-        history, location, match, changeView, changeValues,
-        changeReady, changeMenu, changeRootKeys
+      history, location, match, changeView, changeValues,
+      changeReady, changeMenu, changeRootKeys
     }) => () => {
       apishka(
         'GET', {}, '/api/treesbypath?path=' + match.params.id,
@@ -53,10 +53,8 @@ const enhance = compose(
           };
           changeRootKeys(rootKeys);
           changeReady(true);
-
         },
         (err) => {}
-
       )
     }
   }),

@@ -96,7 +96,7 @@ const enhance = compose(
       // handleChatWS();
       handleGlobalWS();
     },
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
       let body = document.getElementsByTagName('body')[0];
       body.classList.remove("login_bckg");
     },

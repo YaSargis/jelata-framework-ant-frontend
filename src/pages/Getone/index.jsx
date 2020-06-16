@@ -48,7 +48,8 @@ const GetOne = ({
   data = {}, origin = {}, handlerAutoComplete, onRemoveFile,
   visibleModal = false, setLoading
 }) => {
-  let { config = {} } = origin,
+  let
+    { config = {} } = origin,
     params = get_params(),
     render_childs = item => {
       data[item.key] = data.hasOwnProperty(item.key) ? data[item.key] : null;
@@ -63,8 +64,7 @@ const GetOne = ({
           }
           return (
             <Form.Item key='1,1' label={item.title}>
-              <span className='ant-form-text'>
-                {' '}
+              <span className='ant-form-text'>{' '}
                 {!_.isNull(data[item.key])
                   ? (() => {
                       switch (typeof data[item.key]) {
@@ -81,7 +81,8 @@ const GetOne = ({
                           return data[item.key];
                       }
                     })()
-                  : ''}{' '}
+                  : ''}
+                  {' '}
               </span>
             </Form.Item>
           );
@@ -167,7 +168,7 @@ const GetOne = ({
             <Form.Item key='d4' label={item.title}>
               <InputNumber
                 disabled={item.read_only || false}
-                value={data[item.key] === null ? '' : data[item.key]}
+                value={data[item.key] === null ? null : data[item.key]}
                 onChange={event => {
                   onChangeData(event, item);
                 }}
@@ -179,14 +180,13 @@ const GetOne = ({
         case 'rate':
           return (
             <Form.Item key={item.key} label={item.title}>
-				<Rate
-					allowHalf
-					defaultValue={data[item.key] === null ? 0 : data[item.key]}
-					onChange={event => {
-
-						onChangeData(event, item);
-					}}
-				/>
+				      <Rate
+					      allowHalf
+					      defaultValue={data[item.key] === null ? 0 : data[item.key]}
+					      onChange={event => {
+						      onChangeData(event, item);
+					      }}
+				      />
             </Form.Item>
           );
           break;
@@ -359,6 +359,7 @@ const GetOne = ({
             <Form.Item key='9.b' label='Filelist'>
               <List
                 itemLayout='horizontal'
+                locale={{emptyText:'...'}}
                 dataSource={data[item.key] ? data[item.key] : []}
                 renderItem={item => (
                   <List.Item>
@@ -613,7 +614,7 @@ const GetOne = ({
               <TimePicker
                 format={'HH:mm'}
                 placeholder='Chose time'
-                value={data[item.key] === null ? '' : moment(data[item.key] || '', 'HH:mm')}
+                value={data[item.key] === null ? null : moment(data[item.key] || '', 'HH:mm')}
                 onChange={(time, timeString) => {
                   timeString === '' ? (timeString = null) : timeString;
                   onChangeInput(timeString, item);
@@ -693,6 +694,9 @@ const GetOne = ({
                     columns={dataColumns}
                     scroll={{ x: true }}
                     className='getone__table'
+                    locale={{
+                      emptyText: '...'
+                    }}
                   />
                 </Panel>
               </Collapse>
@@ -745,41 +749,38 @@ const GetOne = ({
             </Form.Item>
           );
           break;
-      }
-    },
-    render_form = (
-      <Form layout='vertical'>
-        <Row gutter={8} type='flex'>
-          <Col span={24}>
-            <Row type='flex'>
-              {_.filter(
-                config,
-                item =>
-                  (item.visible === true || item.visible === 1) &&
-                  visibleCondition(data, item.visible_condition, params.inputs)
+    }
+  },
+  render_form = (
+    <Form layout='vertical'>
+      <Row gutter={8} type='flex'>
+        <Col span={24}>
+          <Row type='flex'>
+            {_.filter( config, item =>
+              (item.visible === true || item.visible === 1) &&
+                visibleCondition(data, item.visible_condition, params.inputs)
               ).map((item, ind, arr) => {
                 let width = item.width ? (item.width > 24 ? 24 : parseInt(item.width)) : 12;
                 return (
                   <Col className={item.classname} span={width} key={'ss' + ind}>
                     <div className={item.classname}>{render_childs(item)}</div>
                   </Col>
-                );
-              })}
-            </Row>
-          </Col>
-          <Col span={24}>
-            <ActionsBlock
-              actions={origin.acts} origin={origin}
-              data={data} params={params}
-              history={history} location={location}
-              getData={getData} onSave={onSave}
-							setLoading = {setLoading}
-
-            />
-          </Col>
-        </Row>
-      </Form>
-    );
+               );
+            })}
+          </Row>
+        </Col>
+        <Col span={24}>
+          <ActionsBlock
+            actions={origin.acts} origin={origin}
+            data={data} params={params}
+            history={history} location={location}
+            getData={getData} onSave={onSave}
+					  setLoading = {setLoading}
+          />
+        </Col>
+      </Row>
+    </Form>
+  );
   // ------------------------------------------------------------------------------------------------------------------------
 
   return (

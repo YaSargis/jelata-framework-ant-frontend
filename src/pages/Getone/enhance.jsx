@@ -14,15 +14,6 @@ import { apishka } from 'src/libs/api';
 let wss = []; // ws array
 
 const enhance = compose(
-  /*onnect(
-    state => ({
-      user_detail: state.user.user_detail,
-      loading: true
-    }),
-    dispatch => ({
-      toggleLoading: status => dispatch(toggleLoading(status))
-    })
-  ),*/
   withStateHandlers(
     ({
       inState = {
@@ -65,9 +56,9 @@ const enhance = compose(
       return { ...params };
     },
 		setLoading:({loading, set_state}) => (loadstatus) => {
-				set_state({
-		       loading: loadstatus
-		    });
+		  set_state({
+		    loading: loadstatus
+		  });
 		},
     onChangeData: ({ set_state, data = {} }) => (event, item_config) => {
       let value = event,
@@ -84,17 +75,18 @@ const enhance = compose(
       _data[item_config.key] = value;
 
       if (value === '' || valueTextTypes === '') {
-        switch (item_config.type) {
+        /*switch (item_config.type) {
           case 'text':
           case 'date':
           case 'rate':
+          case 'time':
           case 'autocomplete':
           case 'textarea':
-          case 'number': {
+          case 'number': {*/
             _data[item_config.key] = null;
-            break;
-          }
-        }
+            //break;
+          //}
+        //}
       }
 
       set_state({
@@ -113,29 +105,24 @@ const enhance = compose(
         )[0].title;
         params.inputs[id_title] = id;
       }
-
       apishka(
-        'POST',
-        {inputs: params.inputs},
-        `/schema/getone?path=${params.id_page}`,
+        'POST', {inputs: params.inputs}, `/schema/getone?path=${params.id_page}`,
         (res) => {
 				  if (!compo && !params.inputs._doctitle_)
-					document.title = res.title;
+					  document.title = res.title;
 				  else if (params.inputs._doctitle_)
-					document.title = params.inputs._doctitle_;
+					  document.title = params.inputs._doctitle_;
 
-          let _r = res,
-            s_parsed = qs.parse(location.search),
-						rel,
-            rel_obj = {};
- 						if (s_parsed.relation)
- 						    rel = s_parsed.relation.split(',')
+          let _r = res, s_parsed = qs.parse(location.search),
+						       rel, rel_obj = {};
+ 					if (s_parsed.relation)
+ 				    rel = s_parsed.relation.split(',')
 
- 						if (!s_parsed.relation && params.inputs.relation)
- 							 rel = params.inputs.relation.split(',')
+ 					if (!s_parsed.relation && params.inputs.relation)
+ 					  rel = params.inputs.relation.split(',')
 
- 						if (!rel)
- 							rel = []
+ 				  if (!rel)
+ 					  rel = []
 
           if (res.subscrible) {
             let ws = document.location.href.split('//')[1];
@@ -207,7 +194,10 @@ const enhance = compose(
     }
   }),
   withHandlers({
-    onSaveRow: ({ getData, onChangeData, set_state, data, origin, global = {}, compo, history, get_params }) => (
+    onSaveRow: ({
+      getData, onChangeData, set_state, data, origin,
+      global = {}, compo, history, get_params
+    }) => (
       value,
       item_config
     ) => {
@@ -239,105 +229,99 @@ const enhance = compose(
             resolve(_data);
           });
 
-        go()
-          .then(_data => {
-            apishka ('POST', _data, '/api/saverow', (res) => {
-				let res_data = res.outjson;
-				if (!item_config.related) {
-					if (!data[id_title] && !res_data || item_config.updatable) {
-					  if (!data[id_title]) {
-						data[id_title] = res_data.id
-					  }
-					  getData(data[id_title] || res_data.id, getData);
-					} else {
-					  if (res_data.id) {
-						data[id_title] = res_data.id;
-						data[item_config.key] = value;
-					  } else {
-						data = res_data;
-					  }
-					  set_state({
-						data: { ...data }
-					  });
-					}
-				} else {
-					if (item_config.updatable) {
-					  getData(data[id_title] || res_data.id, getData);
-					}
-				}
+        go().then(_data => {
+          apishka ('POST', _data, '/api/saverow', (res) => {
+				    let res_data = res.outjson;
+				    if (!item_config.related) {
+					    if (!data[id_title] && !res_data || item_config.updatable) {
+					      if (!data[id_title]) {
+						      data[id_title] = res_data.id
+					      }
+					      getData(data[id_title] || res_data.id, getData);
+					    } else {
+					      if (res_data.id) {
+						      data[id_title] = res_data.id;
+						      data[item_config.key] = value;
+					      } else {
+						      data = res_data;
+					      }
+					      set_state({
+						      data: { ...data }
+					      });
+					    }
+			      } else {
+					    if (item_config.updatable) {
+					      getData(data[id_title] || res_data.id, getData);
+				      }
+				   }
 
-				/* update compo if updatable */
-				let params = get_params()
-				let IdTitle = _.filter(
-					origin.config,
-					o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
-				)[0].title
+				   /* update compo if updatable */
+				  let params = get_params()
+				  let IdTitle = _.filter(
+					  origin.config,
+					  o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+				  )[0].title
     			if (
-					item_config.updatable && compo && (
-						data[id_title] === params.inputs[IdTitle] ||
-						data[id_title] === null ||
-						data[id_title] === undefined
-					)
-				) {
-					let search_updater = '___hashhhh___=0.11'
-					if (location.search.indexOf('?') === -1)
-						search_updater = '?' + search_updater
-					else
-						search_updater = '&' + search_updater
-					history.push(location.pathname + location.search + search_updater + location.hash)
-				}
-				/* update compo if updatable */
+					  item_config.updatable && compo && (
+						  data[id_title] === params.inputs[IdTitle] ||
+						  data[id_title] === null ||
+						  data[id_title] === undefined
+					  )
+				  ) {
+					  let search_updater = '___hashhhh___=0.11'
+					  if (location.search.indexOf('?') === -1)
+						  search_updater = '?' + search_updater
+					  else
+						  search_updater = '&' + search_updater
+					  history.push(location.pathname + location.search + search_updater + location.hash)
+				  }
+				  /* update compo if updatable */
 
-
-				notification.success({
-					message: 'OK',
-					duration: 2
-				});
-            },
-              (err) => {}
-            )
-		  })
-          .catch(err => {
-            if (err)
-              notification.error({
-                message: 'Error',
-                description: err.response ? err.response.data.message : 'Uncknown Error'
-              });
+				  notification.success({
+					  message: 'OK', duration: 2
+				  });
+        },
+        (err) => {}
+      )
+		}).catch(err => {
+        if (err)
+          notification.error({
+            message: 'Error',
+            description: err.response ? err.response.data.message : 'Uncknown Error'
           });
-      }
-    },
-    onSubmitState: ({ set_state, data = {}, origin = {} }) => (event, item_config) => {
-      let id_title = _.filter(
-          origin.config,
-          o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
-        )[0].title,
-        keys = _.keys(origin.data[0]),
-        _data = {};
-      keys.map(k => {
-        if (origin.data[0][k] !== data[k]) {
-          _data[k] = data[k];
-        }
       });
     }
-  }),
-  withHandlers({
-    onChangeInput: ({ onSaveRow }) => (event, item) => {
-      let value = event;
-      if (event !== null && event !== undefined) {
-        value = event.target ? event.target.value : event;
+  },
+  onSubmitState: ({ set_state, data = {}, origin = {} }) => (event, item_config) => {
+    let id_title = _.filter(
+      origin.config,
+      o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+    )[0].title,
+    keys = _.keys(origin.data[0]),
+    _data = {};
+    keys.map(k => {
+      if (origin.data[0][k] !== data[k]) {
+        _data[k] = data[k];
       }
-
-      if (event === undefined || event === '') value = null;
+    });
+  }
+}),
+withHandlers({
+  onChangeInput: ({ onSaveRow }) => (event, item) => {
+    let value = event;
+    if (event !== null && event !== undefined) {
+      value = event.target ? event.target.value : event;
+    }
+    if (event === undefined || event === '') value = null;
       onSaveRow(value, item);
     },
     onRemoveImg: ({ data, onSaveRow }) => event => {
       // title - binding
       confirm({
-        title: 'delete file?',
-        content: '',
+        title: 'delete file?', content: '',
         onOk() {
           let row = event.row,
-            row_data = data[row.key];
+              row_data = data[row.key];
 
           _.remove(row_data, o => o.uri === event.file_url); // deleting file
 
@@ -353,8 +337,7 @@ const enhance = compose(
     },
     onRemoveFile: ({ data, onSaveRow }) => (files, uri, item) => {
       confirm({
-        title: 'Delete file?',
-        content: '',
+        title: 'Delete file?', content: '',
         onOk() {
           _.remove(files, o => o.uri === uri);
           onSaveRow(files, item);
@@ -462,62 +445,61 @@ const enhance = compose(
       }, '/api/savestate', (res) => {
         let res_data = res.outjson;
 
-		/* update compo if updatable */
-		let params = get_params()
-		let IdTitle = _.filter(
-			origin.config,
-			o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
-		)[0].title
+		  /* update compo if updatable */
+		  let params = get_params()
+		  let IdTitle = _.filter(
+			  origin.config,
+			  o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn
+		  )[0].title
 
-		if (
+		  if (
 		    origin.config.filter((conf) => conf.updatable ).length > 0 &&
-			compo && (
-				data[id_title] == params.inputs[IdTitle] ||
-				data[id_title] === null ||
-				data[id_title] === undefined
-			)
-		) {
-			let search_updater = '___hashhhh___=0.11'
-			if (location.search.indexOf('?') === -1)
-				search_updater = '?' + search_updater
-			else
-				search_updater = '&' + search_updater
-			history.push(location.pathname + location.search + search_updater + location.hash)
-		}
-		/* update compo if updatable */
+			  compo && (
+				  data[id_title] == params.inputs[IdTitle] ||
+				  data[id_title] === null ||
+				  data[id_title] === undefined
+			  )
+		  ) {
+			  let search_updater = '___hashhhh___=0.11'
+			  if (location.search.indexOf('?') === -1)
+				  search_updater = '?' + search_updater
+			  else
+				  search_updater = '&' + search_updater
+			  history.push(location.pathname + location.search + search_updater + location.hash)
+		  }
+		  /* update compo if updatable */
 
-		if (res_data.id) {
-          data[id_title] = res_data.id;
-        }
-        set_state({
-          data: { ...data },
-          loading: false
-        });
-        notification.success({
-          message: 'Ok'
-        });
-        getData(data[id_title] || res_data.id, getData);
-        if (callback && typeof(callback) === 'function') {
-          callback()
-        }
-      }, (err) => {
-        set_state({ loading: false });
-      })
-    },
-    handlerAutoComplete: ({ origin, set_state }) => (search_string, item) => {
-      getDataSelect();
-      function getDataSelect() {
-        let inputs = {};
-        apishka('POST', {
-            val: search_string,
-            table: origin.table,
-            col: item.col
-          }, '/api/autocomplete', (res) => {
-            let newconfig = [...origin.config];
-
+		  if (res_data.id) {
+        data[id_title] = res_data.id;
+      }
+      set_state({
+        data: { ...data },
+        loading: false
+      });
+      notification.success({
+        message: 'Ok'
+      });
+      getData(data[id_title] || res_data.id, getData);
+      if (callback && typeof(callback) === 'function') {
+        callback()
+      }
+    }, (err) => {
+          set_state({ loading: false });
+        })
+  },
+  handlerAutoComplete: ({ origin, set_state }) => (search_string, item) => {
+    getDataSelect();
+    function getDataSelect() {
+      let inputs = {};
+      apishka('POST', {
+          val: search_string,
+          table: origin.table,
+          col: item.col
+        }, '/api/autocomplete', (res) => {
+          let newconfig = [...origin.config];
             newconfig.forEach((el, i) => {
               if (newconfig[i].key === item.key)
-  				newconfig[i]['selectdata'] = res.outjson;
+	        			newconfig[i]['selectdata'] = res.outjson;
             });
 
             origin.config = newconfig;
@@ -526,55 +508,53 @@ const enhance = compose(
             });
         }, (err) => {}
       )
-      }
-    },
-    onChangeCollapse: ({ set_state }) => key => {
+    }
+  },
+  onChangeCollapse: ({ set_state }) => key => {
+    set_state({
+      localChangeCollapse: true,
+      localActiveKey: key
+    });
+  }
+}),
+lifecycle({
+  componentDidMount() {
+    this.props.getData(null, this.props.getData);
+  },
+  componentWillUnmount() {
+    wss.forEach(ws_item => ws_item.close());
+  },
+  componentDidUpdate(prevProps) {
+    const { btnCollapseAll, set_state } = this.props;
+    if (prevProps.btnCollapseAll !== btnCollapseAll) {
       set_state({
-        localChangeCollapse: true,
-        localActiveKey: key
+        localChangeCollapse: false,
+        collapseAll: btnCollapseAll
       });
     }
-  }),
-  lifecycle({
-    componentDidMount() {
-      this.props.getData(null, this.props.getData);
-    },
-    componentWillUnmount() {
-      wss.forEach(ws_item => ws_item.close());
-    },
-    componentDidUpdate(prevProps) {
-      const { btnCollapseAll, set_state } = this.props;
-      if (prevProps.btnCollapseAll !== btnCollapseAll) {
-        set_state({
-          localChangeCollapse: false,
-          collapseAll: btnCollapseAll
-        });
+  },
+  UNSAFE_componentWillUpdate(nextProps) {
+    const { compo, getData, get_params } = this.props;
+    let params = get_params(this.props),
+      nextParams = get_params(nextProps);
+    if (!compo) {
+      // just data
+      if (params.id_page !== nextParams.id_page) {
+        getData();
       }
-    },
-    componentWillUpdate(nextProps) {
-      const { compo, getData, get_params } = this.props;
-      let params = get_params(this.props),
-        nextParams = get_params(nextProps);
-
-      if (!compo) {
-        // just data
-        if (params.id_page !== nextParams.id_page) {
+    } else {
+      // Compo data
+      const locationFirstLevel = nextProps.location.pathname.slice(0, 6);
+      if (locationFirstLevel !== '/trees') {
+        if (
+          nextProps.location.search !== this.props.location.search ||
+          nextProps.path !== this.props.path
+        ) {
           getData();
-        }
-      } else {
-        // Compo data
-        const locationFirstLevel = nextProps.location.pathname.slice(0, 6);
-        if (locationFirstLevel !== '/trees') {
-          if (
-            nextProps.location.search !== this.props.location.search ||
-            nextProps.path !== this.props.path
-          ) {
-            getData();
-          }
         }
       }
     }
-  })
-);
+  }
+}));
 
 export default enhance;

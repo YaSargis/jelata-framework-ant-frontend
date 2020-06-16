@@ -25,13 +25,11 @@ const Report = ({
 											<div><b>{item.ptitle}</b></div>
 											<Select
 												styles={{container: base => ({
-													...base,
-													width: '40%'
+													  ...base, width: '40%'
 												  }),}}
 												onChange = {
 													(e) => {
-														let inp = inputs;
-														inp[item.func_paramtitle] = e;
+														let inp = inputs; inp[item.func_paramtitle] = e;
 														changeInputs(inp);
 													}
 												}
@@ -48,8 +46,7 @@ const Report = ({
 											<Select
 												isMulti
 												styles={{container: base => ({
-													...base,
-													width: '70%'
+													  ...base, width: '70%'
 												  }),}}
 												onChange = {(...args) => {
 													let inp = inputs,
