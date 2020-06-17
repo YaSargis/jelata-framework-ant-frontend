@@ -2,24 +2,13 @@ import React from 'react';
 import { compose, lifecycle, withHandlers, withStateHandlers, withState } from "recompose";
 import _ from 'lodash';
 import qs from 'query-string';
-import { /*ActsRender,*/ Configer, saveUserSettings } from 'src/libs/methods';
+import { saveUserSettings } from 'src/libs/methods';
 import { apishka } from "src/libs/api";
 import { notification } from 'antd';
-//import { set_composition_data } from 'src/redux/actions/composition';
-//import { toggleLoading } from 'src/redux/actions/helpers';
 
 let wss = []; // ws array
 
 const enhance = compose(
-  /*connect(
-    state => ({
-      composition: state.composition
-    }),
-    dispatch => ({
-      set_comp: (obj) => dispatch(set_composition_data(obj)),
-      //toggleLoading: (status) => dispatch(toggleLoading(status)),
-    })
-  ),*/
   withStateHandlers(
     ({
       inState = {
@@ -242,9 +231,7 @@ const enhance = compose(
     },
 
 	handleTableChange: ({changeReady, getData, params, changeParams, allProps}) => (pagination, filters, sorter) => {
-		/*
-			server sorter
-		*/
+		/* server sorter */
 		changeReady(false)
 		let config = allProps.config
 		let colObj = config.filter((x) => x.title === sorter.field)[0]
@@ -264,7 +251,6 @@ const enhance = compose(
   }),
   withHandlers({
     onSaveRow: ({ getData, onChangeData, set_state, listData, origin, global = {}, history, compo }) => (value, item_config, dataRowIndex) => {
-
       let id_title = _.filter(origin.config, o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn)[0].key;
       let data = listData[dataRowIndex]
 
@@ -290,21 +276,21 @@ const enhance = compose(
               notification.success({
                 message: 'Сохранено',
               });
-			  if (item_config.updatable && compo) {
-				let search_updater = '___hashhhh___=0.11'
-				if (location.search.indexOf('?') === -1)
-					search_updater = '?' + search_updater
-				else
-					search_updater = '&' + search_updater
-				history.push(location.pathname + location.search + search_updater + location.hash)
-			  }
+      			  if (item_config.updatable && compo) {
+      				    let search_updater = '___hashhhh___=0.11'
+      				    if (location.search.indexOf('?') === -1)
+      					      search_updater = '?' + search_updater
+      				    else
+      					      search_updater = '&' + search_updater
+      				    history.push(location.pathname + location.search + search_updater + location.hash)
+      			  }
             }
           )
         }).catch((err) => {
           if(err) {
             console.log('Unknown error:',err)
             notification.error({
-              message: 'Ошибка',
+              message: 'Error',
               description: err.response ?  err.response.data.message : 'Unknown error'
             });
           }

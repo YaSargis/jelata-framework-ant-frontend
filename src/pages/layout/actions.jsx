@@ -1,6 +1,5 @@
 import React from 'react';
 import qs from 'query-string';
-import { connect } from 'react-redux';
 
 import axios from 'axios';
 
@@ -99,14 +98,7 @@ const ActionsBlock = ({
 };
 
 const enhance = compose(
-  /*connect(
-    state => ({
-      loading: state.helpers.loading
-    }),
-    dispatch => ({
-      toggleLoading: (status) => dispatch(toggleLoading(status)),
-    })
-  ),*/
+
   withHandlers({
 
   }),

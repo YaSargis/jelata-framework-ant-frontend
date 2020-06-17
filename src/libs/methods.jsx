@@ -5,7 +5,8 @@ import qs from 'query-string';
 import { apishka } from './api';
 
 import {
-  Row, Col, Icon, Input, InputNumber, Select, Checkbox, Button, Tooltip, Popconfirm, Menu, notification
+  Row, Col, Icon, Input, InputNumber, Select, Checkbox, Button, Tooltip,
+  Popconfirm, Menu, notification
 } from 'antd';
 
 import { Link } from 'react-router-dom';

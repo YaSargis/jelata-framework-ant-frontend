@@ -1,23 +1,10 @@
-// import { connect } from 'react-redux';
+
 import { compose, withState, withHandlers, lifecycle, withStateHandlers } from 'recompose';
-
-// import { set_login_status } from 'src/redux/actions/user';
-// import { set_loading } from 'src/redux/actions/loader';
-
 import { notification } from 'antd';
 
 import { apishka } from 'src/libs/api';
 
 const enhance = compose(
-  /*connect(
-    state => ({
-      //isLogin: state.user.isLogin
-    }),
-    dispatch => ({
-      // set_login_status: (status) => dispatch(set_login_status(status)),
-      set_loading: (status) => dispatch(set_loading(status)),
-    })
-  ),*/
   withStateHandlers(
     ({
       inState = {

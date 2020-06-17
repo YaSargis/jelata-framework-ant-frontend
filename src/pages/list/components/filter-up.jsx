@@ -22,7 +22,7 @@ const FilterListUp = ({
 
   return (
 			<div>
-	      <Row key='sawad1' gutter={4}>
+	      <Row key='sawad2' gutter={4}>
 					<Collapse
 						bordered={false}
 						defaultActiveKey={['up_filter']}
