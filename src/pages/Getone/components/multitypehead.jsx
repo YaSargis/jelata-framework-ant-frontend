@@ -15,7 +15,7 @@ const NoOptionsMessage = props => {
   if(loading) {
     return (
       <components.NoOptionsMessage {...props}>
-        <Spin tip={'Загрузка данных'}/>
+        <Spin tip={'...'}/>
       </components.NoOptionsMessage>
     )
   } else {
@@ -42,11 +42,20 @@ const handleKeyDown = (evt)=>{
 
 const SelectBox = ({ name, onChange, onFocusApi, onFocus, data, inputs, config, options = [], loading, status, onChangeInput }) => {
 		let filtOptions = [];
-  	data[config.key] ? _.isArray(data[config.key]) ? data[config.key].forEach((item) => {
-  	  options.forEach((it) => {
-  	    if(it.value === item) filtOptions.push(it)
-  	  })
-  	}) : null : null;
+    /* Use function*/
+    const filtOptionGenerate = (data, options) => {
+     let filtOptions = []
+        data ? _.isArray(data) ? data.forEach((item) => {
+        options.forEach((it) => {
+          if(it.value === item) filtOptions.push(it)
+        })
+      }) : null : null;
+
+      return filtOptions
+    }
+
+    filtOptions = filtOptionGenerate(data[config.key],options)
+
     if(!status && (data[config.key] !== null)) {
       return < Spin />
     } else {
@@ -79,15 +88,15 @@ const SelectBox = ({ name, onChange, onFocusApi, onFocus, data, inputs, config, 
               color: '#000000'
             }),
             placeholder: (base)=>({
-            ...base,
-            color: '#cdbfc7'
-          }),
-        }}
+              ...base,
+               color: '#cdbfc7'
+            }),
+          }}
 					isMulti
           menuPlacement='auto'
           menuPortalTarget={document.body}
           loading={loading}
-          components={{ NoOptionsMessage, LoadingMessage: () => <div style={{textAlign: 'center'}}><Spin tip='Загрузка данных' /></div> }}
+          components={{ NoOptionsMessage, LoadingMessage: () => <div style={{textAlign: 'center'}}><Spin tip='...' /></div> }}
           isClearable
           placeholder={'Введите для поиска'}
           cacheOptions
@@ -102,6 +111,7 @@ const SelectBox = ({ name, onChange, onFocusApi, onFocus, data, inputs, config, 
             (config.type === 'multitypehead_api') ? onFocusApi(null, data[config.key], inputs) : onFocus(null, data[config.key]);
           }}
           onChange={(...args) => {
+
 						switch(args[1].action) {
 							case 'select-option':
 								if(data[config.key]) {
@@ -109,7 +119,6 @@ const SelectBox = ({ name, onChange, onFocusApi, onFocus, data, inputs, config, 
 								} else {
 									data[config.key] = [args[1].option.value];
                 }
-                //onFocusApi(null, data[config.key])
 								break;
 							case 'pop-value':
 							case 'remove-value':
@@ -133,7 +142,8 @@ const enhance = compose(
         options: [], loading: false, status: false
       }
     }) => ({
-      options: inState.options, loading: inState.loading, status: inState.starus
+      options: inState.options, loading: inState.loading,
+      status: inState.status
     }),
     {
       set_state: (state) => (obj) => {
@@ -151,15 +161,11 @@ const enhance = compose(
       timer[name] ? clearTimeout(timer[name]) : null;
       const getDataSelect = new Promise ((resolve, reject) => {
         timer[name] = setTimeout( () => {
-          apishka(
-            'POST',
-            {
+          apishka( 'POST', {
               data: data, inputs: inputs,
               config: globalConfig, val:substr,
               id:id, ismulti:true, substr: id || substr
-            },
-            config.select_api,
-            (res) => {
+            }, config.select_api, (res) => {
               let dat = _.sortBy(res.outjson, ['value']);
               resolve(dat);
             },
@@ -170,14 +176,13 @@ const enhance = compose(
       });
 
       return getDataSelect.then( res => {
+        console.log('resSS', res)
         if(substr) {
-          set_state({loading: false})
+          set_state({loading: false, options: res, status: true})
           return res;
         } else {
           set_state({
-            options: res,
-            loading: false,
-            status: true
+            options: res, loading: false, status: true
           });
         };
       }).catch(err => set_state({loading: false, status: true}));
@@ -187,7 +192,7 @@ const enhance = compose(
       const getDataSelect = new Promise ((resolve, reject) => {
         timer[name] = setTimeout( () => {
           let inputs = qs.parse(location.search);
-          if (!config.selectdata){
+          if (!config.selectdata) {
             if (config.select_condition) {
               config.select_condition.forEach((obj) => {
                 let value = null
@@ -198,23 +203,17 @@ const enhance = compose(
                   }
                 } else inputs[obj.col.value] = obj.const;
               });
-			};
-
+						};
 
             if(config.type === 'multitypehead' && ismulti === null) {
               ismulti = true;
               // substr = id;
               id = null;
             }
-            apishka(
-              'POST',
-              {
-                inputs: inputs, config: config,
-                val: substr, id: id,
-                ismulti: true
-              },
-              '/api/select',
-              (res) => {
+            apishka( 'POST', {
+                inputs: inputs, config: config, val: substr,
+                id: id, ismulti: true
+              }, '/api/select', (res) => {
                 let _data = _.sortBy(res.outjson, ['value']);
                 resolve(_data);
               },
@@ -241,6 +240,7 @@ const enhance = compose(
   }),
   lifecycle({
     componentDidMount() {
+      console.log('herecdm')
 			const { config, options, data, onFocusApi, onFocus } = this.props;
       if(config.type === 'multitypehead_api') onFocusApi(null, data[config.key]);
       else onFocus(null, data[config.key]);

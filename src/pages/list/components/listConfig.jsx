@@ -10,7 +10,8 @@ import MultiTypehead from 'src/pages/Getone/components/multitypehead';
 import { handlerGoLink, visibleCondition } from 'src/libs/methods';
 
 export const listConfigGenerate = (
-    listConfig, listData, listActions, arr_hide, params, history, isorderby, changeChecked
+    listConfig, listData, listActions, arr_hide, params,
+    history, isorderby, changeChecked, set_state, onChangeInput 
   ) => {
   const columns2 = []
   listConfig.forEach((item, ind) => {
