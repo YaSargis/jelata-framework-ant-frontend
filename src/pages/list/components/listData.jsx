@@ -1,6 +1,9 @@
 import React from 'react';
 import FileGallery from 'src/components/file_gallery';
 import ActionsBlock from 'src/pages/layout/actions';
+import { Collapse } from 'antd';
+
+const { Panel } = Collapse;
 
 export const listDataGenerate = (
     listData, listConfig, listActions, filters, origin, history, location, checked,
