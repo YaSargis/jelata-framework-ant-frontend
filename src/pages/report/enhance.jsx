@@ -41,8 +41,11 @@ const enhance = compose(
     },
     getReportFile: ({ inputs, values }) => () => {
       let params = '?';
-		  Object.keys(inputs).forEach((x) => params += x +'=' + JSON.stringify(inputs[x]) + '&');
-		  params += 'filename=' + values.filename + '&template=..' + values.template_path;
+	  Object.keys(inputs).forEach((x) => {
+        let inp = typeof(inputs[x]) === 'object'? JSON.stringify(inputs[x]) : inputs[x];
+        params += x +'=' + inp + '&';
+      });
+	  params += 'filename=' + values.filename + '&template=..' + values.template_path;
       console.log('open report', '/rep/'+ values.path + params );
       window.open('/rep/'+ values.path + params);
     }

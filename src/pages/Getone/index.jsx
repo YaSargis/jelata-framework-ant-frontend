@@ -24,6 +24,7 @@ import enhance from './enhance';
 
 import Select from './components/select';
 import MultiSelect from './components/multiselect';
+import MultiDate from "./components/multidate";
 import Typeahead from './components/typehead';
 import MultiTypehead from './components/multitypehead';
 import Certificate from './components/certificate';

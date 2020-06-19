@@ -10,9 +10,9 @@ import MultiTypehead from 'src/pages/Getone/components/multitypehead';
 import { handlerGoLink, visibleCondition } from 'src/libs/methods';
 
 export const listConfigGenerate = (
-    listConfig, listData, listActions, arr_hide, params,
-    history, isorderby, changeChecked, set_state, onChangeInput 
-  ) => {
+  listConfig, listData, listActions, arr_hide, params, history, isorderby,
+  changeChecked, set_state, onChangeInput
+) => {
   const columns2 = []
   listConfig.forEach((item, ind) => {
     if (item.key == '__checker__') {
@@ -124,7 +124,7 @@ export const listConfigGenerate = (
                   return (
                     <Input
                       type={item.type}
-                      value={colVal ? colVal : ''}
+                      value={colVal}
                       onChange={e => {
                         listData[rowIndex][column.dataField] = e.target.value;
                         set_state({ listData: listData });
@@ -155,7 +155,7 @@ export const listConfigGenerate = (
                         onChangeInput(e, item, rowIndex);
                         set_state({ listData: listData });
                       }}
-                      locale={locale}
+                      
                       format='DD.MM.YYYY'
                     />
                   );
