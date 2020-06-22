@@ -11,7 +11,7 @@ import { handlerGoLink, visibleCondition } from 'src/libs/methods';
 
 export const listConfigGenerate = (
   listConfig, listData, listActions, arr_hide, params, history, isorderby,
-  changeChecked, set_state, onChangeInput
+  changeChecked, set_state, onChangeInput, getData
 ) => {
   const columns2 = []
   listConfig.forEach((item, ind) => {

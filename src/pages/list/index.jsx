@@ -63,7 +63,7 @@ const TableComp = ({
 
     const columns2 = listConfigGenerate(
       listConfig, listData, listActions, arr_hide, params, history,
-      isorderby, changeChecked, set_state, onChangeInput 
+      isorderby, changeChecked, set_state, onChangeInput, getData
     );
 
     const onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
