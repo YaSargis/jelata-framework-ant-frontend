@@ -9,99 +9,98 @@
 	color:black;
 }
 
+/* SQL MANAGER */
+.schema_table {
+  font-size: 11px;
+}
+
+.schema_table tbody {
+  color: #1c92ff;
+}
+
+.schema_table td, th {
+  border-style: none;
+}
+
+.args_table {
+  font-size: 11px;
+  width:100%;
+}
+
+.args_table tbody {
+  color: #1c92ff;
+}
+
+.args_table td, th {
+  border-style: none;
+}
+
+.t_table {
+  font-size: 11px;
+}
+
+.t_table tbody {
+  color: #1c92ff;
+}
+
+.t_table tr {
+  border-style: outset;
+  border-color: #68ff00;
+  border-width: 1px;
+  cursor: pointer;
+
+}
+
+.et_table tr:hover {
+  background:#b5d9db;
+}
+
+.et_table {
+  font-size: 11px;
+}
+
+.et_table tbody {
+  color: #170653;
+}
+
+.et_table td {
+  border-style: outset;
+  border-color: #626262;
+  border-width: 1px;
+  cursor: pointer;
+  padding: 5px;
+
+}
+
+.t_table tr:hover {
+  background:#b5d9db;
+}
+
+.commit_btn {
+  background-color: #fff44c;
+  color: #000;
+}
+
+/* SQL MANAGER */
+
 .aa {}
+
 
 .resizable, div[id^="ace-editor"] {
   overflow: hidden;
   resize: both;
 }
 
-@font-face {
-  font-family: RMIASFont;
-  src: url('build/17487.ttf');
-}
 
-@font-face {
-  font-family: RM2;
-  src: url('build/17493.otf');
-}
-
-@font-face {
-  font-family: RM3;
-  src: url('build/17428.ttf');
-}
-
-@font-face {
-  font-family: RM4;
-  src: url('build/16864.ttf');
-}
-
-@font-face {
-  font-family: RM5;
-  src: url('build/16658.otf');
-}
-
-@font-face {
-  font-family: RM6;
-  src: url('build/16198.ttf');
-}
-
-
-@font-face {
-  font-family: RM7;
-  src: url('build/17338.otf');
-}
-
-
-
-
-/*
-span {
-	font-size: 16px;
-}
-div, span {
-  font-family: RM7;
-  
-}*/
-
-
-
-.green-shadow input:hover {
-  background-color: yellow;
-  transform: perspective(1px) translateZ(0);
-  box-shadow: 0 0 8px #bafdaf, 0 0 0 4px rgba(136,252,116,0.25) inset;
-  transition-duration: 0.3s;
-}
-
-div[class^=" css-1y6pza6-control"]:hover {
-  background-color: rgba(210,254,203,1);
-  transform: perspective(1px) translateZ(0);
-  box-shadow: 0 0 8px #bafdaf, 0 0 0 4px rgba(121,251,98,0.5);
-  transition-duration: 0.3s;
-}
-
-td:hover {
-  background-color: rgba(221, 254, 216, 0.5);
-  color: black;
-}
-
-thead {
-  background-color: rgba(219, 219, 219, 0.5);
-}
-
-div[class^="ant-collapse-header"] {
-  background-color: rgba(221, 254, 216, 0.5);
-}
-*/
 
 .content_app {
   padding:2px;
  }
- 
+
  .paleturquoise {
   background-color:#AFEEEE;
  }
- 
+
  .title22 {
   font-size: 22px;
  }
@@ -109,78 +108,78 @@ div[class^="ant-collapse-header"] {
  .title22 b {
   display:none;
  }
- 
+
  .nob {
- 
+
  }
- 
+
  .nob b {
   display:none;
  }
- 
+
  .lil_list_text {
    font-size: 10px;
  }
- 
+
  .lil_list_text span {
     color: #557c9e;
  }
- 
- 
+
+
  .green_prety_b {
- 
+
  }
- 
+
  .green_prety_b b {
    color: #2be242;
  }
- 
+
  .green_prety_b span {
     color: #0824ec;
     font-size: 17px;
  }
- 
- 
+
+
  .bigtitle25 {
     font-size: 25px;
     color: #06a7b7d9;
  }
- 
+
  .basket {
     background: #fff705;
     width: 300px;
  }
- 
+
  .basket i {
   font-size: 20px;
   color: #ca3e09;
  }
- 
+
  .contents {
   display:contents;
  }
- 
+
  .smaller {
   font-size: smaller;
  }
- 
+
  .food_table {
   width:100%;
  }
- 
 
- 
+
+
 .food_table th, td {
    border:none;
 }
 
 .food_table th:hover {
-   background:#ffff002e; 
+   background:#ffff002e;
    cursor:pointer;
 }
 
 .food_table td:hover {
-   background:#f5eff5; 
+   background:#f5eff5;
    cursor:pointer;
 }
 
@@ -193,7 +192,7 @@ body {
     border-width: thin;
     border-color: #b3aace8c;
     text-align: center;
-    
+
 }
 
 .food_table thead {
@@ -218,10 +217,10 @@ body {
     font-size: 20px;
     color: #fdfdfd;
     background: #0cbf22;
-} 
+}
 
 .notitle {
-  
+
 }
 
 .notitle label {
@@ -229,64 +228,58 @@ body {
 }
 
 
-@media screen 
-  and (max-device-width: 1080px) 
-  and (max-device-height: 1920px) 
-  
+/* MOBILE */
+@media screen
+  and (max-device-width: 1080px)
+  and (max-device-height: 1920px)
+
  {
-  span, b, label, .ant-col {
+  span, b, label, .ant-col, .ant-collapse-header {
     font-size:25px;
    /* margin-left:72px;*/
-  } 
-  
+  }
+
   .css-1kdo2r7 {
     font-size:25px;
   }
-  
+
+
   .get_one_form .ant-form-item-label>label {
       font-size:25px;
   }
-  
+
   .ant-form-item-control input {
       font-size:25px;
       height:45px;
   }
-  
+
   li, a, i, icon, tr, .ant-popover-message-title {
     font-size:25px;
   }
-  
+
   .ant-form label {
     font-size:25px;
   }
-  
+
   .fr_tiles .ant-card {
-     
+
       margin-bottom:25px;
-    
+
   }
-  
-  /*.nob span {
-    padding-left:40px;
-  }
-  
-  .lil_list_text span, b {
-    padding-left:40px;
-  }*/
 
   button {
     min-width:100px;
     min-height:55px;
-  
+
   }
   img {
     width:170px;
     height:170px;
   }
-  
-  
-}
 
+
+}
+/* MOBILE */
 
 .p11 {
     font-size: 11px;
@@ -296,3 +289,94 @@ body {
 .p11 span {
     font-size: 11px;
 }
+
+.commit_btn {
+  background-color: #fff44c;
+  color: #000;
+}
+
+/* CHAT */
+
+.chat_list {
+  background-color: aliceblue;
+}
+
+.chat_list div {
+  background-color: aliceblue;
+  margin: 0;
+  /*padding: 2px;*/
+}
+
+.avka {
+
+}
+
+.avka img {
+    height: 45px;
+    width: 45px;
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.chattitle {
+    font-size: large;
+    font-weight: 500;
+    color: rgba(0,0,0,.65);
+}
+
+.chat_login {
+  background: #899ee8;
+  color: white;
+  text-align: center;
+  border-radius: 40%;
+}
+
+.chat_time {
+  font-size:9px;
+}
+
+.chat_message {
+  background: #abd4f9;
+  height: 60px;
+  width: 150px;
+  border-radius: 10%;
+  color: #291818;
+  padding: 20px;
+}
+
+.unreaded2 span {
+    width: 20px;
+    display: block;
+    background: #ffa0cc;
+    text-align: center;
+    border-radius: 50%;
+    border-width: 0.2pt;
+    border-style: ridge;
+    border-color: #e066c059;
+    text-shadow: 0 0 1px red, 0 0 0.1px #505852;
+}
+
+.unreaded span {
+    margin: 2px 0 2px 2px;
+    zoom: 1;
+    padding: 4px 6px;
+    vertical-align: top;
+    color: #5b6e85;
+    background: #d1d9e0;
+    font-weight: 700;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 11px;
+    line-height: 17px;
+    height: 16px;
+    border-radius: 2px;
+    transition: background-color 200ms linear,color 200ms linear;
+}
+
+.unreaded div {
+    color: #3f3ff5;
+    font-weight: 500;
+}
+
+
+/* CHAT */
