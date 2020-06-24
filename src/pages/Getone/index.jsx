@@ -726,14 +726,15 @@ const GetOne = ({
           );
         case 'phone':
           return (
-            <Form.Item key='phone'>
+            <Form.Item key='phone' label={item.title}>
               <InputMask
+                className ='ant-input'
                 mask='+9 (999) 999-99-99' value={data[item.key]}
-                onChange={e => onChangeData(e)}
+                onChange={e => onChangeData(e, item)}
                 onBlur={e => onChangeInput(e)}
               />
             </Form.Item>
-          );
+		   );
         case 'multidate':
           return <Form.Item key='multidate' label={item.title}>
               <MultiDate

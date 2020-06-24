@@ -21,7 +21,7 @@ import Error_404 from 'src/pages/error_404';
 
 const App = ({
   user_detail, collapsed, custom_menu,
-  menu_creator, menuCollapseStateSave
+  menu_creator, menuCollapseStateSave, getMenu
 }) => {
     return (
         <Layout className='lay' style={{ minHeight: '100vh' }}>

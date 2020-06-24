@@ -33,7 +33,6 @@ const enhance = compose(
       )
     },
     menu_creator: menu_creator,
-    handleGlobalWS: ({ getMenu}) => () => {
       let ws = document.location.href.split('//')[1];
       ws = ws.split('/')[0];
       ws = 'ws://' + ws + '/global_ws'
@@ -63,6 +62,30 @@ const enhance = compose(
       changeCollapsed(collapseState)
     }
 
+  }),
+  withHandlers({
+    handleGlobalWS: ({ getMenu}) => () => {
+      let ws = document.location.href.split('//')[1];
+      ws = ws.split('/')[0];
+      ws = 'ws://' + ws + '/global_ws'
+      let globalSocket = new WebSocket(ws);
+      globalSocket.onopen = () => {
+        globalSocket.send(JSON.stringify({}));
+      };
+      globalSocket.onmessage = (e) => {
+        let globalData = JSON.parse(e.data)
+
+        globalData.forEach((g_item) => {
+          notification.success({
+            message:g_item.message
+          })
+          apishka(
+            'GET',  {id: g_item.id},  '/api/setsended'
+          )
+        })
+        getMenu()
+      }
+    },
   }),
   lifecycle({
     componentDidMount(){
