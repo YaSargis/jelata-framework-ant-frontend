@@ -148,6 +148,13 @@ export const listDataGenerate = (
               </div>
             );
           }
+          else if (config.type === 'innerHtml') {
+            newItem[k] = (
+              <div>
+                <div dangerouslySetInnerHTML={{__html:value}} />
+              </div>
+            );
+          }
           else {
             newItem[k] = (
               <div style={{ color: colorRow(item, listConfig) }}>

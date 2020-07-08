@@ -60,52 +60,54 @@ const FilterList = ({
 		                        </Col>
 		                      ];
 		                      break;
-		                    case 'multijson':
-		                    case 'select':
-		                      let s_value;
-		                      if(p.type === 'multijson') {
-		                        filters[p.column] ?
-		                          Array.isArray(filters[p.column]) ?
-		                            s_value = filters[p.column].map((x, i_c)=> x.key = i_c)
-		                          : s_value = []
-		                          : s_value = [];
-		                      } else s_value = filters[p.column];
-		                      return [
-		                        <Col key='s3' span={24}><label >{p.title}</label></Col>,
-		                        <Col key='s4' span={24}>
-		                          <Select
-		                            labelInValue={p.type === 'multijson' ? true : false}
-		                            mode={ p.type === 'multijson' ? 'multiple' : 'default' }
-		                            showSearch={true}
-		                            value={filters[p.column]} placeholder={p.title}
-		                            style={{ width: '100%' }}
-		                            onFocus={()=>handlerGetTable(p)}
-		                            onDeselect={(_val) => {
-		                              if(p.type === 'multijson') {
-		                                filters[p.column] = _.filter(s_value, o => o.key !== _val.key)
-		                                handlerFilters(p.column, filters[p.column]);
-		                              }
-		                            }}
-		                            onSelect={(_val, option) => {
-		                              if(p.type === 'multijson') {
-		                                if(Array.isArray(filters[p.column]))
-		                                  filters[p.column].push(option.props.item);
-		                                  else filters[p.column] = [option.props.item];
-		                              } else filters[p.column] = _val;
-		                              handlerFilters(p.column, filters[p.column]);
-		                            }}
-		                          >
-		                            {
-		                              apiData[p.title] ? Array.isArray(apiData[p.title]) ? (()=> {
-		                                return apiData[p.title].map((it_m, i_arr) => {
-		                                  return <Option key={i_arr} item={it_m} value={it_m.value}>{ it_m.label }</Option>
-		                                })
-		                              })() : null : null
-		                            }
-		                          </Select>
-		                        </Col>
-		                        ];
-		                      break;
+											case 'multijson':
+			                case 'select':
+			                case 'multiselect':
+			                      let s_value;
+			                      if(p.type === 'multijson' || p.type === 'multiselect'){
+			                        //filters[p.column] &&
+			                          //Array.isArray(filters[p.column]) ?
+			                            s_value = filters[p.column]//.map((x, i_c)=> {x['key'] = i_c})
+			                          || []
+			                      } else s_value = filters[p.column];
+			                      return [
+			                        <Col key='s3' span={24}><label >{p.title}</label></Col>,
+			                        <Col key='s4' span={24}>
+				                          <Select
+				                            labelInValue={(p.type === 'multijson' || p.type === 'multiselect')? true : false}
+				                            mode={ (p.type === 'multijson' || p.type === 'multiselect') ? 'multiple' : 'default' }
+				                            showSearch={true}
+				                            value={filters[p.column]}
+				                            placeholder={p.title}
+				                            style={{ width: '100%' }}
+				                            onFocus={()=>handlerGetTable(p)}
+				                            onDeselect={(_val) => {
+				                              if(p.type === 'multijson' || p.type === 'multiselect') {
+				                                filters[p.column] = s_value.filter(o => o && o.key !== _val.key)
+				                                handlerFilters(p.column, filters[p.column]);
+				                              }
+				                            }}
+				                            onSelect={(_val, option) => {
+				                              if(p.type === 'multijson' || p.type === 'multiselect') {
+																				_val['value'] = _val.key
+				                                if(Array.isArray(filters[p.column]))
+				                                  filters[p.column].push(_val);
+				                                  else filters[p.column] = [_val];
+				                              } else filters[p.column] = _val;
+				                              handlerFilters(p.column, filters[p.column]);
+				                            }}
+				                          >
+				                            {
+				                              apiData[p.title] ? Array.isArray(apiData[p.title]) ? (()=> {
+				                                return apiData[p.title].map((it_m, i_arr) => {
+				                                  return <Option key={i_arr} item={it_m} value={it_m.value}>{ it_m.label }</Option>
+				                                })
+				                              })() : null : null
+				                            }
+				                          </Select>
+			                        </Col>
+			                        ];
+			                      break;
 		                    case 'typehead':
 		                      return [
 		                        <Col key='s1' span={24}><label >{p.title}</label></Col>,

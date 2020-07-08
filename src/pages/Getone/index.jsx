@@ -368,7 +368,7 @@ const GetOne = ({
                       avatar={<Avatar icon='file' />}
                       title={
                         <Tooltip title='Download' placement='right'>
-                          <a href={item.src}>{item.filename}</a>
+                          <a target = '_blank' href={item.src}>{item.filename}</a>
                         </Tooltip>
                       }
                     />

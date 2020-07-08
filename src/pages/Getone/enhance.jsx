@@ -350,7 +350,7 @@ withHandlers({
         message: 'Do not forget save changes'
       });
     },
-    onUploadFileChange: ({ set_state, data, origin }) => (event, item_config, multyple) => {
+    onUploadFileChange: ({ set_state, data, origin, onSaveRow }) => (event, item_config, multyple) => {
       if (event.target) {
         if (event.target.files.length > 0) {
           let _data = new FormData(),
@@ -378,17 +378,20 @@ withHandlers({
           }
           _data.append('viewid', origin.id);
 
-          apishka ('POST', _data, '/api/savefile', (res) => {
-              let res_data = res.outjson;
-              if (res_data.id) {
+        //  apishka ('POST', _data, '/api/savefile', (res) => {
+        apishka ('POST', _data, '/upload_file', (res) => {
+              let res_data = res//.outjson;
+              /*if (res_data.id) {
                 data[id_title] = res_data.id;
                 data[item_config.key] = JSON.parse(res_data.value);
               } else {
-                data = res_data;
-              }
-              set_state({
+                data[item_config.key] = res_data;
+              }*/
+              onSaveRow(res_data, item_config)
+
+              /*set_state({
                 data: { ...data }
-              });
+              });*/
             },
             (err) => {}
           )
