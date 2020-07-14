@@ -30,16 +30,16 @@ export const apishka = (type, data, methodname, cb = () => {}, err = () => {}) =
             message: 'Error',
             description: errText
         });
-       let redirect401 = localStorage.getItem('redirect401')
-       if (!redirect401 ||  redirect401 === 'undefined' || redirect401 === 'null') {
-          redirect401 = '/login'
-       }
+		let redirect401 = localStorage.getItem('redirect401')
+		if (!redirect401 ||  redirect401 === 'undefined' || redirect401 === 'null') {
+			redirect401 = '/login'
+		}
 
-       if (
-          error.response && error.response.status === 401 &&
-          window.location.pathname !== redirect401
-       ) {
-         window.location.replace(redirect401);
-       }
-   });
+		if (
+			error.response && error.response.status === 401 &&
+			window.location.pathname !== redirect401
+		) {
+			window.location.replace(redirect401);
+		}
+	});
 }

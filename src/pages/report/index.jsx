@@ -11,22 +11,22 @@ const Report = ({
 	const { title } = values;
 	const { Option } = Select;
 
-  return [
-    <Card key='1l'>
-        <h2>{title}</h2>
+	return [
+		<Card key='1l'>
+			<h2>{title}</h2>
 				{params.map((item) => {
 					return (<div key={item.id+item.ptitle}>
 						{(() => {
 							switch(item.typename) {
 								case "select":
 									let ptitle = item.id + item.ptitle;
-						  	  return (
+									return (
 										<Col span={24} key = {ptitle}>
 											<div><b>{item.ptitle}</b></div>
 											<Select
 												styles={{container: base => ({
-													  ...base, width: '40%'
-												  }),}}
+													...base, width: '40%'
+												}),}}
 												onChange = {
 													(e) => {
 														let inp = inputs; inp[item.func_paramtitle] = e;
@@ -40,27 +40,28 @@ const Report = ({
 										</Col>
 									)
 								case "multiselect":
-						  	      return (
+									return (
 										<div key = {item.ptitle + item.id}>
 											<div><b>{item.ptitle}</b></div>
 											<Select
 												isMulti
 												styles={{container: base => ({
-													  ...base, width: '70%'
-												  }),}}
+													...base, width: '70%'
+												}),}}
 												onChange = {(...args) => {
 													let inp = inputs,
 														e = args[0];
-													_.isNull(e) ?
+														_.isNull(e) ?
 														delete inp[item.func_paramtitle]
 														: inp[item.func_paramtitle] = e;
-													changeInputs( inp )
+														changeInputs( inp )
 												}}
 												devaultValue = {inputs[item.func_paramtitle]}
 												onFocus = {() => getSelectOptions(ptitle,null,item.apimethod)}
 												options={selections[ptitle]}
 											/>
-										</div>)
+										</div>
+									)
 								case "typehead":
 									return (
 										<div key = {item.title}>
@@ -71,7 +72,7 @@ const Report = ({
 													placeholder={item.ptitle}
 													filterOption={(inputValue, option) =>
 														option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-													  }
+													}
 													dataSource={selections[item.func_paramtitle]}
 													devaultValue = {inputs[item.func_paramtitle]}
 													onChange = {(e) => {
@@ -82,38 +83,40 @@ const Report = ({
 													}}
 												>
 													{
-													selections ? selections[ptitle] ? selections[ptitle].map((it) => {
-														return <Option key={it.id+it.label} value={it.label}>{it.label}</Option>
-													}) : null : null
-												}
+														selections ? selections[ptitle] ? selections[ptitle].map((it) => {
+															return <Option key={it.id+it.label} value={it.label}>{it.label}</Option>
+														}) : null : null
+													}
 												</AutoComplete>
 											</div>
-										</div>)
+										</div>
+									)
 								default:
 									return (
 										<div key={item.ptitle+item.id}>
 											<div><b>{item.ptitle}</b></div>
-												<Input
-													style={{width: '30%'}}
-													onChange = {(e) => {
-														let inp = inputs;
-														inp[item.func_paramtitle] = e.target.value;
-														changeInputs(inp);
-													}}
-													defaultValue={inputs[item.func_paramtitle]}
-													type = {item.typename}
-													placeholder = {item.ptitle} />
+											<Input
+												style={{width: '30%'}}
+												onChange = {(e) => {
+													let inp = inputs;
+													inp[item.func_paramtitle] = e.target.value;
+													changeInputs(inp);
+												}}
+												defaultValue={inputs[item.func_paramtitle]}
+												type = {item.typename}
+												placeholder = {item.ptitle} />
 										</div>
 									)
-								}})()}
-							</div>
-						)}
+							}})()
+						}
+					</div>
 				)}
-				<Button onClick={ getReportFile } style={{ marginTop: '10px'}}>
-						Generate
-				</Button>
-	</Card>
-  ]
+			)}
+			<Button onClick={ getReportFile } style={{ marginTop: '10px'}}>
+				Generate
+			</Button>
+		</Card>
+	]
 };
 
 export default enhance(Report);

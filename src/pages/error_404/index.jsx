@@ -6,9 +6,9 @@ const Error_404 = ({history, location}) => {
 		<Result
 			status='404'
 			title='404: Not found'
-	    subTitle={`${location.pathname + location.search + location.hash}`}
-	    extra={<Button type="primary" onClick={() => history.goBack()} >Go Back</Button>}
-	  />
+			subTitle={`${location.pathname + location.search + location.hash}`}
+			extra={<Button type="primary" onClick={() => history.goBack()} >Go Back</Button>}
+		/>
 	)
 };
 

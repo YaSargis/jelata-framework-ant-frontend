@@ -3,11 +3,9 @@ import enhance from './enhance';
 
 
 const Home = ({ }) => {
-  document.title= 'Home';
-
+	document.title= 'Home';
 	location.href = localStorage.getItem('homepage') || '/composition/home'
-
-  return (<div />)
+	return (<div />)
 }
 
 export default enhance(Home);

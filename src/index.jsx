@@ -15,19 +15,14 @@ import ruRu from 'antd/lib/locale-provider/ru_RU';
 import 'moment/locale/ru';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <ConfigProvider locale={ruRu}>
-      <BrowserRouter>
-        <Route component={App}/>
-      </BrowserRouter>
-    </ConfigProvider>
-  </Provider>,
+	<Provider store={store}>
+		<ConfigProvider locale={ruRu}>
+			<BrowserRouter>
+				<Route component={App}/>
+			</BrowserRouter>
+		</ConfigProvider>
+	</Provider>,
   document.getElementById('container')
 );
-
-/*ReactDOM.render(
-  <App />,
-  document.getElementById('container')
-);*/
 
 if(module && module.hot) module.hot.accept()
