@@ -14,22 +14,20 @@ import { apishka } from 'src/libs/api';
 let wss = []; // ws array
 
 const enhance = compose(
-    withStateHandlers(
-        ({
-                inState = {
+    withStateHandlers(({
+        inState = {
 			data: {}, origin: {}, id_title: null,
 			carouselRef: React.createRef(), initIndex: 0,
 			collapseAll: false, localChangeCollapse: false,
 			localActiveKey: []
-                }
-        }) => ({
+        }
+    }) => ({
 		data: inState.data, origin: inState.origin,
 		id_title: inState.id_title, carouselRef: inState.carouselRef,
 		initIndex: inState.initIndex, collapseAll: inState.collapseAll,
 		localChangeCollapse: inState.localChangeCollapse,
 		localActiveKey: inState.localActiveKey
-        }),
-        {
+    }),{
 		set_state: state => obj => {
 			let _state = { ...state };
 			_.keys(obj).map(k => {
@@ -37,8 +35,7 @@ const enhance = compose(
 			});
 			return _state;
 		}
-        }
-    ),
+    }),
 	withHandlers({
 		get_params: props => _props => {
 			let params = {},
@@ -75,18 +72,7 @@ const enhance = compose(
 			_data[item_config.key] = value;
 
 			if (value === '' || valueTextTypes === '') {
-			/*switch (item_config.type) {
-			    case 'text':
-			    case 'date':
-			    case 'rate':
-			    case 'time':
-			    case 'autocomplete':
-			    case 'textarea':
-			    case 'number': {*/
 				_data[item_config.key] = null;
-				//break;
-			    //}
-			//}
 			}
 
 			set_state({
