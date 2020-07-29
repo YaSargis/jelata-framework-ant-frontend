@@ -42,8 +42,11 @@ const enhance = compose(
 	withHandlers({
 		handleGlobalWS: ({ getMenu}) => () => {
 			let ws = document.location.href.split('//')[1];
+			let ws_protocol = document.location.href.split('//')[0].indexOf('s') !== -1? 'wss' : 'ws'
+			console.log('ws_protocol', ws_protocol)
 			ws = ws.split('/')[0];
-			ws = 'ws://' + ws + '/global_ws'
+			  
+			ws = ws_protocol + '://' + ws + '/global_ws'
 			let globalSocket = new WebSocket(ws);
 			globalSocket.onopen = () => {
 				globalSocket.send(JSON.stringify({}));

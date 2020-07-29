@@ -103,8 +103,10 @@ const enhance = compose(
 
 		  			if (res.data.subscrible ) {
 				  		let ws = document.location.href.split('//')[1]
+						let ws_protocol = document.location.href.split('//')[0].indexOf('s') !== -1? 'wss' : 'ws'
+
 				  		ws = ws.split('/')[0]
-				  		ws = 'ws://' + ws + '/ws'
+				  		ws = ws_protocol + '://' + ws + '/ws'
 				  		let socket = new WebSocket(ws);
 				  		wss.push(socket)
 				  		socket.onopen = () => {
