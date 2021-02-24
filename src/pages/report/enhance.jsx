@@ -22,10 +22,10 @@ const enhance = compose(
 			apishka(
 				'GET', {}, '/api/methodinfo?id='+api_id,
 				(res) => {
-					const dataTypeString = res.data.outjson.methotypename;
+					const dataTypeString = res.outjson.methotypename;
 					if(dataTypeString === "get") {
 						apishka(
-							'GET', {}, `/api/${res.data.outjson.methodname}`,
+							'GET', {}, `/api/${res.outjson.methodname}`,
 							(res) => {
 								let sel = selections;
 								sel[ptitle] = res.outjson;
