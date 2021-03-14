@@ -3,10 +3,10 @@ import * as c from './public/config.json';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const config = c.default;
-export const api = isDev
-  ? {
-		_url: 'http://127.0.0.1:8080'
-    }
+export const api = isDev ? {
+		//_url: 'http://127.0.0.1:8080'
+		_url: 'http://onls.tuva.ru'
+	}
 	: c.api;
 
 export const actions = [
