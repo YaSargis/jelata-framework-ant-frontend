@@ -1,19 +1,19 @@
-import React from 'react';
+import React from 'react'
 
-import { Spin, Row, Layout, Icon, Menu } from 'antd';
-const { SubMenu } = Menu;
+import { Spin, Row, Layout, Icon, Menu } from 'antd'
+const { SubMenu } = Menu
 
-// import MyHeader from 'src/pages/layout/header';
+// import MyHeader from 'src/pages/layout/header'
 
-import List from 'src/pages/list';
-import GetOne from 'src/pages/Getone';
+import List from 'src/pages/list'
+import GetOne from 'src/pages/Getone'
 
-import _ from 'lodash';
-import Composition from 'src/pages/composition';
-import ActionsBlock from 'src/pages/layout/actions';
+import _ from 'lodash'
+import Composition from 'src/pages/composition'
+import ActionsBlock from 'src/pages/layout/actions'
 
-import enhance from './enhance';
-import Item from 'antd/lib/list/Item';
+import enhance from './enhance'
+import Item from 'antd/lib/list/Item'
 
 const Trees = ({
   history, location, getData, view, ready, openedKeys, menu,
@@ -74,7 +74,7 @@ const Trees = ({
                         <Row style={{ margin: '0 10px' }}>
                           <List compo = {true} path = {view.path} history = {history} location={location} />
                         </Row>
-                      );
+                      )
                     case 'form full':
                     case 'form not mutable':
                       return (
@@ -96,6 +96,6 @@ const Trees = ({
       </Layout>
     </Row>
   ]
-};
+}
 
-export default enhance(Trees);
+export default enhance(Trees)

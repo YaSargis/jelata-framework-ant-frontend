@@ -1,17 +1,28 @@
-import React from 'react';
-import Helmet from 'react-helmet';
+import React from 'react'
+import Helmet from 'react-helmet'
 
-import { Tabs, Form, Icon, Input, Button, Checkbox, List } from 'antd';
+import { Tabs, Form, Icon, Input, Button, Checkbox, List } from 'antd'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
-import 'src/styles/index.scss';
+import 'src/styles/index.scss'
 
-import enhance from './enhance';
+import enhance from './enhance'
+
+let passwordPlaceholder = (((LaNg || {}).passwordPlaceholder ||{})[LnG || 'EN'] || 'password')
+
+let plLogin = (((LaNg || {}).plLogin ||{})[LnG || 'EN'] || 'login')
+let loginForm = (((LaNg || {}).loginForm ||{})[LnG || 'EN'] || 'Log In')
+let signIn = (((LaNg || {}).signIn ||{})[LnG || 'EN'] || 'sign in')
+let oOr = (((LaNg || {}).oOr ||{})[LnG || 'EN'] || 'or')
+let logSig = (((LaNg || {}).logSig ||{})[LnG || 'EN'] || 'Log in by digital signature')
+let logPas = (((LaNg || {}).logPas ||{})[LnG || 'EN'] || 'Log in by login/password')
+let Error = (((LaNg || {}).Error ||{})[LnG || 'EN'] || 'Error')
+
 
 let config = {
-	title: 'Log in', login: 'Login',
-	pass: 'Password', remember: {
+	title: loginForm, login: plLogin,
+	pass: passwordPlaceholder, remember: {
 		visible: true, title: 'Remember me',
 	},
 	forgot: {
@@ -23,7 +34,7 @@ const LoginForm = ({
 	legacy, sertificats, select_scp, onSelectSert, onECP,
 	handleSubmit, form, setTypeLogin, set_state, ready = true
 }) => {
-	let { getFieldDecorator } = form;
+	let { getFieldDecorator } = form
 	return (
 		<div className={'tilt-in-fwd-tr login ' + (legacy ? '' : 'ecp_form_login') }>
 			<div className='login_title'>
@@ -34,22 +45,22 @@ const LoginForm = ({
 					{legacy ? [
 						<Form.Item key='s1'>
 							{getFieldDecorator('username', {
-								rules: [{ message: 'Please input your username!' }],
+								rules: [{ message: plLogin }],
 							})(
 								<Input
 									prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
-									placeholder='Username'
+									placeholder={plLogin}
 								/>
 							)}
 						</Form.Item>,
 						<Form.Item key='s2'>
 							{getFieldDecorator('password', {
-								rules: [{ message: 'Please input your Password!' }],
+								rules: [{ message: passwordPlaceholder }],
 							})(
 								<Input
 									prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
 									type='password'
-									placeholder='Password'
+									placeholder={passwordPlaceholder}
 								/>
 							)}
 						</Form.Item>
@@ -76,35 +87,21 @@ const LoginForm = ({
 							)}
 						</Form.Item>
 					]}
-					<Form.Item>
-						{
-							config.remember.visible ?
-								getFieldDecorator('remember', {
-									valuePropName: 'checked',
-									initialValue: true,
-								})(<Checkbox style={{ color: '#afb1be' }}>{config.remember.title || 'Remember me'}</Checkbox>) : null
-						}
-						{
-							config.remember.visible ?
-								<a className='login-form-forgot' href=''>
-									{ config.forgot.title || 'Forgot password' }
-								</a> : null
-						}
-					</Form.Item>
+
 					<Form.Item>
 						<Button type='primary' htmlType='submit' className='login-form-button'>
-							Log In
+							{loginForm}
 						</Button>
 						<span style={{
 							display: 'flex',
 							justifyContent: 'space-between'
 						}}>
 							<span>
-								<span style={{ color: '#afb1be' }}>Or </span>
+								<span style={{ color: '#afb1be' }}>{oOr} </span>
 								{}
 							</span>
-							<Button style={{ margin: '7px 0' }} size='small' type='dashed' ghost disabled={!ready} onClick={onECP}>
-								{ !legacy ? 'Log in by login/password' : 'Log in by digital signature'}
+							<Button style={{ margin: '7px 0' }} size='small' type='dashed' ghost onClick={onECP}>
+								{ !legacy ? logPas : logSig}
 							</Button>
 						</span>
 					</Form.Item>
@@ -114,4 +111,4 @@ const LoginForm = ({
 	)
 }
 
-export default Form.create({ name: 'normal_login' })(enhance(LoginForm));
+export default Form.create({ name: 'normal_login' })(enhance(LoginForm))

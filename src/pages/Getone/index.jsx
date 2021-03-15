@@ -1,6 +1,6 @@
-import React from 'react';
-import * as moment from 'moment';
-import InputMask from 'react-input-mask';
+import React from 'react'
+import * as moment from 'moment'
+import InputMask from 'react-input-mask'
 
 import {
   Form, Spin, Card, Layout, Row,
@@ -10,34 +10,35 @@ import {
   Modal, Progress, Icon,
   Tooltip, AutoComplete, TimePicker,
   Button, List, Avatar, InputNumber, Rate
-} from 'antd';
-const { Content } = Layout;
+} from 'antd'
+const { Content } = Layout
 
-import ColorPicker from './components/colorpicker';
-import TextEditor from './components/text-editor';
+import ColorPicker from './components/colorpicker'
+import TextEditor from './components/text-editor'
 
-//import locale from 'antd/es/date-picker/locale/ru_RU';
-import { api } from 'src/defaults';
+//import locale from 'antd/es/date-picker/locale/ru_RU'
+import { api } from 'src/defaults'
 
-import ActionsBlock from 'src/pages/layout/actions';
-import enhance from './enhance';
+import ActionsBlock from 'src/pages/layout/actions'
+import enhance from './enhance'
 
-import Select from './components/select';
-import MultiSelect from './components/multiselect';
-import MultiDate from "./components/multidate";
-import Typeahead from './components/typehead';
-import MultiTypehead from './components/multitypehead';
-import Certificate from './components/certificate';
-import { CustomArrowNext, CustomArrowPrev } from './components/custom-arrows';
-import AceEditor from 'react-ace';
+import Select from './components/select'
+import MultiSelect from './components/multiselect'
+import MultiDate from "./components/multidate"
+import Typeahead from './components/typehead'
+import MultiTypehead from './components/multitypehead'
+import Certificate from './components/certificate'
+import { CustomArrowNext, CustomArrowPrev } from './components/custom-arrows'
+import AceEditor from 'react-ace'
 
-import { visibleCondition /*Configer*/ } from 'src/libs/methods';
-import TextArea from 'antd/lib/input/TextArea';
-const { Panel } = Collapse;
+import { visibleCondition /*Configer*/ } from 'src/libs/methods'
+import TextArea from 'antd/lib/input/TextArea'
+const { Panel } = Collapse
 
 const keyCollapse = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16))
 
-
+let passwordPlaceholder = (((LaNg || {}).passwordPlaceholder ||{})[LnG || 'EN'] || 'password')
+let timePlaceholder = (((LaNg || {}).timePlaceholder ||{})[LnG || 'EN'] || 'Chose time')
 const GetOne = ({
 	location, history, set_state,
 	get_params, onChangeInput, onChangeData,
@@ -53,7 +54,7 @@ const GetOne = ({
     { config = {} } = origin,
     params = get_params(),
     render_childs = item => {
-		data[item.key] = data.hasOwnProperty(item.key) ? data[item.key] : null;
+		data[item.key] = data.hasOwnProperty(item.key) ? data[item.key] : null
 		switch (item.type) {
 			case 'label':
 				if (data[item.key] instanceof Object) {
@@ -61,7 +62,7 @@ const GetOne = ({
 						<Form.Item key='1,1' label={item.title}>
 							{JSON.stringify(data[item.key])}
 						</Form.Item>
-					);
+					)
 				}
 				return (
 					<Form.Item key='1,1' label={item.title}>
@@ -72,18 +73,18 @@ const GetOne = ({
 										return data[item.key].split('\n').map((it, key) => {
 											return (
 												<span key={key}>{it}<br /></span>
-											);
-										});
+											)
+										})
 									default:
-										return data[item.key];
+										return data[item.key]
 								}
 							})()
 							: ''}
 							{' '}
 						</span>
 					</Form.Item>
-				 );
-				break;
+				 )
+				break
 			case 'text':
 				return (
 					<Form.Item key='1.2' label={item.title}>
@@ -94,8 +95,8 @@ const GetOne = ({
 							onBlur={event => onChangeInput(event, item)}
 						/>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'textarea':
 				return (
 					<Form.Item key='d2.1' label={item.title}>
@@ -106,8 +107,8 @@ const GetOne = ({
 							onBlur={event => onChangeInput(event, item)}
 						/>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'date':
 				return (
 					<Form.Item key='d3' label={item.title}>
@@ -118,8 +119,8 @@ const GetOne = ({
 							format='DD.MM.YYYY'
 						/>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'autocomplete':
 				return (
 					<Form.Item key='4.b' label={item.title}>
@@ -130,7 +131,7 @@ const GetOne = ({
 										<AutoComplete.Option key={in_ds} text={it_ds.value}>
 											{it_ds.value}
 										</AutoComplete.Option>
-									);
+									)
 								})
 								: []
 							}
@@ -142,12 +143,12 @@ const GetOne = ({
 						value={data[item.key]}
 						onChange={event => onChangeData(event, item)}
 						onBlur={value => {
-						  if (value === undefined) onChangeInput({ target: { value: null } }, item);
+						  if (value === undefined) onChangeInput({ target: { value: null } }, item)
 						}}
 					  />
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'datetime':
 			    return (
 					<Form.Item key='d3.1' label={item.title}>
@@ -158,7 +159,7 @@ const GetOne = ({
 							format='DD.MM.YYYY HH:mm'
 						/>
 					</Form.Item>
-				);
+				)
 			case 'number':
 				return (
 					<Form.Item key='d4' label={item.title}>
@@ -166,13 +167,13 @@ const GetOne = ({
 							disabled={item.read_only || false}
 							value={data[item.key] === null ? null : data[item.key]}
 							onChange={event => {
-								onChangeData(event, item);
+								onChangeData(event, item)
 							}}
 							onBlur={event => onChangeInput(event, item)}
 						/>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'rate':
 				return (
 					<Form.Item key={item.key} label={item.title}>
@@ -180,12 +181,12 @@ const GetOne = ({
 							allowHalf
 							defaultValue={data[item.key] === null ? 0 : data[item.key]}
 							onChange={event => {
-								onChangeData(event, item);
+								onChangeData(event, item)
 							}}
 						/>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'tags':
 				return (
 					<Form.Item key={item.key} label={item.title}>
@@ -219,8 +220,8 @@ const GetOne = ({
 							))}
 						</div>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'password':
 				return (
 					<Form.Item key='d4.1' label={item.title}>
@@ -229,10 +230,10 @@ const GetOne = ({
 							value={data[item.key]}
 							onChange={event => onChangeData(event, item)}
 							onBlur={event => onChangeInput(event, item)}
-							placeholder='password'
+							placeholder={passwordPlaceholder}
 						/>
 					</Form.Item>
-				);
+				)
 			case 'link':
 				return (
 					<Form.Item key='d4.1' label={item.title}>
@@ -253,19 +254,19 @@ const GetOne = ({
 							)}
 						</div>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'image':
 			case 'file':
-				let fileList = [];
+				let fileList = []
 					data[item.key]? _.forEach(data[item.key], (file, file_index, files) => {
 						fileList.push({
 							row: item, uid: '-1',
 							name: file.filename, status: 'done',
 							file_url: file.uri, url: api._url + file.uri
-						});
+						})
 					})
-					: [];
+					: []
 				return (
 					<Form.Item key='d4.2' label={item.title}>
 						<Upload
@@ -275,18 +276,18 @@ const GetOne = ({
 							customRequest={event => onUpload(event, item, false)}
 							onRemove={onRemoveImg}
 							onPreview={event => {
-								let file_sr = ['img', 'jpg', 'png', 'gif'];
+								let file_sr = ['img', 'jpg', 'png', 'gif']
 								function findOf(na) {
-									let result = false;
+									let result = false
 									file_sr.forEach(el => {
-										result = !result ? na.split('.')[1] === el : result;
-									});
-									return result;
+										result = !result ? na.split('.')[1] === el : result
+									})
+									return result
 								}
 								if (findOf(event.name)) {
-									if (event.file_url) set_state({ previewFile: event });
-									else set_state({ previewFile: false });
-								} else window.open(event.url, '_blank');
+									if (event.file_url) set_state({ previewFile: event })
+									else set_state({ previewFile: false })
+								} else window.open(event.url, '_blank')
 							}}
 							onChange={onUploadFileChange}
 						>
@@ -310,8 +311,8 @@ const GetOne = ({
 							<img alt='example' style={{ width: '100%' }} src={previewFile.url || ''} />
 						</Modal>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'files':
 				return (
 					<div key={data[item.key]}>
@@ -348,8 +349,8 @@ const GetOne = ({
 							: null}
 						</ul>
 					</div>
-				);
-				break;
+				)
+				break
 			case 'filelist':
 			    return (
 					<Form.Item key='9.b' label='Filelist'>
@@ -371,7 +372,7 @@ const GetOne = ({
 							)}
 						/>
 					</Form.Item>
-				  );
+				  )
 			case 'images':
 				return (
 					<div key={data[item.key]}>
@@ -425,8 +426,8 @@ const GetOne = ({
 							: null}
 						</div>
 					</div>
-				);
-				break;
+				)
+				break
 			case 'gallery':
 				return (
 					<Form.Item key='23.p' label='Images list'>
@@ -455,10 +456,10 @@ const GetOne = ({
 													icon='picture' size='small' shape='circle'
 													style={{ border: '1px solid grey', background: 'GreenYellow' }}
 													onClick={() => {
-														set_state({ visibleModal: true });
+														set_state({ visibleModal: true })
 															carouselRef.current !== null
 															? carouselRef.goTo(index)
-															: set_state({ initIndex: index });
+															: set_state({ initIndex: index })
 													}}
 												/>
 											</Tooltip>
@@ -490,8 +491,8 @@ const GetOne = ({
 							</Carousel>
 						</Modal>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'select':
 			case 'select_api':
 				return (
@@ -510,8 +511,8 @@ const GetOne = ({
 							globalConfig={config}
 						/>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'multiselect':
 			case 'multiselect_api':
 				return (
@@ -531,7 +532,7 @@ const GetOne = ({
 							globalConfig={config}
 						/>
 					</Form.Item>
-				);
+				)
 			case 'typehead':
 			case 'typehead_api':
 				return (
@@ -551,8 +552,8 @@ const GetOne = ({
 							globalConfig={config}
 						/>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'multitypehead':
 			case 'multitypehead_api':
 				return (
@@ -572,8 +573,8 @@ const GetOne = ({
 							globalConfig={config}
 						/>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'checkbox':
 				return (
 					<Form.Item key='d4.6' label={item.title}>
@@ -582,15 +583,15 @@ const GetOne = ({
 								disabled={config.read_only || false}
 								checked={data[item.key] || false}
 								onChange={event => {
-									onChangeInput(event.target.checked, item);
+									onChangeInput(event.target.checked, item)
 								 }}
 							>
 								{item.title}
 							</Checkbox>
 						</Tooltip>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'certificate':
 				return (
 					<Form.Item key='d5' label={item.title}>
@@ -601,22 +602,22 @@ const GetOne = ({
 							onChangeInput={onChangeInput}
 						/>
 					</Form.Item>
-				);
-				break;
+				)
+				break
 			case 'time':
 			  return (
 				<Form.Item key='d6' label={item.title}>
 					<TimePicker
 						format={'HH:mm'}
-						placeholder='Chose time'
+						placeholder={timePlaceholder}
 						value={data[item.key] === null ? null : moment(data[item.key] || '', 'HH:mm')}
 						onChange={(time, timeString) => {
-							timeString === '' ? (timeString = null) : timeString;
-							onChangeInput(timeString, item);
+							timeString === '' ? (timeString = null) : timeString
+							onChangeInput(timeString, item)
 						}}
 					/>
 				</Form.Item>
-			);
+			)
 			case 'colorpicker':
 				return (
 					<Form.Item key='23c' label={item.title}>
@@ -626,7 +627,7 @@ const GetOne = ({
 							localConfig={item}
 						/>
 						</Form.Item>
-				);
+				)
 			case 'color':
 				return (
 					<Form.Item key='24c' label={item.title}>
@@ -638,7 +639,7 @@ const GetOne = ({
 								}}
 						></div>
 					</Form.Item>
-				);
+				)
 			case 'texteditor':
 				return (
 					<Form.Item key='1t' label={item.title}>
@@ -648,33 +649,33 @@ const GetOne = ({
 							localConfig={item}
 						/>
 					</Form.Item>
-				);
+				)
 			case 'innerHtml':
 				function createMarkup() {
-					return { __html: `${data[item.key]}` };
+					return { __html: `${data[item.key]}` }
 					}
 				return (
 					<Form.Item key='2t' label={item.title}>
 						<div dangerouslySetInnerHTML={createMarkup()} />
 					</Form.Item>
-				);
+				)
 			case 'array':
 				const dataTable = data[item.key]? 
 					data[item.key].map(it => {
 						return {
 							...it,
 							key: it.id
-						};
+						}
 					})
-				: null;
-					let dataColumns = [];
+				: null
+					let dataColumns = []
 				if (data[item.key]) {
 					for (let property in data[item.key][0]) {
 						dataColumns.push({
 							title: `${property}`.toUpperCase(),
 							dataIndex: `${property}`,
 							key: `${property}`
-						});
+						})
 					}
 				}
 				return (
@@ -694,7 +695,7 @@ const GetOne = ({
 							</Panel>
 						</Collapse>
 					</Form.Item>
-				);
+				)
 			case 'codeEditor':
 				return (
 					<Form.Item key='2t' label={item.title}>
@@ -715,7 +716,7 @@ const GetOne = ({
 							}}
 						/>
 					</Form.Item>
-				);
+				)
 			case 'phone':
 				return (
 					<Form.Item key='phone' label={item.title}>
@@ -726,7 +727,7 @@ const GetOne = ({
 							onBlur={e => onChangeInput(e)}
 						/>
 					</Form.Item>
-				);
+				)
 			case 'multidate':
 				return (
 					<Form.Item key='multidate' label={item.title}>
@@ -743,8 +744,8 @@ const GetOne = ({
 					<Form.Item key='d22' label={item.title}>
 						{item.type}
 					</Form.Item>
-				);
-				break;
+				)
+				break
 		}
     },
 	render_form = (
@@ -756,12 +757,12 @@ const GetOne = ({
 							(item.visible === true || item.visible === 1) &&
 								visibleCondition(data, item.visible_condition, params.inputs)
 						).map((item, ind, arr) => {
-							let width = item.width ? (item.width > 24 ? 24 : parseInt(item.width)) : 12;
+							let width = item.width ? (item.width > 24 ? 24 : parseInt(item.width)) : 12
 							return (
 								<Col className={item.classname} span={width} key={'ss' + ind}>
 									<div className={item.classname}>{render_childs(item)}</div>
 								</Col>
-							);
+							)
 						})}
 					</Row>
 				</Col>
@@ -776,7 +777,7 @@ const GetOne = ({
 				</Col>
 			</Row>
 		</Form>
-	);
+	)
 	// ------------------------------------------------------------------------------------------------------------------------
 
 	return (
@@ -788,7 +789,7 @@ const GetOne = ({
 			<Panel className = {origin.classname || ''} header={(origin.title || '').toUpperCase()} key='1'>
 				<h3>{params.inputs._sub_title}</h3>
 				{loading ? (
-					<Spin key='sk' spinning={true} tip='Loading...'>
+					<Spin key='sk' spinning={true} tip='...'>
 						<Card className='f_content_app' />
 					</Spin>
 				) : (
@@ -798,7 +799,7 @@ const GetOne = ({
 				)}
 			</Panel>
 		</Collapse>
-	);
-};
+	)
+}
 
-export default enhance(GetOne);
+export default enhance(GetOne)

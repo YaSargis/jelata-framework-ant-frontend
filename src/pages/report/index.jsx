@@ -1,16 +1,16 @@
-import React from 'react';
-import enhance from './enhance';
-import { Card, Button, Input, AutoComplete, Col } from 'antd';
-import Select from 'react-select';
+import React from 'react'
+import enhance from './enhance'
+import { Card, Button, Input, AutoComplete, Col } from 'antd'
+import Select from 'react-select'
 
 const Report = ({
 	values, params, changeInputs,
 	inputs, selections, getSelectOptions,
 	getReportFile
 }) => {
-	const { title } = values;
-	const { Option } = Select;
-
+	const { title } = values
+	const { Option } = Select
+	let reportGenerate = (((LaNg || {}).reportGenerate ||{})[LnG || 'EN'] || 'Generate')
 	return [
 		<Card key='1l'>
 			<h2>{title}</h2>
@@ -19,7 +19,7 @@ const Report = ({
 						{(() => {
 							switch(item.typename) {
 								case "select":
-									let ptitle = item.id + item.ptitle;
+									let ptitle = item.id + item.ptitle
 									return (
 										<Col span={24} key = {ptitle}>
 											<div><b>{item.ptitle}</b></div>
@@ -29,8 +29,9 @@ const Report = ({
 												}),}}
 												onChange = {
 													(e) => {
-														let inp = inputs; inp[item.func_paramtitle] = e;
-														changeInputs(inp);
+														let inp = inputs 
+														inp[item.func_paramtitle] = e
+														changeInputs(inp)
 													}
 												}
 												defaultValue = {inputs[item.func_paramtitle]}
@@ -50,10 +51,10 @@ const Report = ({
 												}),}}
 												onChange = {(...args) => {
 													let inp = inputs,
-														e = args[0];
+														e = args[0]
 														_.isNull(e) ?
 														delete inp[item.func_paramtitle]
-														: inp[item.func_paramtitle] = e;
+														: inp[item.func_paramtitle] = e
 														changeInputs( inp )
 												}}
 												devaultValue = {inputs[item.func_paramtitle]}
@@ -76,9 +77,9 @@ const Report = ({
 													dataSource={selections[item.func_paramtitle]}
 													devaultValue = {inputs[item.func_paramtitle]}
 													onChange = {(e) => {
-														let inp = inputs;
-														const findedObj = selections.find((it) => it.label===e);
-														inp[item.func_paramtitle] = findedObj;
+														let inp = inputs
+														const findedObj = selections.find((it) => it.label===e)
+														inp[item.func_paramtitle] = findedObj
 														changeInputs( inp )
 													}}
 												>
@@ -98,9 +99,9 @@ const Report = ({
 											<Input
 												style={{width: '30%'}}
 												onChange = {(e) => {
-													let inp = inputs;
-													inp[item.func_paramtitle] = e.target.value;
-													changeInputs(inp);
+													let inp = inputs
+													inp[item.func_paramtitle] = e.target.value
+													changeInputs(inp)
 												}}
 												defaultValue={inputs[item.func_paramtitle]}
 												type = {item.typename}
@@ -113,10 +114,10 @@ const Report = ({
 				)}
 			)}
 			<Button onClick={ getReportFile } style={{ marginTop: '10px'}}>
-				Generate
+				{reportGenerate}
 			</Button>
 		</Card>
 	]
-};
+}
 
-export default enhance(Report);
+export default enhance(Report)

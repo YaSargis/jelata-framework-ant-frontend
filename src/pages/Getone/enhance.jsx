@@ -12,7 +12,13 @@ import { apishka } from 'src/libs/api';
 //import { toggleLoading } from 'src/redux/actions/helpers';
 
 let wss = []; // ws array
-
+let Message = (((LaNg || {}).Message ||{})[LnG || 'EN'] || 'Message')
+let Error = (((LaNg || {}).Error ||{})[LnG || 'EN'] || 'Error')
+let unknownError = (((LaNg || {}).unknownError ||{})[LnG || 'EN'] || 'Unknown error')
+let wsError = (((LaNg || {}).wsError ||{})[LnG || 'EN'] || 'ws error')
+let notForget = (((LaNg || {}).notForget ||{})[LnG || 'EN'] || 'Do not forget save changes')
+let Yes = (((LaNg || {}).Yes ||{})[LnG || 'EN'] || 'Yes')
+let bClose = (((LaNg || {}).bClose ||{})[LnG || 'EN'] || 'close')
 const enhance = compose(
     withStateHandlers(({
         inState = {
@@ -157,7 +163,7 @@ const enhance = compose(
                         };
                         socket.onerror = error => {
                             notification.error({
-                                message: 'ws error'
+                                message: wsError
                             });
                             console.log('ws error:', error);
                         };
@@ -275,8 +281,8 @@ const enhance = compose(
 				}).catch(err => {
 					if (err)
 						notification.error({
-							message: 'Error',
-							description: err.response ? err.response.data.message : 'Uncknown Error'
+							message: Error,
+							description: err.response ? err.response.data.message : unknownError
 						});
 				});
 			}
@@ -317,11 +323,11 @@ const enhance = compose(
                     onSaveRow(row_data, row);
                 },
                 onCancel() {},
-                okText: 'Yes',
-                cancelText: 'No'
+                okText: Yes,
+                cancelText: bClose
             });
             notification.info({
-                message: 'Do not forget save changes'
+                message: notForget
             });
         },
         onRemoveFile: ({ data, onSaveRow }) => (files, uri, item) => {
@@ -332,11 +338,11 @@ const enhance = compose(
                     onSaveRow(files, item);
                 },
                 onCancel() {},
-                okText: 'Yes',
-                cancelText: 'No'
+                okText: Yes,
+                cancelText: bClose
             });
             notification.info({
-                message: 'Do not forget save changes'
+                message: notForget
             });
         },
         onUploadFileChange: ({ set_state, data, origin, onSaveRow }) => (event, item_config, multyple) => {

@@ -15,6 +15,8 @@ import { PostMessage, Delete, Get, Put, apishka } from 'src/libs/api'
 import Getone from 'src/pages/Getone'
 import List from 'src/pages/list'
 
+let Error = (((LaNg || {}).Error ||{})[LnG || 'EN'] || 'Error')
+let signError = (((LaNg || {}).signError ||{})[LnG || 'EN'] || 'sign error')
 
 const ActionsBlock = ({
 	actions, data, params,
@@ -147,7 +149,7 @@ const enhance = compose(
 								resolve(body)
 							}).catch((err) => {
 								notification['error']({
-									message: 'Error', description: 'sign error' + err
+									message: Error, description: signError + err
 								})
 								reject(err)
 							})

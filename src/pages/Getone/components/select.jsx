@@ -1,26 +1,27 @@
-import React from 'react';
-import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose';
-import qs from 'query-string';
-import Select from 'react-select';
+import React from 'react'
+import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
+import qs from 'query-string'
+import Select from 'react-select'
 
-import { apishka } from 'src/libs/api';
+import { apishka } from 'src/libs/api'
+let multiSelect = (((LaNg || {}).multiSelect ||{})[LnG || 'EN'] || 'Choose from the list')
 
 const handleKeyDown = (evt)=>{
 	switch(evt.key){
-		case "Home": evt.preventDefault();
-			if(evt.shiftKey) evt.target.selectionStart = 0;
-			else evt.target.setSelectionRange(0,0);
-			break;
-		case "End": evt.preventDefault();
-			const len = evt.target.value.length;
-			if(evt.shiftKey) evt.target.selectionEnd = len;
-			else evt.target.setSelectionRange(len,len);
-			break;
+		case "Home": evt.preventDefault()
+			if(evt.shiftKey) evt.target.selectionStart = 0
+			else evt.target.setSelectionRange(0,0)
+			break
+		case "End": evt.preventDefault()
+			const len = evt.target.value.length
+			if(evt.shiftKey) evt.target.selectionEnd = len
+			else evt.target.setSelectionRange(len,len)
+			break
 	}
-};
+}
 
 const SelectBox = ({ onChange, data = {}, inputs, config, options = [], onFocus, onFocusApi }) => {
-	let ind = _.findIndex(options, x => x.value === data[config.key]);
+	let ind = _.findIndex(options, x => x.value === data[config.key])
 	return (
 		<Select
 			styles={{
@@ -56,19 +57,19 @@ const SelectBox = ({ onChange, data = {}, inputs, config, options = [], onFocus,
 			}}
 			menuPlacement='auto'
 			menuPortalTarget={document.body}
-			placeholder={'Choose from thr list'}
+			placeholder={multiSelect}
 			isClearable
 			isDisabled={config.read_only || false}
 			value={ options[ind] || ''}
 			options={options}
 			onFocus={() => {
-				(config.type === 'select_api') ? onFocusApi(config, inputs) : onFocus('');
+				(config.type === 'select_api') ? onFocusApi(config, inputs) : onFocus('')
 			}}
 			onChange={ onChange }
 			onKeyDown={handleKeyDown}
 		/>
 	)
-};
+}
 
 const enhance = compose(
 	withStateHandlers(({
@@ -80,9 +81,9 @@ const enhance = compose(
     }),
     {
 		set_state: (state) => (obj) => {
-			let _state = {...state};
+			let _state = {...state}
 			_.keys(obj).map( k => { _state[k] = obj[k] })
-			return _state;
+			return _state
 		}
     }),
 	withHandlers({
@@ -96,51 +97,48 @@ const enhance = compose(
 				},
 				config.select_api,
 				(res) => {
-					let dat = _.sortBy(res.outjson, ['value']);
+					let dat = _.sortBy(res.outjson, ['value'])
 					set_state({
 						options: dat,
-					});
+					})
 				},
 				(err) => {}
-			);
+			)
 		},
 		onFocus: ({ data, location, set_state, config }) => (substr, id) => {
-			getDataSelect();
+			getDataSelect()
 			function getDataSelect () {
-				let inputs = qs.parse(location.search);
+				let inputs = qs.parse(location.search)
 				if (!config.selectdata){
 					if (config.select_condition) {
 						config.select_condition.forEach((obj) => {
 							let value = null
 							if (obj.value) {
 								if (data[obj.value.key]) {
-									value = data[obj.value.key];
-									inputs[obj.value.value] = value;
+									value = data[obj.value.key]
+									inputs[obj.value.value] = value
 								}
 							} else {
-								inputs[obj.col.value] = obj.const;
+								inputs[obj.col.value] = obj.const
 							}
-						});
-					};
+						})
+					}
 					apishka(
-						'POST',
-						{
-							inputs: inputs,
-							config: config,
-							id: id,
-							substr: substr
+						'POST', {
+							inputs: inputs, config: config,
+							id: id, substr: substr
 						},
 						'/api/select',
 						(res) => {
-							let _data = _.sortBy(res.outjson, ['value']);
+							let _data = _.sortBy(res.outjson, ['value'])
 							set_state({
 								options: _data
-							});
+							})
 						},
 						(err) => {}
-					);
+					)
 				}
-			};
+			}
 		},
 	}),
 	withHandlers({
@@ -150,13 +148,14 @@ const enhance = compose(
 	}),
 	lifecycle({
 		componentDidMount() {
-			const { config, data, onFocusApi, onFocus, inputs } = this.props;
-			if(config.type === 'select_api') onFocusApi(config, inputs); else onFocus(null , data[config.key]);
+			const { config, data, onFocusApi, onFocus, inputs } = this.props
+			if (config.type === 'select_api') onFocusApi(config, inputs) 
+			else onFocus(null , data[config.key])
 		},
 		componentDidUpdate(prevProps) {
-			const { config, data, onFocusApi, onFocus, inputs } = this.props;
+			const { config, data, onFocusApi, onFocus, inputs } = this.props
 		}
 	})
 )
 
-export default enhance(SelectBox);
+export default enhance(SelectBox)

@@ -1,25 +1,33 @@
-import React from 'react';
-import { compose, lifecycle, withStateHandlers, withHandlers } from 'recompose';
-import { Button, Modal, List, Typography, Popconfirm, Icon, notification } from 'antd';
+import React from 'react'
+import { compose, lifecycle, withStateHandlers, withHandlers } from 'recompose'
+import { Button, Modal, List, Typography, Popconfirm, Icon, notification } from 'antd'
+
+let certList = (((LaNg || {}).certList ||{})[LnG || 'EN'] || 'list:')
+let Error = (((LaNg || {}).Error ||{})[LnG || 'EN'] || 'Error')
+let certButton = (((LaNg || {}).certButton ||{})[LnG || 'EN'] || 'Сhoose certificate')
+let noCryptoPlugin = (((LaNg || {}).noCryptoPlugin ||{})[LnG || 'EN'] || 'Can not found module')
+let bClose = (((LaNg || {}).bClose ||{})[LnG || 'EN'] || 'close')
+let Yes = (((LaNg || {}).Yes ||{})[LnG || 'EN'] || 'Yes')
+let Confirm = (((LaNg || {}).Confirm ||{})[LnG || 'EN'] || 'Confirm')
 
 const Certificate = ({
 	data, config, open = false, options = [],
 	set_state, onSave, onOpen, onSelect
 }) => {
-	let value = data[config.key];
+	let value = data[config.key]
 	return [
 		<Button onClick={onOpen} key='c1'>
 			Сhoose certificate
 		</Button>,
 		<Modal
 			key='c2'
-			title='Choose the certificate'
+			title={certButton}
 			visible={open}
 			onOk={onSave}
 			onCancel={() => set_state({ open: false })}
 		>
 			<List
-				header={<h4>Certificates list</h4>}
+				header={<h4>{certList}</h4>}
 				size='small'
 				dataSource={options}
 				renderItem={item => (
@@ -38,10 +46,10 @@ const Certificate = ({
 					: 
 						<Popconfirm
 							placement="top"
-							title={'Confirm'}
+							title={Confirm}
 							onConfirm={() => onSelect(item) }
-							okText="Yes"
-							cancelText="Close"
+							okText={Yes}
+							cancelText={bClose}
 						>
 							<List.Item className='list-item-certificate'>
 								<Typography.Text>
@@ -52,8 +60,8 @@ const Certificate = ({
 				)}
 			/>
 		</Modal>
-	];
-};
+	]
+}
 
 const enhance = compose(
 	withStateHandlers(({
@@ -66,9 +74,9 @@ const enhance = compose(
 		open: inState.open,
     }),{
 		set_state: (state) => (obj) => {
-			let _state = {...state};
+			let _state = {...state}
 			_.keys(obj).map( k => { _state[k] = obj[k] })
-			return _state;
+			return _state
 		}
     }),
 	withHandlers({
@@ -80,16 +88,16 @@ const enhance = compose(
 				})
 			}).catch( err => {
 				notification.error({
-					message: 'Error',
-					description: err.status || 'Can not found module'
-				});
+					message: Error,
+					description: err.status || noCryptoPlugin
+				})
 			})
 		},
 		onSave: ({ set_state }) => () => {
-			set_state({ open: false });
+			set_state({ open: false })
 		},
 		onSelect: ({ onChangeInput, config }) => (item) => {
-			onChangeInput(item.thumbprint, config);
+			onChangeInput(item.thumbprint, config)
 		}
 	}),
 	withHandlers({
@@ -97,6 +105,6 @@ const enhance = compose(
 			getCertificates()
 		}
 	})
-);
+)
 
-export default enhance(Certificate);
+export default enhance(Certificate)
