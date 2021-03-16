@@ -1,7 +1,7 @@
 import { message } from 'antd'
 import React, {useEffect, useState} from 'react'
 import { Line } from 'react-chartjs-2'
-import { apishka, Type_Req } from 'src/libs/api'
+import { apishka } from 'src/libs/api'
 
 // const data1 = {
 //	 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -19,11 +19,11 @@ import { apishka, Type_Req } from 'src/libs/api'
 const Diagram = ({data, config, inputs}) => {
 	// guard expression
 	if (config.select_api === null) 
-		return message.error(`select_api in null - '${config.title}'`)
+		return message.error(`select_api is null - '${config.title}'`)
 
 	const [dataFromApi, setDataFromApi] = useState({})
 	const getDataFromApi = () => {
-		apishka(Type_Req.post, {
+		apishka('POST', {
 			data, inputs, config
 		}, config.select_api, res => {
 			const { datasets, y } = res.outjson

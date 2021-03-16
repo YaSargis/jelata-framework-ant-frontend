@@ -745,7 +745,7 @@ const GetOne = ({
 				return (
 					<Form.Item label={item.title}>
 						<Diagram config={item} data={data} origin={origin} inputs={params.inputs} />
-					</Form.Item
+					</Form.Item>
 				)
 			default:
 				return (
