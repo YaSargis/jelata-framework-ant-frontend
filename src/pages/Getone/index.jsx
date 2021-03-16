@@ -30,6 +30,8 @@ import MultiTypehead from './components/multitypehead'
 import Certificate from './components/certificate'
 import { CustomArrowNext, CustomArrowPrev } from './components/custom-arrows'
 import AceEditor from 'react-ace'
+import Diagram from './components/diagram'
+
 
 import { visibleCondition /*Configer*/ } from 'src/libs/methods'
 import TextArea from 'antd/lib/input/TextArea'
@@ -738,6 +740,12 @@ const GetOne = ({
 							origin={origin}
 						/>
 					</Form.Item>
+				)
+			case 'diagram_api':
+				return (
+					<Form.Item label={item.title}>
+						<Diagram config={item} data={data} origin={origin} inputs={params.inputs} />
+					</Form.Item
 				)
 			default:
 				return (
