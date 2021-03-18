@@ -2,15 +2,14 @@ import React from 'react'
 import _ from 'lodash'
 
 import { Layout, Divider, Typography, Row } from 'antd'
-import { compose, withHandlers, withState } from 'recompose'
+import { compose, withHandlers } from 'recompose'
 
 const { Header } = Layout
 const { Title } = Typography
 import { menu_creator } from 'src/libs/methods'
 
 const enhance = compose(
-	withState('menu', 'changeMenu', []),
-	withState('usermenu', 'changeUsermenu', []),
+
 	withHandlers({
 		menu_creator: menu_creator
 	})

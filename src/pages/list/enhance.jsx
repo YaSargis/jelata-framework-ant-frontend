@@ -1,5 +1,5 @@
 import React from 'react'
-import { compose, lifecycle, withHandlers, withStateHandlers, withState } from "recompose"
+import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import _ from 'lodash'
 import qs from 'query-string'
 import { saveUserSettings } from 'src/libs/methods'
@@ -13,59 +13,54 @@ let wsError = (((LaNg || {}).wsError ||{})[LnG || 'EN'] || 'ws error')
 const enhance = compose(
 	withStateHandlers(({
 		inState = {
-			type_list: {}, filter: false,
-			popup: {
-				visible: false, x: 0, y: 0
+			filter: false, expandState: [], collapseAll: false,
+			localChangeCollapse: false, localActiveKey: [],
+			loading: false, listData: [], listColumns: [],
+			listConfig: [], listActions: [], pagination: {
+				pagenum: 1, pagesize: 20, foundcount: 0
+			}, isorderby: false, allProps: [], checked: [],
+			ready: false, filters: {}, params: {
+				inputs: {}
 			},
-			expandState: [], collapseAll: false,
-			localChangeCollapse: false,  localActiveKey: []
-		}
-	}) => ({
-		type_list: inState.type_list, filter: inState.filter, popup: inState.popup,
-		expandState: inState.expandState, collapseAll: inState.collapseAll,
-		localChangeCollapse: inState.localChangeCollapse,
-		localActiveKey: inState.localActiveKey
-	}), {
-		set_state: (state) => (obj) => { 
-			let _state = {...state}, keys = _.keys(obj) 
-			keys.map( k => { _state[k] = obj[k] }) 
-			return _state 
+			settings_views: JSON.parse( localStorage.getItem('usersettings')) || {'views':{}}
+		}}) => ({
+			filter: inState.filter,  expandState: inState.expandState,
+			collapseAll: inState.collapseAll, localChangeCollapse: inState.localChangeCollapse,
+			localActiveKey: inState.localActiveKey, loading: inState.loading, listData: inState.listData,
+			listColumns: inState.listColumns, listConfig: inState.listConfig,
+			listActions: inState.listActions, pagination: inState.pagination,
+			allProps: inState.allProps, checked: inState.checked, ready: inState.ready,
+			filters: inState.filters, params: inState.params, settings_views: inState.settings_views
+		}), {
+			set_state: (state) => (obj) => { 
+				let _state = {...state}, keys = _.keys(obj) 
+					keys.map( k => { _state[k] = obj[k] }) 
+					return _state 
+			},
+			changeFilter: (state) => (obj) => ({
+				...state, filter: obj
+			}),
+			changeLoading: (state) => (bool) => ({
+				...state, loading: bool
+			}),
+			changePagination: (state) => (obj) => ({
+				...state, pagination: obj
+			}),
+			changeChecked: (state) => (obj) => ({
+				...state, checked: obj
+			}),
+			changeFilters: (state) => (obj) => ({
+				...state, filters: obj
+			}),
+			changeParams: (state) => (obj) => ({
+				...state, params: obj
+			})
 		},
-		changeFilter: (state) => (obj) => ({
-			...state, filter: obj
-		}),
-		changePopup: (state) => (obj) => ({
-			...state, popup: obj
-		})
-	}),
-
-	withState('loading', 'changeLoading', false),
-	withState('listData', 'changeListData', []),
-	withState('listColumns', 'changeListColumns', []),
-	withState('listConfig', 'changeListConfig', []),
-	withState('listActions', 'changeListActions', []),
-	withState('pagination', 'changePagination', {
-		pagenum: 1, pagesize: 20, foundcount: 0
-	}),
-	withState('basicConfig', 'changeBasicConfig', {}),
-	withState('print', 'changePrint', false),
-	withState('filters', 'changeFilters', {}),
-	withState('isorderby', 'changeIsOrderBy', false),
-	withState('params', 'changeParams', {
-		inputs: {}
-	}),
-	withState('ready', 'changeReady', false),
-	withState('readyTable', 'changeReadyTable', false),
-
-	withState('allProps', 'changeAllProps', {}),
-	withState('filterBlock', 'changeFilterBlock', false),
-	withState('checked', 'changeChecked', []),
-	withState('ts', 'changeTS', {}  ),
+	),
 	withHandlers({
-    //actsRender: ActsRender,
 		get_params: (props) => (_props) => {
 			let params = {},
-			_p = _props || props // _props = nextProps or prevProps
+				_p = _props || props // _props = nextProps or prevProps
 			if(props.compo) {
 				params.inputs = qs.parse(_p.location.search) 
 				params.search = _p.location.search
@@ -78,19 +73,19 @@ const enhance = compose(
 				params.id_page = _p.match.params.id_page // id_page приходит из React-router
 			}
 			return {...params}
-		}}),
+		}
+	}),
 	withHandlers({
 		getData: ({
-			pagination, print, filters, location, history, basicConfig, changeBasicConfig,
-			get_params, set_state, changeListConfig,
-			/*composition, set_comp,*/ changeLoading, params,
-			changeListData, changeListColumns, changePagination, compo, path,
-			match, changeReadyTable, changeReady, changeAllProps, changeListActions,
-			changeIsOrderBy, expand,  changeTS
-		}) => (getData, _filters) => {
+			pagination,
+			filters, location,
+			set_state,
+			changeLoading, params, changePagination, compo, path,
+			match
+		}) => (_getData, _filters) => {   
 
 			changeLoading(true)
-			let _basicConfig = {...basicConfig}
+			//let _basicConfig = {...basicConfig}
 			let settings_table = ((JSON.parse(localStorage.getItem('usersettings')) || {'views':{}})['views']|| {})[location.pathname] || {}
 
 			if (settings_table && settings_table.pagesize) {
@@ -156,7 +151,7 @@ const enhance = compose(
   				    }
 
 					if(Array.isArray(res.data.config)) {
-						let columns = []
+						let columns = []  // accum
 						res.data.config.forEach((_el,i) => {
 							let el = {..._el}
 							let col = {
@@ -164,9 +159,9 @@ const enhance = compose(
 								onHeaderCell: (column) => {
 									return {
 										onClick: () => {
-											if(column.sortOrder === false) {
-												column.sortOrder = 'ascend'
-												changeReady(true)
+												if(column.sortOrder === false) {
+											  column.sortOrder = 'ascend'
+											  set_state({ ready: true })
 											}
 										}
 									}
@@ -177,17 +172,16 @@ const enhance = compose(
 							i === 0 ? col.key = 'key' : null
 							el.visible ? columns.push(col) : null
 						})
-
-						changeListColumns(columns)
+						set_state({ listColumns: columns })
 					}
 
-			        let arr = res.data.data.map((ex)=> {
-			            ex.key = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16))
-			            return ex
-			        })
-			        set_state({
-			            origin: {...res.data},
-			        })
+					let arr = res.data.data.map((ex)=> {
+						ex.key = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15 >> c/4).toString(16))
+						return ex
+					})
+					set_state({
+						origin: {...res.data},
+					})
 
 			  		if (res.data.acts.filter((a) => a.isforevery && a.type !== 'Expand' && a.type !== 'onLoad').length > 0 ) {
 			  			res.data.config.push({col:'__actions__', title:'➥', key: '__actions__', visible:true, editable:false })
@@ -197,31 +191,29 @@ const enhance = compose(
 			  		if (res.data.checker)
 			  			res.data.config.unshift({col:'checker', title:'', key: '__checker__', visible:true, editable:false })
 
-			  		changeListData(arr) 
-					changeListActions(res.data.acts)
-			        changeListConfig(res.data.config) 
+					set_state({
+						origin: {...res.data},
+						allProps: res.data,  // array
+						listData: arr,
+						listConfig: res.data.config,
+						listActions: res.data.acts,
+						isorderby: res.data.isorderby
+					})
 					changePagination(pagination)
-			        changeIsOrderBy(res.data.isorderby)
-			        _basicConfig.table = res.data.table 
-					_basicConfig.viewid = res.data.viewid
-			        changeBasicConfig(_basicConfig) 
-					changeAllProps(res.data)
 					changeLoading(false)
 					resolve()
-				},(err) => {})
+				},(err) => {changeLoading(false)})
 			})
 
 			go().then(()=> {
-				changeReady(true) 
-				changeReadyTable(true)
+				set_state({ ready: true })
 			})
 		}
 	}),
 	withHandlers({
-		handlerPaginationPage: ({ getData, changeReadyTable, pagination, changePagination, location }) => (page, pageSize) => {
+		handlerPaginationPage: ({ getData, pagination, changePagination, location }) => (page, pageSize) => {
 			pagination.pagenum = page
 			pagination.pagesize = pageSize
-
 			let userSettings = JSON.parse(localStorage.getItem('usersettings')) || {views:{}}
 			if (userSettings.views && userSettings.views[location.pathname]) {
 				userSettings.views[location.pathname].pagesize = pageSize
@@ -231,7 +223,6 @@ const enhance = compose(
 			saveUserSettings(userSettings)
 			localStorage.setItem('usersettings',JSON.stringify(userSettings))
 
-			changeReadyTable(false) 
 			changePagination(pagination)
 			getData(getData)
 		},
@@ -362,24 +353,21 @@ const enhance = compose(
 						params.search = nextProps.location.search
 						params.path = this.props.path
 						pagination.pagenum = 1
-						changeReady(false) 
-						changeListColumns({})
+						set_state({ ready: false, listColumns: {} })
 						changeFilters({})  
 						changeParams({...params, ...pagination})
 						getData(getData, {})
 					}
 				} else {
 					if(this.props.match.params.id !== nextProps.match.params.id) {
-						changeReady(false)
+						set_state({ ready: false }) 
 						pagination.pagenum = 1
 						params.inputs = qs.parse(nextProps.location.search)
-						changeListColumns({}) 
 						changeFilters({}) 
 						getData(getData, {})
 
-						let type = nextProps.location.pathname.split('/')[1]
 						set_state({
-							type_list: type
+							listColumns: {}
 						})
 					}
 				}

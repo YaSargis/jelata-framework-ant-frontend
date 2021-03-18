@@ -3,10 +3,9 @@ import enhance from './enhance'
 import { Card, Button, Input, AutoComplete, Col } from 'antd'
 import Select from 'react-select'
 
-const Report = ({
-	values, params, changeInputs,
-	inputs, selections, getSelectOptions,
-	getReportFile
+const Report = ({ 
+	values, params, set_state, inputs, selections,
+	getSelectOptions, getReportFile 
 }) => {
 	const { title } = values
 	const { Option } = Select
@@ -31,7 +30,7 @@ const Report = ({
 													(e) => {
 														let inp = inputs 
 														inp[item.func_paramtitle] = e
-														changeInputs(inp)
+														set_state({ inputs: inp })
 													}
 												}
 												defaultValue = {inputs[item.func_paramtitle]}
@@ -55,7 +54,7 @@ const Report = ({
 														_.isNull(e) ?
 														delete inp[item.func_paramtitle]
 														: inp[item.func_paramtitle] = e
-														changeInputs( inp )
+														set_state({ inputs: inp })
 												}}
 												devaultValue = {inputs[item.func_paramtitle]}
 												onFocus = {() => getSelectOptions(ptitle,null,item.apimethod)}
@@ -80,7 +79,7 @@ const Report = ({
 														let inp = inputs
 														const findedObj = selections.find((it) => it.label===e)
 														inp[item.func_paramtitle] = findedObj
-														changeInputs( inp )
+														set_state({ inputs: inp })
 													}}
 												>
 													{
@@ -101,7 +100,7 @@ const Report = ({
 												onChange = {(e) => {
 													let inp = inputs
 													inp[item.func_paramtitle] = e.target.value
-													changeInputs(inp)
+													set_state({ inputs: inp })
 												}}
 												defaultValue={inputs[item.func_paramtitle]}
 												type = {item.typename}

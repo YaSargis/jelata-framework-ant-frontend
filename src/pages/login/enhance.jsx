@@ -1,5 +1,5 @@
 
-import { compose, withState, withHandlers, lifecycle, withStateHandlers } from 'recompose'
+import { compose, withHandlers, lifecycle, withStateHandlers } from 'recompose'
 import { notification } from 'antd'
 
 import { apishka } from 'src/libs/api'
@@ -33,8 +33,6 @@ const enhance = compose(
 			})
 		}
 	),
-	withState('login', 'changeLogin', ''),
-	withState('password', 'changePassword', ''),
 	withHandlers({
 		onECP: ({ sertificats = [], legacy = true, set_state, setTypeLogin }) => () => {
 			set_state({

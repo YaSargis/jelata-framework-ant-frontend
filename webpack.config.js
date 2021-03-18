@@ -78,10 +78,7 @@ const jsLoaders = () => {
 const plugins = () => {
   const base = [
     new HTMLWebpackPlugin({
-      template: './index.html',
-      minify: {
-        collapseWhitespace: !isDev
-      }
+      template: './index.html'
     }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
