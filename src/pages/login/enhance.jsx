@@ -82,10 +82,10 @@ const enhance = compose(
 				})
 			} else {
 				apishka( 'POST', select_scp, '/auth/auth_crypto', (res) => {
-						// set_login_status(true)
-						location.href='/'
-					}
-				)
+					// set_login_status(true)
+					localStorage.setItem('thumbprint', select_scp.thumbprint)
+					location.href='/'
+				})
 			}
 		}
 	}),

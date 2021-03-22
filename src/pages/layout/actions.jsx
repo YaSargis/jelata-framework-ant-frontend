@@ -17,6 +17,8 @@ import List from 'src/pages/list'
 
 let Error = (((LaNg || {}).Error ||{})[LnG || 'EN'] || 'Error')
 let signError = (((LaNg || {}).signError ||{})[LnG || 'EN'] || 'sign error')
+let bClose = (((LaNg || {}).bClose ||{})[LnG || 'EN'] || 'close')
+let Yes = (((LaNg || {}).Yes ||{})[LnG || 'EN'] || 'Yes')
 
 const ActionsBlock = ({
 	actions, data, params,
@@ -88,7 +90,7 @@ const ActionsBlock = ({
 		return (
 			<Tooltip key={'s1'+i} placement={place_tooltip} title={el.title || ''}>
 				{((el.actapiconfirm === true &&  el.type === 'API') || el.type === 'Delete')? (
-					<Popconfirm placement='bottom' title='Confirm' okText='Yes' cancelText='No' onConfirm = {()=>onAction(el)}>
+					<Popconfirm placement='bottom' title={el.title} okText={Yes} cancelText={bClose} onConfirm = {()=>onAction(el)}>
 						<a style={{display:'hide'}}/>
 						<FmButton confirmed={false} el = {el} />
 					</Popconfirm>

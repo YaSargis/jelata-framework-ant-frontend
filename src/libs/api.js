@@ -9,7 +9,7 @@ export const apishka = (type, data, methodname, cb = () => {}, err = () => {}) =
 		method: type,
 		url: (methodname.indexOf('http') === -1)? api._url + methodname: methodname,
 		data: data,
-		//params: params,
+		params: ((type.toUpperCase() === 'GET')? data : {}),
 		withCredentials: true,
 		headers: {'Auth':localStorage.getItem('sesid')}
 	}).then(function(response) {

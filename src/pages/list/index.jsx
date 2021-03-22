@@ -159,6 +159,7 @@ const TableComp = ({
 						)}
 					</Spin>
 				 </div>
+				{pagin} 
 			 </>
 		)
 	}
