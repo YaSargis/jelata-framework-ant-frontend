@@ -41,6 +41,12 @@ const keyCollapse = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.g
 
 let passwordPlaceholder = (((LaNg || {}).passwordPlaceholder ||{})[LnG || 'EN'] || 'password')
 let timePlaceholder = (((LaNg || {}).timePlaceholder ||{})[LnG || 'EN'] || 'Chose time')
+let uploadImage = (((LaNg || {}).uploadImage ||{})[LnG || 'EN'] || 'upload image')
+let uploadFile = (((LaNg || {}).uploadFile ||{})[LnG || 'EN'] || 'upload file')
+let Delete = (((LaNg || {}).Delete ||{})[LnG || 'EN'] || 'Delete')
+let Show = (((LaNg || {}).Show ||{})[LnG || 'EN'] || 'Show')
+let Sliderr = (((LaNg || {}).Slider ||{})[LnG || 'EN'] || 'Slider')
+let Download = (((LaNg || {}).Download ||{})[LnG || 'EN'] || 'Download')
 const GetOne = ({
 	location, history, set_state,
 	get_params, onChangeInput, onChangeData,
@@ -298,7 +304,7 @@ const GetOne = ({
 									{item.type === 'image' ? <Icon type='plus' /> : null}
 									<div className='ant-upload-text'>
 										{' '}
-										{item.type === 'image' ? 'Upload image' : 'Upload file'}
+										{item.type === 'image' ? uploadImage : uploadFile}
 									</div>
 								</div>
 							) : (
@@ -329,7 +335,7 @@ const GetOne = ({
 								<li key={file.uri} className='getone__filelist-item'>
 									<div style={{ paddingLeft: 20 }}>{file.label || file.filename}</div>
 									<div className='getone__filelist-buttons'>
-										<Tooltip title='Download' placement='topLeft'>
+										<Tooltip title={Download} placement='topLeft'>
 											<Button
 												icon='download' size='small'
 												shape='circle'
@@ -337,7 +343,7 @@ const GetOne = ({
 												onClick={() => window.open(api._url + file.uri)}
 											/>
 										</Tooltip>
-										<Tooltip title='Delete' placement='topLeft'>
+										<Tooltip title={Delete} placement='topLeft'>
 											<Button
 												icon='delete' size='small'
 												shape='circle'
@@ -379,8 +385,9 @@ const GetOne = ({
 				return (
 					<div key={data[item.key]}>
 						<label 
-							htmlFor='files' className='getone__images-label'>
-							choose image
+							htmlFor='files' className='getone__images-label'
+						>
+							{uploadImage}
 						</label>
 						<input
 							accept='.jpg, .jpeg, .png'
@@ -403,7 +410,7 @@ const GetOne = ({
 										}}
 									>
 										<div className='getone__imageslist-buttons'>
-											<Tooltip title='Show' placement='topLeft'>
+											<Tooltip title={Show} placement='topLeft'>
 												<Button
 													icon='eye'
 													size='small'
@@ -412,7 +419,7 @@ const GetOne = ({
 													onClick={() => window.open(api._url + file.uri)}
 												/>
 											</Tooltip>
-											<Tooltip title='Delete' placement='topLeft'>
+											<Tooltip title={Delete} placement='topLeft'>
 												<Button
 													icon='delete'
 													size='small'
@@ -446,14 +453,14 @@ const GetOne = ({
 										}}
 									>
 										<div className='getone__imageslist-buttons'>
-											<Tooltip title='Show' placement='topLeft'>
+											<Tooltip title={Show} placement='topLeft'>
 												<Button
 													icon='eye' size='small' shape='circle'
 													style={{ border: '1px solid grey' }}
 													onClick={() => window.open(api._url + file.uri)}
 												/>
 											</Tooltip>
-											<Tooltip title='Slider' placement='topLeft'>
+											<Tooltip title={Sliderr} placement='topLeft'>
 												<Button
 													icon='picture' size='small' shape='circle'
 													style={{ border: '1px solid grey', background: 'GreenYellow' }}

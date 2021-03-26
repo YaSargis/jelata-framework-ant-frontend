@@ -17,7 +17,7 @@ const Certificate = ({
 	let value = data[config.key]
 	return [
 		<Button onClick={onOpen} key='c1'>
-			Сhoose certificate
+			{certButton}
 		</Button>,
 		<Modal
 			key='c2'

@@ -6,20 +6,20 @@ import { notification } from 'antd'
 
 import { menu_creator, saveUserSettings } from 'src/libs/methods'
 import { apishka } from 'src/libs/api'
-import { set_user_style_status } from 'src/redux/actions/user'
+//import { set_user_style_status } from 'src/redux/actions/user'
 
 let chatSocket
 
 let authErr = (((LaNg || {}).authErr ||{})[LnG || 'EN'] || 'Ошибка авторизации (явно вызванная исключение)')
 const enhance = compose(
-	connect(
+	/*connect(
 		state => ({
 			is_custom_style: state.user.is_custom_style
 		}),
 		dispatch => ({
 			set_user_style_status: status => dispatch(set_user_style_status(status))
 		})
-	),
+	),*/
 	withStateHandlers((
 		inState = {
 			custom_menu: [], user_detail: {}, collapsed: false, current_role: null
@@ -97,7 +97,7 @@ const enhance = compose(
 						message:g_item.message
 					})
 					apishka(
-						'GET',  {id: g_item.id},  '/api/setsended'
+						'GET',  {id: g_item.id},  '/api/notifications_setreaded_by_userid'
 					)
 				})
 				getMenu()
@@ -106,15 +106,15 @@ const enhance = compose(
 	}),
 	lifecycle({
 		componentDidMount(){
-			const { handleGlobalWS, getMenu, set_state, set_user_style_status } = this.props
+			const { handleGlobalWS, getMenu, set_state/*, set_user_style_status*/ } = this.props
 			let userSettings = JSON.parse(localStorage.getItem('usersettings'))
 			if (userSettings && userSettings.menuCollapse !== undefined) {
 				set_state({ collapsed: userSettings.menuCollapse })
 			}
 
-			if (userSettings && userSettings.is_custom_style !== undefined) {
+			/*if (userSettings && userSettings.is_custom_style !== undefined) {
 				set_user_style_status(userSettings.is_custom_style)
-			}
+			}*/
 
 				/* create client session */
 			let sesid = localStorage.getItem('sesid')

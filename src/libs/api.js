@@ -15,7 +15,7 @@ export const apishka = (type, data, methodname, cb = () => {}, err = () => {}) =
 	}).then(function(response) {
 		cb(response.data) // on success callback
 	}, (error) => {
-		err( error ) // error callback
+		
 		let errText = (((LaNg || {}).unknownError ||{})[LnG || 'EN'] || 'Unknown error')
 		if (
 			error.response &&
@@ -39,7 +39,8 @@ export const apishka = (type, data, methodname, cb = () => {}, err = () => {}) =
 			error.response && error.response.status === 401 &&
 			window.location.pathname !== redirect401
 		) {
-			window.location.replace(redirect401);
+			window.location.replace(redirect401)
 		}
+		err( error ) // error callback
 	})
 }
