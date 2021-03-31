@@ -119,6 +119,8 @@ const enhance = compose(
 				},	config.select_api,
 				(res) => {
 					let dat = _.sortBy(res.outjson, ['value'])
+					if (!dat)
+						dat = []
 					set_state({
 						options: dat,
 					})
