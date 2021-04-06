@@ -1,39 +1,40 @@
-import React from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
-import { config } from 'src/defaults';
+import React from 'react'
+import { Switch, Route, Link } from 'react-router-dom'
+import { config } from 'src/defaults'
 
-import { BackTop, Icon, Layout, Menu, Avatar, Row, Button, Modal } from 'antd';
-const { Header, Sider, Content, Footer } = Layout;
-import _ from 'lodash';
-import Helmet from 'react-helmet';
+import { BackTop, Icon, Layout, Menu, Avatar, Row, Button, Modal } from 'antd'
+const { Header, Sider, Content, Footer } = Layout
+import _ from 'lodash'
+import Helmet from 'react-helmet'
 
-import enhance from './enhance';
+import enhance from './enhance'
 
-import Home from 'src/pages/Home';
-import GetOne from 'src/pages/Getone';
-import LoginForm from 'src/pages/login';
-import Logout from 'src/pages/logout';
-import List from 'src/pages/list';
-import Composition from 'src/pages/composition';
-import Trees from 'src/pages/trees';
-import Report from 'src/pages/report';
-import Error_404 from 'src/pages/error_404';
+import Home from 'src/pages/Home'
+import GetOne from 'src/pages/Getone'
+import LoginForm from 'src/pages/login'
+import Logout from 'src/pages/logout'
+import List from 'src/pages/list'
+import Composition from 'src/pages/composition'
+import Trees from 'src/pages/trees'
+import Report from 'src/pages/report'
+import Error_404 from 'src/pages/error_404'
+import Chat from 'src/pages/chat'
 
 const App = ({
 	user_detail, collapsed, custom_menu,
 	menu_creator, menuCollapseStateSave, getMenu
 }) => {
-    return (
-        <Layout className='lay' style={{ minHeight: '100vh' }}>
-            <Helmet>
-                <meta charset='utf-8' />
-            </Helmet>
-            {(
+	return (
+		<Layout className='lay' style={{ minHeight: '100vh' }}>
+			<Helmet>
+				<meta charset='utf-8' />
+			</Helmet>
+			{(
 				custom_menu &&
-				custom_menu.filter((mn) => mn.menutype === 'Left Menu').length>0 &&
+				custom_menu.filter((mn) => mn.menutype === 'Left Menu').length > 0 &&
 				custom_menu.filter((mn) => mn.menutype === 'Left Menu')[0].menu &&
 				custom_menu.filter((mn) => mn.menutype === 'Left Menu')[0].menu.length > 0
-            )? (
+			)? (
 				<Sider collapsible collapsed={collapsed} onCollapse={collapsed => {menuCollapseStateSave(collapsed)}}>
 					{config.profile === true ? (
 						<Row className='profile'>
@@ -53,17 +54,17 @@ const App = ({
 						</Row>
 						) : null
 					}
-		            {custom_menu ? (
+					{custom_menu ? (
 						_.find(custom_menu, item => item.menutype === 'Left Menu') ? (
 							<Menu theme='dark' mode='vertical' inlineCollapsed={collapsed} subMenuOpenDelay={0.4}>
 								{menu_creator(menu_creator, _.find(custom_menu, item => item.id === 1).menu, false)}
 							</Menu>
 						) : null
-		            ) : null}
+					) : null}
 				</Sider>
-		    ) : null}
-            <Layout>
-                <Header style={{ padding: '0' }}>
+			) : null}
+			<Layout>
+				<Header style={{ padding: '0' }}>
 					{custom_menu ? (
 						_.find(custom_menu, item => item.menutype === 'Header Menu') ? (
 							<Menu mode='horizontal'>
@@ -75,9 +76,9 @@ const App = ({
 							</Menu>
 						) : null
 					) : null}
-                </Header>
-                <Content>
-                    <Switch>
+				</Header>
+				<Content>
+					<Switch>
 						<Route path='/' component={Home} exact />
 						<Route path='/home' component={Home} exact />
 						<Route path='/login' component={LoginForm} exact />
@@ -88,10 +89,11 @@ const App = ({
 						<Route path='/trees/:id' component={Trees} exact />
 						<Route path='/report/:id' component={Report} />
 						<Route path='/logout' component={Logout} exact />
+						<Route path='/chats' component={Chat} />
 						<Route component={Error_404} />
 					</Switch>
 					{(localStorage.getItem('ischat') === true || localStorage.getItem('ischat') === 'true') ? (
-							<Link to='/composition/chats'>
+							<Link to='/chats'>
 								<Icon 
 									className='dashboard__icon-chat' title='Chat'
 									type='message' 
@@ -103,7 +105,7 @@ const App = ({
 							</Link>
 						) : null}
 				</Content>
-                <Footer style={{ padding: '10px' }}>
+				<Footer style={{ padding: '10px' }}>
 					{custom_menu ? (
 						_.find(custom_menu, item => item.menutype === 'Footer Menu') ? (
 						<Menu>
@@ -124,7 +126,7 @@ const App = ({
 				</div>
 			</BackTop>
 		</Layout>
-    );
-};
+	)
+}
 
-export default enhance(App);
+export default enhance(App)

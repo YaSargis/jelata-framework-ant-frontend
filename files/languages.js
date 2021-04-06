@@ -166,7 +166,219 @@ var LaNg = {
 	"Download" : {
 		"EN":"Download",
 		"RU":"Скачать"
-	}
+	},
+	"chatControlPanel" : {
+		"EN":"Chat control panel",
+		"RU":"Панель управления чата"
+	},
+	"chatCreated" : {
+		"EN":"created ",
+		"RU":"создал чат в "
+	},
+	"LoadinG" : {
+		"EN":"Loading... ",
+		"RU":"Загрузка... "
+	},
+	"chatPhoto" : {
+		"EN": "Photo:",
+		"RU":"Фотография:"
+	},
+	"chatFw" : {
+		"EN": "Forward message",
+		"RU":"Переслать сообщение"
+	},
+	"chatRp" : {
+		"EN": "Reply message",
+		"RU":"Ответить"
+	},
+	"ChangeD" : {
+		"EN": "changed",
+		"RU":"изменено"
+	},
+	"EdiT" : {
+		"EN": "Edit",
+		"RU":"Изменить"
+	},
+	"CanceL" : {
+		"EN": "Cancel",
+		"RU":"Отмена"
+	},
+	"areUSure" : {
+		"EN": "Are you sure?",
+		"RU":"Вы уверены?"
+	},
+	"chatRec" : {
+		"EN": "Select recipient...",
+		"RU":"Выберите получателя..."
+	},
+	"getFilter" : {
+		"EN":"Search...",
+		"RU":"Фильтровать..."
+	},
+	"chatWTW" : {
+		"EN":"Select in the chat list whom you would like to write",
+		"RU":"Выберите в списке чатов, кому хотели бы написать"
+	},
+	"chatOCC" : {
+		"EN":"or create a chat",
+		"RU":"либо создайте чат"
+	},
+	"chatCrDialog" : {
+		"EN":"Create a dialog",
+		"RU":"Создать диалог"
+	},
+	"chatCrGroup" : {
+		"EN":"Create a group",
+		"RU":"Создать группу"
+	},
+	"writeMessage" : {
+		"EN":"Write a message",
+		"RU":"Написать сообщение"
+	},
+	"chatCrNM" : {
+		"EN":"Chat is created. Yet no message",
+		"RU":"Чат создан. Нет сообщений"
+	},
+	"fileOrImage" : {
+		"EN":"file/image",
+		"RU":"файл/картинка"
+	},
+	"YoU" : {
+		"EN":"You are",
+		"RU":"Вы"
+	},
+	"chatLists" : {
+		"EN":"chat lists",
+		"RU":"Список диалогов"
+	},
+	"chatNotCh" : {
+		"EN":"You have not selected chat participants",
+		"RU":"Вы не выбрали участников чата"
+	},
+	"chatCreated" : {
+		"EN":"Created",
+		"RU":"Чат создан"
+	},
+	"chatInit" : {
+		"EN":"Initializing chat",
+		"RU":"Инициализация чата"
+	},
+	"chatMembers" : {
+		"EN":"Chat members",
+		"RU":"Участники чата"
+	},
+	"userNotFound" : {
+		"EN":"The user not found",
+		"RU":"Пользователь не найден"
+	},
+	"Search" : {
+		"EN":"Search...",
+		"RU":"Поиск..."
+	},
+	"Create" : {
+		"EN":"Create",
+		"RU":"Создать"
+	},
+	"chatInitGroup" : {
+		"EN":"Initializing a group chat",
+		"RU":"Инициализация группового чата"
+	}, 
+	"chatCreatedGroup": {
+		"EN":"Created",
+		"RU":"Групповой чат создан"
+	}, 
+	"uncorrectData": {
+		"EN":"Uncorrect data inserted",
+		"RU":"Вы ввели некорректные данные"
+	}, 
+	"chatGroupTitle": {
+		"EN":"The group title",
+		"RU":"Название группы"
+	}, 
+	"chatGroupTitleEnter": {
+		"EN":"Enter the group title",
+		"RU":"Введите название группы"
+	},
+	"Next": {
+		"EN":"Next",
+		"RU":"Далее"
+	},
+	"chatGoBack": {
+		"EN":"Go back",
+		"RU":"Назад"
+	},
+	"FilE": {
+		"EN":"File",
+		"RU":"Файл"
+	},
+	"chatChFile": {
+		"EN":"Choose the files",
+		"RU":"Прикрепите файлы"
+	},
+	"chatChImage": {
+		"EN":"Choose the image",
+		"RU":"Прикрепите картинку"
+	},
+	"sendComment":{
+		"EN":"Send",
+		"RU":"Отправить коммент"	
+	},
+	"Clean":{
+		"EN":"Clean",
+		"RU":"Очистить"	
+	},
+	"emNotFound":{
+		"EN":"Emoji not found",
+		"RU":"Эмодзи не найдено"	
+	},
+	"emSkinText":{
+		"EN":"Default emoji skin",
+		"RU":"Выберите свой оттенок кожи по умолчанию"	
+	},
+	"searchResult":{
+		"EN":"search result",
+		"RU":"результаты поиска"	
+	},
+	"emComUsed":{
+		"EN":"Commonly used",
+		"RU":"Часто используемый"	
+	},
+	"emPp":{
+		"EN":"People",
+		"RU":"Смайлики и люди"	
+	},
+	"emNt":{
+		"EN":"Nature",
+		"RU":"Животные и Природа"	
+	},
+	"emFoDr":{
+		"EN":"Food & Drink",
+		"RU":"Еда, напиток"	
+	},
+	"emAct":{
+		"EN":"Activity",
+		"RU":"Мероприятия"	
+	},
+	"emTrPl":{
+		"EN":"Travel & Places",
+		"RU":"Путешествия и Места"	
+	},
+	"emObj":{
+		"EN":"Objects",
+		"RU":"Объекты"	
+	},
+	"emSym":{
+		"EN":"Symbols",
+		"RU":"Символы"	
+	},
+	"emFlags":{
+		"EN":"Flags",
+		"RU":"Флаги"	
+	},
+	"ChaT":{
+		"EN":"Chat",
+		"RU":"Чат"	
+	}	
 }
 
-var LnG = 'RU'
+var LnG = 'EN'

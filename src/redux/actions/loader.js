@@ -1,6 +1,6 @@
 export const SET_LOADED = 'SET_LOADED';
 
-// state loading (true/false)
+// статус loading (true/false)
 export const set_loading = (status) => {
   return dispatch => {
     dispatch({

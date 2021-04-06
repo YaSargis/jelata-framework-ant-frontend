@@ -1,6 +1,6 @@
 export const SET_GETONE = 'SET_GETONE';
 
-// save GetOne
+// Сохраняем GetOne
 export const set_get_one = (data_one) => {
   return dispatch => {
     dispatch({

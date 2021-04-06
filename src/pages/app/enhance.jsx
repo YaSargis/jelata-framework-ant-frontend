@@ -12,14 +12,14 @@ let chatSocket
 
 let authErr = (((LaNg || {}).authErr ||{})[LnG || 'EN'] || 'Ошибка авторизации (явно вызванная исключение)')
 const enhance = compose(
-	/*connect(
+	connect(
 		state => ({
 			is_custom_style: state.user.is_custom_style
 		}),
 		dispatch => ({
 			set_user_style_status: status => dispatch(set_user_style_status(status))
 		})
-	),*/
+	),
 	withStateHandlers((
 		inState = {
 			custom_menu: [], user_detail: {}, collapsed: false, current_role: null

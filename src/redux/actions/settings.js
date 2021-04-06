@@ -1,6 +1,6 @@
 export const SET_SETTINGS = 'SET_SETTINGS';
 
-// stae loading (true/false)
+// статус loading (true/false)
 export const set_settings = (data) => {
   return dispatch => {
     dispatch({
