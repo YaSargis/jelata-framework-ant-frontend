@@ -138,7 +138,7 @@ const enhance = compose(
 										message: x.notificationtext,
 									})
 									apishka('POST', {id:x.id}, '/api/setsended')
-			  						getData(getData)
+			  						_getData(_getData)
 			  					})
 			  				}	else {
 			  					console.log('ws message send error')

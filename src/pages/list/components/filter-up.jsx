@@ -45,7 +45,7 @@ const FilterListUp = ({
 													<Col key='s33' span={24}>
 													  <Input.Search placeholder={p.title || '...'}
 															value={filters[p.column]}
-																						size='small'
+															size='small'
 															onKeyUp={(event) => {
 															  if(event.keyCode === 13) {
 																	getData(getData) 
@@ -251,7 +251,7 @@ const enhance = compose(
 			let viewsSettings = {}
 
 			if (!userSettings['views']) { // if not views key
-					userSettings['views'] = {}
+				userSettings['views'] = {}
 			}
 
 			if (userSettings['views'][path]) { // if not view in views object

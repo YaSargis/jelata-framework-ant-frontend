@@ -35,46 +35,46 @@ const FilterList = ({
 							{(() => {
 								switch (p.type) {
 									case 'substr':
-									  return [
-										<Col key='s1' span={24}><label >{p.title}</label></Col>,
-										<Col key='s2' span={24}>
-										  <Input placeholder={p.title || '...'}
-											value={filters[p.column]}
-											onKeyUp={(event) => {
-											  if(event.keyCode === 13) {
-												getData(getData)
-												changeLoading(true)
-												changeFilter(false)
-											  }
-											}}
-											onChange={(event) => handlerFilters(p.column, event.target.value) }
-										  />
-										</Col>
-									  ]
-									  break
+										return [
+											<Col key='s1' span={24}><label >{p.title}</label></Col>,
+											<Col key='s2' span={24}>
+											  <Input placeholder={p.title || '...'}
+												value={filters[p.column]}
+												onKeyUp={(event) => {
+												  if(event.keyCode === 13) {
+													getData(getData)
+													changeLoading(true)
+													changeFilter(false)
+												  }
+												}}
+												onChange={(event) => handlerFilters(p.column, event.target.value) }
+											  />
+											</Col>
+										]
+										break
 									case 'date_between':
-									  return [
-										<Col key='s1' span={24}><label >{p.title}</label></Col>,
-										<Col key='s2' span={24}>
-										  <input placeholder={p.title || '...'}
-											value={filters[p.column]} type='date'
-																		className = 'ant-input'
-											onChange={(event) => handlerFilters(p.column, event.target.value) }
-										  />
-										</Col>
-									  ]
-									  break
-													case 'multijson':
+										return [
+											<Col key='s1' span={24}><label >{p.title}</label></Col>,
+											<Col key='s2' span={24}>
+											  <input placeholder={p.title || '...'}
+												value={filters[p.column]} type='date'
+																			className = 'ant-input'
+												onChange={(event) => handlerFilters(p.column, event.target.value) }
+											  />
+											</Col>
+										]
+										break
+									case 'multijson':
 									case 'select':
 									case 'multiselect':
-										  let s_value
-										  if(p.type === 'multijson' || p.type === 'multiselect'){
+										let s_value
+										if(p.type === 'multijson' || p.type === 'multiselect') {
 											//filters[p.column] &&
 											  //Array.isArray(filters[p.column]) ?
-												s_value = filters[p.column]//.map((x, i_c)=> {x['key'] = i_c})
-											  || []
-										  } else s_value = filters[p.column]
-										  return [
+											s_value = filters[p.column]//.map((x, i_c)=> {x['key'] = i_c})
+											|| []
+										} else s_value = filters[p.column]
+										return [
 											<Col key='s3' span={24}><label >{p.title}</label></Col>,
 											<Col key='s4' span={24}>
 												<Select
@@ -86,51 +86,51 @@ const FilterList = ({
 													style={{ width: '100%' }}
 													onFocus={()=>handlerGetTable(p)}
 													onDeselect={(_val) => {
-													  if(p.type === 'multijson' || p.type === 'multiselect') {
-														filters[p.column] = s_value.filter(o => o && o.key !== _val.key)
-														handlerFilters(p.column, filters[p.column])
-													  }
+														if(p.type === 'multijson' || p.type === 'multiselect') {
+															filters[p.column] = s_value.filter(o => o && o.key !== _val.key)
+															handlerFilters(p.column, filters[p.column])
+														}
 													}}
 													onSelect={(_val, option) => {
-													  if(p.type === 'multijson' || p.type === 'multiselect') {
-																						_val['value'] = _val.key
-														if(Array.isArray(filters[p.column]))
-														  filters[p.column].push(_val)
-														  else filters[p.column] = [_val]
-													  } else filters[p.column] = _val
-													  handlerFilters(p.column, filters[p.column])
-													}}
-												>
-													{
-													  apiData[p.title] ? Array.isArray(apiData[p.title]) ? (()=> {
-														return apiData[p.title].map((it_m, i_arr) => {
-														  return <Option key={i_arr} item={it_m} value={it_m.value}>{ it_m.label }</Option>
-														})
-													  })() : null : null
-													}
-												  </Select>
-											</Col>
+														  if(p.type === 'multijson' || p.type === 'multiselect') {
+																							_val['value'] = _val.key
+															if(Array.isArray(filters[p.column]))
+															  filters[p.column].push(_val)
+															  else filters[p.column] = [_val]
+														  } else filters[p.column] = _val
+														  handlerFilters(p.column, filters[p.column])
+														}}
+													>
+														{
+														  apiData[p.title] ? Array.isArray(apiData[p.title]) ? (()=> {
+															return apiData[p.title].map((it_m, i_arr) => {
+															  return <Option key={i_arr} item={it_m} value={it_m.value}>{ it_m.label }</Option>
+															})
+														  })() : null : null
+														}
+													</Select>
+												</Col>
 											]
-										  break
+											break
 									case 'typehead':
-									  return [
-										<Col key='s1' span={24}><label >{p.title}</label></Col>,
-										<Col key='s2' span={24}>
-											<Input
-												placeholder={p.title || '...'}
-												value={filters[p.title]}
-												onKeyUp={(event) => {
-													if(event.keyCode === 13) {
-														getData(getData)
-														changeLoading(true)
-														changeFilter(false)
-													}
-												}}
-												onChange={(event) => handlerFilters(p.title, event.target.value) }
-											/>
-										</Col>
-									  ]
-									  break
+										return [
+											<Col key='s1' span={24}><label >{p.title}</label></Col>,
+											<Col key='s2' span={24}>
+												<Input
+													placeholder={p.title || '...'}
+													value={filters[p.title]}
+													onKeyUp={(event) => {
+														if(event.keyCode === 13) {
+															getData(getData)
+															changeLoading(true)
+															changeFilter(false)
+														}
+													}}
+													onChange={(event) => handlerFilters(p.title, event.target.value) }
+												/>
+											</Col>
+										]
+										break
 									case 'period':
 										let _dates = [],
 											_format = 'YYYY-MM-DD'
@@ -220,7 +220,8 @@ const FilterList = ({
 					size='small' header={<div>{shCols}</div>}
 					bordered dataSource={listColumns}
 					renderItem={item => {
-						return <List.Item>
+						return (
+							<List.Item>
 								<Checkbox
 									checked={_.findIndex(arr_hide, x => x === item.title) === -1}
 									onChange={(ev) => handlerColumnHider(ev, item)}
@@ -228,7 +229,8 @@ const FilterList = ({
 									{item.title}
 								</Checkbox>
 							</List.Item>
-						}}
+						)
+					}}
 				/>
 			</Row>
 		</Drawer>
@@ -246,11 +248,11 @@ const enhance = compose(
 			let viewsSettings = {}
 
 			if (!userSettings['views']) { // if not views key
-					userSettings['views'] = {}
+				userSettings['views'] = {}
 			}
 
 			if (userSettings['views'][path]) { // if not view in views object
-					viewsSettings = userSettings['views'][path]
+				viewsSettings = userSettings['views'][path]
 			}
 
 			if (viewsSettings.hide) {

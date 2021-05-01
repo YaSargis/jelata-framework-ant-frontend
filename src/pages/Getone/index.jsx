@@ -47,6 +47,8 @@ let Delete = (((LaNg || {}).Delete ||{})[LnG || 'EN'] || 'Delete')
 let Show = (((LaNg || {}).Show ||{})[LnG || 'EN'] || 'Show')
 let Sliderr = (((LaNg || {}).Slider ||{})[LnG || 'EN'] || 'Slider')
 let Download = (((LaNg || {}).Download ||{})[LnG || 'EN'] || 'Download')
+let enterTheValue = (((LaNg || {}).enterTheValue ||{})[LnG || 'EN'] || 'enter the value')
+
 const GetOne = ({
 	location, history, set_state,
 	get_params, onChangeInput, onChangeData,
@@ -147,7 +149,7 @@ const GetOne = ({
 						  onChangeInput({ target: { value: selectedItem.props.text } }, item)
 						}
 						onSearch={event => handlerAutoComplete(event, item)}
-						placeholder='enter the value'
+						placeholder={enterTheValue}
 						value={data[item.key]}
 						onChange={event => onChangeData(event, item)}
 						onBlur={value => {
