@@ -9,7 +9,7 @@ import {
   Input, DatePicker, Upload,
   Modal, Progress, Icon,
   Tooltip, AutoComplete, TimePicker,
-  Button, List, Avatar, InputNumber, Rate
+  Button, List, Avatar, InputNumber, Rate, Tag
 } from 'antd'
 const { Content } = Layout
 
