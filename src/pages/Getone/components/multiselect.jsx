@@ -56,9 +56,14 @@ const SelectBox = ({ onChange, onChangeInput, data = {}, inputs, config, options
 				color: '#000000'
 			}),
 			placeholder: (base)=>({
-			...base,
-			color: '#cdbfc7'
-		})}}
+				...base,
+				color: '#cdbfc7'
+			}),
+			option: (base, {data})=>({
+				...base,
+				color:data.color
+			})
+		}}
 		menuPortalTarget={document.body}
 		menuPlacement='auto'
 		placeholder={multiSelect}
@@ -118,7 +123,7 @@ const enhance = compose(
 					config: globalConfig
 				},	config.select_api,
 				(res) => {
-					let dat = _.sortBy(res.outjson, ['value'])
+					let dat = res.outjson//_.sortBy(res.outjson, ['value'])
 					if (!dat)
 						dat = []
 					set_state({
@@ -152,7 +157,7 @@ const enhance = compose(
 							id: id, substr: substr
 						}, '/api/select',
 						(res) => {
-							let _data = _.sortBy(res.outjson, ['value'])
+							let _data = res.outjson//_.sortBy(res.outjson, ['value'])
 							set_state({
 								options: _data
 							})

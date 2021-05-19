@@ -99,7 +99,7 @@ const GetOne = ({
 				return (
 					<Form.Item key='1.2' label={item.title}>
 						<Input
-							disabled={item.read_only || false}
+							disabled={item.disabled}
 							value={data[item.key] ? data[item.key] : ''}
 							onChange={event => onChangeData(event, item)}
 							onBlur={event => onChangeInput(event, item)}
@@ -174,7 +174,7 @@ const GetOne = ({
 				return (
 					<Form.Item key='d4' label={item.title}>
 						<InputNumber
-							disabled={item.read_only || false}
+							disabled={item.disabled}
 							value={data[item.key] === null ? null : data[item.key]}
 							onChange={event => {
 								onChangeData(event, item)
@@ -202,6 +202,7 @@ const GetOne = ({
 					<Form.Item key={item.key} label={item.title}>
 						<input
 							className = 'ant-input'
+							disabled={item.disabled}
 							value = {data[item.key+item.key]}
 							onChange = {(e) => {
 								let item2 = {key:item.key+item.key}
@@ -236,7 +237,7 @@ const GetOne = ({
 				return (
 					<Form.Item key='d4.1' label={item.title}>
 						<Input.Password
-							disabled={item.read_only || false}
+							disabled={item.disabled}
 							value={data[item.key]}
 							onChange={event => onChangeData(event, item)}
 							onBlur={event => onChangeInput(event, item)}
@@ -328,6 +329,7 @@ const GetOne = ({
 					<div key={data[item.key]}>
 						<input
 							multiple
+							disabled={item.disabled}
 							onChange={e => onUploadFileChange(e, item, false)}
 							type='file'
 							placeholder={'placeholder'}
@@ -393,6 +395,7 @@ const GetOne = ({
 						</label>
 						<input
 							accept='.jpg, .jpeg, .png'
+							disabled={item.disabled}
 							id='files'
 							style={{ visibility: 'hidden', height: 1 }}
 							multiple
@@ -507,7 +510,7 @@ const GetOne = ({
 			case 'select':
 			case 'select_api':
 				return (
-					<Form.Item key='5.b' label={item.title}>
+					<Form.Item key='5.b' label={item.title} style={{cursor: `${item.disabled ? 'not-allowed' : 'inherit'}`}}>
 						<Select
 							name={
 								([1e7]+-1e3+-4e3+-8e3+-1e11)
@@ -527,7 +530,7 @@ const GetOne = ({
 			case 'multiselect':
 			case 'multiselect_api':
 				return (
-					<Form.Item key='12.b' label={item.title}>
+					<Form.Item key='12.b' label={item.title} style={{cursor: `${item.disabled ? 'not-allowed' : 'inherit'}`}} >
 						<MultiSelect
 							name={
 								([1e7]+-1e3+-4e3+-8e3+-1e11)
@@ -547,7 +550,7 @@ const GetOne = ({
 			case 'typehead':
 			case 'typehead_api':
 				return (
-					<Form.Item key={item.key} label={item.title}>
+					<Form.Item key={item.key} label={item.title} style={{cursor: `${item.disabled ? 'not-allowed' : 'inherit'}`}}>
 						<Typeahead
 							name={
 								([1e7]+-1e3+-4e3+-8e3+-1e11)
@@ -568,7 +571,7 @@ const GetOne = ({
 			case 'multitypehead':
 			case 'multitypehead_api':
 				return (
-					<Form.Item key='7.b' label={item.title}>
+					<Form.Item key='7.b' label={item.title} style={{cursor: `${item.disabled ? 'not-allowed' : 'inherit'}`}}>
 						<MultiTypehead
 							name={
 								([1e7]+-1e3+-4e3+-8e3+-1e11)
@@ -733,6 +736,7 @@ const GetOne = ({
 					<Form.Item key='phone' label={item.title}>
 						<InputMask
 							className ='ant-input'
+							disabled={item.disabled}
 							mask='+9 (999) 999-99-99' value={data[item.key]}
 							onChange={e => onChangeData(e, item)}
 							onBlur={e => onChangeInput(e)}
