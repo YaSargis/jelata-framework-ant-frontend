@@ -149,17 +149,18 @@ const enhance = compose(
   ),
   withHandlers({
     handleWS: ({ set_state, requestListChats }) => (chatId) => {
-      let ws = api._url.split('//')[1];
-      ws = ws.split('/')[0];
-        ws = 'ws://' + ws + '/messages'
-      socket = new WebSocket(ws);
+      let ws = document.location.href.split('//')[1]
+      let ws_protocol = document.location.href.split('//')[0].indexOf('s') !== -1? 'wss' : 'ws'
+      ws = ws.split('/')[0]
+      ws = ws_protocol + '://' + ws + '/messages'
+      socket = new WebSocket(ws)
       socket.onopen = () => {
         socket.send(JSON.stringify({dialogid: chatId}));
       };
       socket.onmessage = event => {
 
         const resWS = JSON.parse(event.data);
-        resWS.forEach(item => item['key'] = Configer.nanoid());
+        resWS.forEach(item => item['key'] = item.id);
         if((resWS.length > 0)) {
           set_state({
             globalSpin: false,

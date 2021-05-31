@@ -69,7 +69,7 @@ const CommentList = ({
 
       const currentItemDate = moment(item.created).format('DD MMMM YYYY');
       const nextItemDate = ind < comments.length - 1 ? moment(comments[ind+1].created).format('DD MMMM YYYY') : false;
-      return <Fragment key={Configer.nanoid()}>
+      return <Fragment key={item.id}>
         <li
           ref={lastComment.id === item.id ? refLastEl : null}
           key={item.id}
@@ -416,7 +416,7 @@ const styles = {
     listStyle: 'none',
     marginBottom: 0,
     height: '100%',
-    background: `no-repeat url('./public/fon4.jpg')`,
+    background: `no-repeat url('./files/fon4.jpg')`,
     backgroundOrigin: 'border-box',
     backgroundPosition: 'center'
   },

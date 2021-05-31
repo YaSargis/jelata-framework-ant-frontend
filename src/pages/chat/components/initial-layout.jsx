@@ -7,7 +7,7 @@ import { Layout, Button } from "antd"
 let chatWTW = (((LaNg || {}).chatWTW ||{})[LnG || 'EN'] || 'Select in the chat list whom you would like to write')
 let chatOCC = (((LaNg || {}).chatOCC ||{})[LnG || 'EN'] || 'or create a chat')
 let chatCrGroup = (((LaNg || {}).chatCrGroup ||{})[LnG || 'EN'] || 'cretae a group')
-let chatCrDialog = (((LaNg || {}).chatCrDialog ||{})[LnG || 'EN'] || 'cretae a dialog')
+let chatCrDialog = (((LaNg || {}).chatCrDialog ||{})[LnG || 'EN'] || 'create a dialog')
 
 
 export const InitLayout = () => {
