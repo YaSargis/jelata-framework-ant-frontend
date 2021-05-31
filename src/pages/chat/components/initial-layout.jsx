@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react"
 import { useDispatch } from 'react-redux'
 import { actions } from '../reducer'
 
-import { Layout, Button } from 'antd'
+import { Layout, Button } from "antd"
 
 let chatWTW = (((LaNg || {}).chatWTW ||{})[LnG || 'EN'] || 'Select in the chat list whom you would like to write')
 let chatOCC = (((LaNg || {}).chatOCC ||{})[LnG || 'EN'] || 'or create a chat')
@@ -17,7 +17,7 @@ export const InitLayout = () => {
 		<Layout style={styles.thirdLayout}>
 			<div
 				style={styles.containerInit}
-				className='slide-in-elliptic-top-fwd'
+				className="slide-in-elliptic-top-fwd"
 			>
 				<div style={styles.textCenter}>
 					{chatWTW},
@@ -27,14 +27,14 @@ export const InitLayout = () => {
 					<Button
 						style={styles.sider__btn}
 						onClick={() => dispatch(actions.modalInit(true))}
-						icon='usergroup-add'
+						icon="usergroup-add"
 					>
 						{chatCrGroup}
 					</Button>
 					<Button
 						style={styles.sider__btn}
 						onClick={() => dispatch(actions.modalInitPerson(true))}
-						icon='user-add'
+						icon="user-add"
 					>
 						{chatCrDialog}
 					</Button>
@@ -45,25 +45,25 @@ export const InitLayout = () => {
 }
 
 const styles = {
-	thirdLayout: {
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
-		background: `no-repeat url('./files/fon4.jpg')`,
-		backgroundOrigin: 'border-box',
-		backgroundPosition: 'center',
-	},
-	containerInit: {
-		background: '#98cdfb',
-		borderRadius: 10,
-		padding: 40,
-	},
-	textCenter: {
-		textAlign: 'center'
-	},
-	sider__btn: {
-		margin: '16px auto',
-		display: 'block',
-		width: 160,
-	},
+  thirdLayout: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: `no-repeat url('./files/fon4.jpg')`,
+    backgroundOrigin: "border-box",
+    backgroundPosition: "center",
+  },
+  containerInit: {
+    background: "#98cdfb",
+    borderRadius: 10,
+    padding: 40,
+  },
+  textCenter: {
+    textAlign: 'center'
+  },
+  sider__btn: {
+    margin: "16px auto",
+    display: "block",
+    width: 160,
+  },
 }

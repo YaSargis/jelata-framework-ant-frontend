@@ -1,14 +1,14 @@
-import React from 'react'
-import { connect, useSelector } from 'react-redux'
-import { compose, withStateHandlers, withHandlers } from 'recompose'
-import moment from 'moment'
+import React from 'react';
+import { connect, useSelector } from 'react-redux';
+import { compose, withStateHandlers, withHandlers } from 'recompose';
+import moment from 'moment';
 import qs from 'qs'
 
-import { apishka } from 'src/libs/api'
-import { set_chat_id } from 'src/redux/actions/user'
+import { apishka, typeReq } from 'src/libs/api';
+import { set_chat_id } from 'src/redux/actions/user';
 import { actions } from '../reducer'
-import { Avatar, Button, Modal, List, Input, Popconfirm, Empty, Icon, notification } from 'antd'
-const { Search } = Input
+import { Avatar, Button, Modal, List, Input, Popconfirm, Empty, Icon, notification } from 'antd';
+const { Search } = Input;
 
 let Yes = (((LaNg || {}).Yes ||{})[LnG || 'EN'] || 'Yes')
 let ChangeD = (((LaNg || {}).ChangeD ||{})[LnG || 'EN'] || 'changed')
@@ -40,17 +40,17 @@ const ControlPanel = ({
 	deleteUser, valueSearch, showAllUsers, isModalAddMemberOpen, findUser, findedUsers, addUser, isModalAdminOpen, addAdmin,
 	deleteAdmin, changeGroupSet, isModalMainOpen, valueTitle, isModalPicOpen, imageUrl, setStateFile, objAvatarFile
 }) => {
-	const listChats = useSelector(state => state.chat.listChats)
-	const chat = listChats.find(obj => obj.id === chatId)
-	const creator = chat.creator
-	const admins = chat.dialog_admins.filter(item => item !== creator.id)
-	const adminsObj = admins.map(item => {
-		for(let i = 0; i < chat.users.length; ++i){
-			if(item === chat.users[i].id) {
-				return chat.users[i]
-			}
-		}
-	})
+  const listChats = useSelector(state => state.chat.listChats)
+  const chat = listChats.find(obj => obj.id === chatId);
+  const creator = chat.creator;
+  const admins = chat.dialog_admins.filter(item => item !== creator.id);
+  const adminsObj = admins.map(item => {
+    for(let i = 0; i < chat.users.length; ++i){
+      if(item === chat.users[i].id) {
+        return chat.users[i];
+      }
+    }
+  });
 
 	return (
 		<React.Fragment>
@@ -74,9 +74,9 @@ const ControlPanel = ({
 						<div>
 							<div style={{textAlign: 'center', fontSize: 20, height: 25}}><Icon type='crown' /></div>
 							<Avatar
-								icon='user'
-								src={creator.photo[0]?.src}
-								size={46}
+							  icon="user"
+							  src={creator.photo[0]?.src}
+							  size={46}
 							/>
 							<div style={styles.login}>{creator.login}</div>
 							<div style={{fontSize: 10, textAlign: 'center'}}>{OwneR}</div>
@@ -84,7 +84,7 @@ const ControlPanel = ({
 						{adminsObj.map(item => (
 							<div key={item.login + 'admins'}>
 								<Avatar
-									icon='user'
+									icon="user"
 									src={item.photo[0]?.src}
 									size={46}
 								/>
@@ -108,7 +108,7 @@ const ControlPanel = ({
 						{ chat.users ? chat.users.map(item => (
 								<div key={item.login}>
 									<Avatar
-										icon='user'
+										icon="user"
 										src={item.photo !== null ? item.photo[0]?.src : false}
 										size={46}
 									/>
@@ -132,8 +132,8 @@ const ControlPanel = ({
 						size='small'
 						type='danger'
 						onClick={() => {
-							setStateUpComp({ openDrawerPanel: false })
-							set_state({isModalDelMemberOpen: true})
+						  setStateUpComp({ openDrawerPanel: false });
+						  set_state({isModalDelMemberOpen: true});
 						}}
 					>
 						{chatDeleteMember}
@@ -166,14 +166,14 @@ const ControlPanel = ({
 			</Modal>
 			<Modal
 				centered
-					title={chatChangePhoto}
-					visible={isModalPicOpen}
-					onCancel={()=>set_state({isModalPicOpen: false, objAvatarFile: {}, imageUrl: ''})}
-					onOk={()=>changeGroupSet('image', objAvatarFile)}
+				  title={chatChangePhoto}
+				  visible={isModalPicOpen}
+				  onCancel={()=>set_state({isModalPicOpen: false, objAvatarFile: {}, imageUrl: ''})}
+				  onOk={()=>changeGroupSet('image', objAvatarFile)}
 			>
 				<div>
 					<label
-						htmlFor='avatarChangePic'
+					  htmlFor='avatarChangePic'
 					>
 						<div style={styles.avatar_contain}>
 							{imageUrl ? (
@@ -204,7 +204,7 @@ const ControlPanel = ({
 				footer={<Button onClick={()=>set_state({isModalDelMemberOpen: false, selectedUser: [], valueSearch: ''})} >{CanceL}</Button>}
 			>
 				<div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 20, marginTop: 20}}>
-					<Button onClick={()=>showAllUsers()} type='primary'>
+					<Button onClick={()=>showAllUsers()} type="primary">
 						{showAll}
 					</Button>
 					<Search
@@ -263,8 +263,8 @@ const ControlPanel = ({
 								<Avatar icon='user' src={item.photo[0]?.src} />
 								<div>{item.login}</div>
 								<Button
-									type='primary'
-									onClick={() => addUser(item.id)}
+								  type='primary'
+								  onClick={() => addUser(item.id)}
 								>
 								{Addd}
 								</Button>
@@ -281,7 +281,7 @@ const ControlPanel = ({
 				footer={<Button onClick={()=>set_state({isModalAdminOpen: false, valueSearch: '', selectedUser: [], isAddAdmin: false})} >{CanceL}</Button>}
 			>
 				<div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 20, marginTop: 20}}>
-					<Button onClick={()=>showAllUsers()} type='primary'>
+					<Button onClick={()=>showAllUsers()} type="primary">
 						Показать всех
 					</Button>
 					<Search
@@ -328,7 +328,7 @@ const ControlPanel = ({
 											</Button>
 										</Popconfirm>
 									)
-										: <Button disabled>{chatMembers}</Button>
+									  : <Button disabled>{chatMembers}</Button>
 								}
 							</List.Item>
 						)
@@ -337,218 +337,218 @@ const ControlPanel = ({
 			</Modal>
 		</React.Fragment>
 	)
-}
+};
 
 const enhance = compose(
-	connect(
-		state => ({
-			listChats: state.chat.listChats
-		}),
-		dispatch => ({
-			set_chat_id: id => dispatch(set_chat_id(id)),
-			requestListChats: () => dispatch(actions.requestListChats())
-		})
-	),
-	withStateHandlers(
-		({
-			inState = {
-				isModalDelMemberOpen: false,
-				isModalAddMemberOpen: false,
-				isModalMainOpen: false,
-				selectedUser: [],
-				valueSearch: '',
-				isShowAllUsers: false,
-				findedUsers: [],
-				isAddAdmin: false,
-				valueTitle: '',
-				imageUrl: '',
-				objAvatarFile: {},
-			}
-		}) => ({
-			isModalDelMemberOpen: inState.isModalDelMemberOpen,
-			isModalAddMemberOpen: inState.isModalAddMemberOpen,
-			isModalMainOpen: inState.isModalMainOpen,
-			selectedUser: inState.selectedUser,
-			valueSearch: inState.valueSearch,
-			isShowAllUsers: inState.isShowAllUsers,
-			findedUsers: inState.findedUsers,
-			isAddAdmin: inState.isAddAdmin,
-			valueTitle: inState.valueTitle,
-			imageUrl: inState.imageUrl,
-			objAvatarFile: inState.objAvatarFile
-		}),
-		{
-			set_state: state => obj => {
-				let _state = {...state},
-						keysObj = Object.keys(obj)
-				keysObj.map(key => _state[key] = obj[key])
-				return _state
-			}
-		}
-	),
-	withHandlers({
-		filterUsers: ({ listChats, chatId, set_state}) => value => {
-			set_state({isShowAllUsers: false})
-			const _value = value.toLocaleLowerCase()
-			const chat = listChats.find(obj => obj.id === chatId)
-			const filteredUsers = chat.users.filter(item => item.login.toLocaleLowerCase().includes(_value))
-			set_state({selectedUser: filteredUsers})
-		},
-		deleteUser: ({chatId, set_chat_id, set_state, requestListChats }) => id => {
-			apishka(
-				'DELETE', 
-				{ id: chatId, user_to_remove: id },
-				'/api/dialog_removeuser',
-				() => {
-					set_state({selectedUser: [], isModalDelMemberOpen: false, valueSearch: ''})
-					requestListChats()
-					set_chat_id(chatId)
-				}
-			)
-		},
-		showAllUsers: ({ listChats, chatId, set_state, }) => () => {
-			const chat = listChats.find(obj => obj.id === chatId)
-			set_state({selectedUser: chat.users, isShowAllUsers: true})
-		},
-		findUser: ({set_state}) => value => {
-			if(value === '') return
-			const queryString = qs.stringify({ substr: value })
-			apishka(
-				'GET',
-				{}, 
-				'/api/dialogs_usersearch?' + queryString,
-				(res) => {
-					let _data = _.sortBy(res.outjson, ['login'])
-					set_state({ findedUsers: _data })
-				}
-			)
-		},
-		addUser: ({chatId, set_chat_id, set_state, requestListChats}) => id => {
+  connect(
+    state => ({
+      listChats: state.chat.listChats
+    }),
+    dispatch => ({
+      set_chat_id: id => dispatch(set_chat_id(id)),
+      requestListChats: () => dispatch(actions.requestListChats())
+    })
+  ),
+  withStateHandlers(
+    ({
+      inState = {
+        isModalDelMemberOpen: false,
+        isModalAddMemberOpen: false,
+        isModalMainOpen: false,
+        selectedUser: [],
+        valueSearch: '',
+        isShowAllUsers: false,
+        findedUsers: [],
+        isAddAdmin: false,
+        valueTitle: '',
+        imageUrl: '',
+        objAvatarFile: {},
+      }
+    }) => ({
+      isModalDelMemberOpen: inState.isModalDelMemberOpen,
+      isModalAddMemberOpen: inState.isModalAddMemberOpen,
+      isModalMainOpen: inState.isModalMainOpen,
+      selectedUser: inState.selectedUser,
+      valueSearch: inState.valueSearch,
+      isShowAllUsers: inState.isShowAllUsers,
+      findedUsers: inState.findedUsers,
+      isAddAdmin: inState.isAddAdmin,
+      valueTitle: inState.valueTitle,
+      imageUrl: inState.imageUrl,
+      objAvatarFile: inState.objAvatarFile
+    }),
+    {
+      set_state: state => obj => {
+        let _state = {...state},
+            keysObj = Object.keys(obj);
+        keysObj.map(key => _state[key] = obj[key]);
+        return _state;
+      }
+    }
+  ),
+  withHandlers({
+    filterUsers: ({ listChats, chatId, set_state}) => value => {
+      set_state({isShowAllUsers: false});
+      const _value = value.toLocaleLowerCase();
+      const chat = listChats.find(obj => obj.id === chatId);
+      const filteredUsers = chat.users.filter(item => item.login.toLocaleLowerCase().includes(_value));
+      set_state({selectedUser: filteredUsers})
+    },
+    deleteUser: ({chatId, set_chat_id, set_state, requestListChats }) => id => {
+      apishka(
+        typeReq.delete, 
+        { id: chatId, user_to_remove: id },
+        '/api/dialog_removeuser',
+        () => {
+          set_state({selectedUser: [], isModalDelMemberOpen: false, valueSearch: ''});
+          requestListChats();
+          set_chat_id(chatId);
+        }
+      )
+    },
+    showAllUsers: ({ listChats, chatId, set_state, }) => () => {
+      const chat = listChats.find(obj => obj.id === chatId);
+      set_state({selectedUser: chat.users, isShowAllUsers: true});
+    },
+    findUser: ({set_state}) => value => {
+      if(value === '') return;
+      const queryString = qs.stringify({ substr: value })
+      apishka(
+        typeReq.get,
+        {}, 
+        '/api/dialogs_usersearch?' + queryString,
+        (res) => {
+          let _data = _.sortBy(res.outjson, ['login']);
+          set_state({ findedUsers: _data });
+        }
+      )
+    },
+    addUser: ({chatId, set_chat_id, set_state, requestListChats}) => id => {
 
-			apishka('POST', {user_to_add: id,id: chatId}, '/api/dialog_adduser', () => {
-				set_state({findedUsers: [], isModalAddMemberOpen: false, valueSearch: ''})
-				requestListChats()
-				set_chat_id(chatId)
-			})
-		},
-		deleteSelf: ({chatId, set_chat_id, setStateUpComp, requestListChats}) => () => {
-			apishka('POST', {id: chatId}, '/api/dialog_leave', () => {
-				setStateUpComp({openDrawerPanel: false})
-				set_chat_id(false)
-				requestListChats()
-			})
-		},
-		addAdmin: ({chatId, set_state, requestListChats}) => id => {
-			apishka('POST', {user_to_add: id, id: chatId}, '/api/dialog_addadmin', () => {
-				set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false})
-				requestListChats()
-				set_chat_id(chatId)
-			}, (err) => {
-				set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false})
-			})
-		},
-		deleteAdmin: ({chatId, set_state, requestListChats}) => id => {
-			apishka('DELETE', {admin_to_remove: id, id: chatId}, '/api/dialog_removeadmin',
-				() => {
-					set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false})
-					requestListChats()
-				},
-				(err) => {
-					set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false})
-				}
-			)
-		},
-		setStateFile: ({set_state}) => event => {
-			const reader = new FileReader
-			const file = event.target.files[0]
-			reader.addEventListener('load', function () {
-				set_state({imageUrl: reader.result})
-			}, false)
-			if(file) {
-				reader.readAsDataURL(file)
-				set_state({objAvatarFile: file})
-			}
-		},
-		changeGroupSet: ({chatId, set_state, objAvatarFile, requestListChats }) => (type, value) => {
-			if(type==='title') {
-				apishka('POST', {id: chatId, title: value}, '/api/dialog_edit', () => {
-						set_state({valueTitle: '', isModalMainOpen: false})
-						requestListChats()
-						notification['success']({
-							message: ChangeD
-						})
-					}
-				)
-			} else {
-				let _data = new FormData()
-				_data.append('file_0', objAvatarFile)
-				_data.append('config', JSON.stringify({type:'image'}))
-				_data.append('id', chatId)
-				apishka('POST', _data, '/api/dialog_edit', () => {
-						set_state({objAvatarFile: {}, isModalPicOpen: false, imageUrl: ''})
-						requestListChats()
-						notification['success']({
-							message: ChangeD
-						})
-					}
-				)
+      apishka('POST', {user_to_add: id,id: chatId}, '/api/dialog_adduser', () => {
+        set_state({findedUsers: [], isModalAddMemberOpen: false, valueSearch: ''});
+        requestListChats();
+        set_chat_id(chatId);
+      })
+    },
+    deleteSelf: ({chatId, set_chat_id, setStateUpComp, requestListChats}) => () => {
+      apishka('POST', {id: chatId}, '/api/dialog_leave', () => {
+        setStateUpComp({openDrawerPanel: false});
+        set_chat_id(false);
+        requestListChats()
+      })
+    },
+    addAdmin: ({chatId, set_state, requestListChats}) => id => {
+      apishka('POST', {user_to_add: id, id: chatId}, '/api/dialog_addadmin', () => {
+        set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false});
+        requestListChats()
+        set_chat_id(chatId);
+      }, (err) => {
+        set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false})
+      })
+    },
+    deleteAdmin: ({chatId, set_state, requestListChats}) => id => {
+      apishka('DELETE', {admin_to_remove: id, id: chatId}, '/api/dialog_removeadmin',
+        () => {
+          set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false});
+          requestListChats()
+        },
+        (err) => {
+          set_state({selectedUser: [], isModalAdminOpen: false, valueSearch: '', isAddAdmin: false})
+        }
+      )
+    },
+    setStateFile: ({set_state}) => event => {
+      const reader = new FileReader;
+      const file = event.target.files[0];
+      reader.addEventListener("load", function () {
+        set_state({imageUrl: reader.result})
+      }, false);
+      if(file) {
+        reader.readAsDataURL(file);
+        set_state({objAvatarFile: file});
+      }
+    },
+    changeGroupSet: ({chatId, set_state, objAvatarFile, requestListChats }) => (type, value) => {
+      if(type==='title') {
+        apishka('POST', {id: chatId, title: value}, '/api/dialog_edit', () => {
+            set_state({valueTitle: '', isModalMainOpen: false});
+            requestListChats()
+            notification['success']({
+              message: ChangeD
+            })
+          }
+        )
+      } else {
+        let _data = new FormData();
+        _data.append('file_0', objAvatarFile);
+        _data.append('config', JSON.stringify({type:'image'}));
+        _data.append('id', chatId);
+        apishka('POST', _data, '/api/dialog_edit', () => {
+            set_state({objAvatarFile: {}, isModalPicOpen: false, imageUrl: ''});
+            requestListChats()
+            notification['success']({
+              message: ChangeD
+            })
+          }
+        )
 
-			}
-		}
-	})
+      }
+    }
+  })
 )
 
 const styles= {
-	admins: {
-		display: 'flex',
-		justifyContent: 'space-around',
-		alignItems: 'flex-end',
-		flexWrap: 'wrap',
-		backgroundColor: '#bafdaf',
-		borderTopLeftRadius: 20,
-		borderTopRightRadius: 20,
-		padding: 10
-	},
-	login: {
-		textAlign: 'center',
-		backgroundColor: '#4686bf',
-		color: 'aliceblue',
-		borderRadius: 10,
-		fontSize: 12,
-		padding: '0 2px'
-	},
-	members: {
-		display: 'flex',
-		flexWrap: 'wrap',
-		justifyContent: 'space-around',
-		backgroundColor: '#bafdaf',
-		borderTopLeftRadius: 20,
-		borderTopRightRadius: 20,
-		padding: 10,
-	},
-	buttons: {
-		display: 'flex',
-		justifyContent: 'space-around',
-		paddingTop: 10,
-		paddingBottom: 10,
-		backgroundColor: '#ccc'
-	},
-	avatar_contain: {
-		textAlign: 'center',
-		display: 'flex',
-		justifyContent: 'center',
-		cursor: 'pointer'
-	},
-	avatarNull: {
-		width: 100,
-		height: 100,
-		border: '1px dashed',
-		borderRadius: '50%',
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
-		cursor: 'pointer'
-	},
-}
+  admins: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    flexWrap: 'wrap',
+    backgroundColor: '#bafdaf',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 10
+  },
+  login: {
+    textAlign: 'center',
+    backgroundColor: '#4686bf',
+    color: 'aliceblue',
+    borderRadius: 10,
+    fontSize: 12,
+    padding: '0 2px'
+  },
+  members: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    backgroundColor: '#bafdaf',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 10,
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    paddingTop: 10,
+    paddingBottom: 10,
+    backgroundColor: '#ccc'
+  },
+  avatar_contain: {
+    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    cursor: 'pointer'
+  },
+  avatarNull: {
+    width: 100,
+    height: 100,
+    border: '1px dashed',
+    borderRadius: '50%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer'
+  },
+};
 
-export default enhance(ControlPanel)
+export default enhance(ControlPanel);
