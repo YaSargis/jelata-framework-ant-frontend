@@ -136,6 +136,11 @@ const TableComp = ({
 						) : ( 
 							<React.Fragment key={keyTable}>
 								<div style={{ overflowX: 'auto' }}>
+									<label
+										style={{ fontSize: '9px' }}
+									>
+										{tCount} : {allProps.foundcount}
+									</label>
 									<BootstrapTable
 										 classes={
 										 !allProps.classname || allProps.classname === ''
@@ -153,7 +158,7 @@ const TableComp = ({
 										style={{ fontSize: '9px' }}
 									>
 										{tCount} : {allProps.foundcount}
-									 </label>
+									</label>
 								 </div>
 							</React.Fragment>
 						)}
