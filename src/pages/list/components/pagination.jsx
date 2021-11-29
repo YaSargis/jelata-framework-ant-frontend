@@ -1,11 +1,11 @@
 import React from 'react'
 import { Row, Col, Pagination, Button } from 'antd'
-import FilterList from '../components/filter-list'
+import FilterList from '../components/filterList'
 
 export const PegiNation = (
 	allProps, location, listConfig, listColumns, arr_hide, filter,
 	pagination, filters, showTotal, handlerPaginationPage, changePagination,
-	getData, changeFilter, changeFilters, changeLoading, handlerGetTable, set_state
+	getData, changeFilter, changeFilters, changeLoading, handlerGetTable, params
 ) => {
 	return (
 		<Row>
@@ -35,8 +35,9 @@ export const PegiNation = (
 					changeFilters={changeFilters} listConfig={listConfig}
 					listColumns={listColumns} changeLoading={changeLoading}
 					arr_hide={arr_hide} handlerGetTable={handlerGetTable}
-					setStateUpComp={set_state}
+					
 					pagination = {pagination}	changePagination = {changePagination}
+					styleType='left' params={params}
 				/>
 			</Col>
 		</Row>

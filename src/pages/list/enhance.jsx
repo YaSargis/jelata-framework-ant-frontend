@@ -3,7 +3,7 @@ import { compose, lifecycle, withHandlers, withStateHandlers } from 'recompose'
 import _ from 'lodash'
 import qs from 'query-string'
 import { saveUserSettings } from 'src/libs/methods'
-import { apishka } from "src/libs/api"
+import { apishka } from 'src/libs/api'
 import { notification } from 'antd'
 
 let wss = [] // ws array
@@ -19,7 +19,7 @@ const enhance = compose(
 			listConfig: [], listActions: [], pagination: {
 				pagenum: 1, pagesize: 20, foundcount: 0
 			}, isorderby: false, allProps: [], checked: [],
-			ready: false, filters: {}, params: {
+			ready: false, filters:{}, params: {
 				inputs: {}
 			},
 			settings_views: JSON.parse( localStorage.getItem('usersettings')) || {'views':{}}
@@ -91,7 +91,7 @@ const enhance = compose(
 			if (settings_table && settings_table.pagesize) {
 				pagination.pagesize = settings_table.pagesize
 			}
-
+			
 			const go = () => new Promise((resolve, reject) => {
 				let _id = compo ? path : match.params.id
 				apishka('POST', {
@@ -309,26 +309,36 @@ const enhance = compose(
 	}),
 	lifecycle({
 		componentWillMount() {
-			const { pagination, location, params, match, search, path, compo, getData, changeParams, set_state } = this.props
-
+			const { pagination, location, params, match, search, path, compo, getData, changeParams, set_state, settings_views, changeFilters } = this.props
+			let filters = {}
 			if(compo) {
 				params.path = path 
 				params.inputs = qs.parse(location.search)
 				params.search = search	
 				pagination.pagenum = 1
+				console.log('pathH', path)
+				filters = (((settings_views.views || {views:{}})[path] || {}).filters || {})
 			} else {
+				console.log('match', match)
 				params.inputs = qs.parse(location.search)
 				params.search = location.search
-				params.path = match.params.match
+				params.path = match.url
+				filters = ((settings_views.views || {views:{}})[match.url] || {}).filters || {}
 			}
-
+			
 			let type = location.pathname.split('/')[1]
+			
 			set_state({
 				type_list: type
 			})
 
 			changeParams({...params, ...pagination})
-			getData(getData)
+			changeFilters(filters)
+			getData(getData, filters)
+		},
+		componentDidMount() {
+			const { match, settings_views, changeFilters } = this.props
+
 		},
 		componentWillUnmount() {
 			wss.forEach((ws_item) => ws_item.close()) // close all sockets
