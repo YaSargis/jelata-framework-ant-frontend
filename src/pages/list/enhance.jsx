@@ -316,10 +316,8 @@ const enhance = compose(
 				params.inputs = qs.parse(location.search)
 				params.search = search	
 				pagination.pagenum = 1
-				console.log('pathH', path)
 				filters = (((settings_views.views || {views:{}})[path] || {}).filters || {})
 			} else {
-				console.log('match', match)
 				params.inputs = qs.parse(location.search)
 				params.search = location.search
 				params.path = match.url
