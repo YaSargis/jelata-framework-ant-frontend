@@ -7,6 +7,7 @@ import {compose, withHandlers, withStateHandlers} from 'recompose'
 import locale from 'antd/es/date-picker/locale/ru_RU'
 import moment from 'moment'
 import { saveUserSettings } from 'src/libs/methods'
+import { apishka } from 'src/libs/api'
 let filterOK = (((LaNg || {}).filterOK ||{})[LnG || 'EN'] || 'ok')
 let filterClean = (((LaNg || {}).filterClean ||{})[LnG || 'EN'] || 'clean')
 const Filters = ({
