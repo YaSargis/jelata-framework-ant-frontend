@@ -19,8 +19,11 @@ const Filters = ({
 }) => {
 	
 	let position = '1'
+	
 	if (styleType === 'up')
 		position = '2'
+	
+	
 	return (
 		<div>
 			{
