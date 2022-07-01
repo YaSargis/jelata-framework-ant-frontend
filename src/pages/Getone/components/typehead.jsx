@@ -99,7 +99,7 @@ const SelectBox = ({ name, onChange, onFocusApi, onFocus, data, inputs, config, 
 				value={options[ind] || null}
 				defaultOptions={options}
 				loadOptions={(substr) => {
-					return (config.type === 'typehead_api') ? onFocusApi(substr) : onFocus(substr)
+					return (config.type === 'typehead_api') ? onFocusApi(substr, data[config.key], inputs) : onFocus(substr)
 				}}
 				onFocus={() => {
 					(config.type === 'typehead_api') ? onFocusApi(null, data[config.key], inputs) : onFocus(null, data[config.key])
@@ -127,6 +127,7 @@ const enhance = compose(
 	}),
 	withHandlers({
 		onFocusApi: ({ data, set_state, globalConfig, name, config }) => (substr, id, inputs) => {
+			//console.log('inputs', inputs)
 			set_state({
 				loading: true
 			})
@@ -135,7 +136,8 @@ const enhance = compose(
 				timer[name] = setTimeout( () => {
 					apishka(
 						'POST', {
-							data: data, inputs: inputs, config: globalConfig
+							data: data, inputs: inputs, 
+							config: globalConfig
 						}, config.select_api+'?substr='+(id || substr),
 						(res) => {
 							let dat = res.outjson //_.sortBy(res.outjson, ['value'])
