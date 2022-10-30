@@ -34,7 +34,7 @@ const TableComp = ({
 	compo, loading, changeLoading, handlerGetTable, set_state, location,
 	get_params, onChangeInput, expandState,
 	collapseAll, onChangeCollapse, localChangeCollapse,
-	localActiveKey, changePagination, changeChecked, checked
+	localActiveKey, changePagination, changeChecked, checked, onSaveRow
 }) => {
 	if (ready) {
 	const settings_views = JSON.parse( localStorage.getItem('usersettings')) || {'views':{}}
@@ -177,6 +177,13 @@ const TableComp = ({
 			<Panel header={allProps.title.toUpperCase()} key='1'>
 				<Content key='s3' className='f_content_app'>
 				<h3>{params.inputs._sub_title}</h3>
+				<ActionsBlock
+					actions={origin.acts} origin={origin}
+					data={listData} params={params}
+					history={history} location={location}
+					getData={getData} checked={checked}
+					setLoading = {changeLoading} position={2}
+				/>
 					{(allProps.filters.filter((f) => f.position === 2).length > 0)?
 						<FilterList
 							getData={getData} allProps={allProps} path={location.pathname}

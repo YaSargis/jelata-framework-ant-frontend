@@ -7,7 +7,7 @@ const { Panel } = Collapse;
 
 export const listDataGenerate = (
     listData, listConfig, listActions, filters, origin, history, location, checked,
-    getData, get_params, changeChecked, changeLoading
+    getData, get_params, changeChecked, changeLoading, onSaveRow
 ) => {
 	const rows = []
 	listData.forEach((item, ind) => {
@@ -182,7 +182,7 @@ export const listDataGenerate = (
 		newItem['__actions__'] = (
 			<ActionsBlock
 			  actions={listActions || []} origin={origin || {}}
-			  data={item || {}} params={paramS}
+			  data={item || {}} params={paramS} onSaveRow = {onSaveRow}
 			  history={history} location={location}
 			  getData={() => getData(getData, filters)}
 			  type='table' checked={checked} setLoading = {changeLoading}

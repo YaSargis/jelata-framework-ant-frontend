@@ -772,6 +772,15 @@ const GetOne = ({
 	render_form = (
 		<Form layout='vertical'>
 			<Row gutter={8} type='flex'>
+				
+				<ActionsBlock
+					actions={origin.acts} origin={origin}
+					data={data} params={params}
+					history={history} location={location}
+					getData={getData} onSave={onSave}
+					setLoading = {setLoading} position={2}
+				/>
+				
 				<Col span={24}>
 					<Row type='flex'>
 						{_.filter( config, item =>
@@ -793,7 +802,7 @@ const GetOne = ({
 						data={data} params={params}
 						history={history} location={location}
 						getData={getData} onSave={onSave}
-						setLoading = {setLoading}
+						setLoading = {setLoading} position={1}
 					/>
 				</Col>
 			</Row>

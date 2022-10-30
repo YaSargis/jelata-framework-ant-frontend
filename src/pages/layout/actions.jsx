@@ -5,7 +5,7 @@ import axios from 'axios'
 
 import { compose, lifecycle, withHandlers } from 'recompose'
 
-import { Tooltip, Icon, Popconfirm, notification, Modal, Spin } from 'antd'
+import { Tooltip, Icon, Popconfirm, notification, Modal, Spin, Menu } from 'antd'
 
 import { visibleCondition, switchIcon, QueryBuilder, QueryBuilder2, bodyBuilder } from 'src/libs/methods'
 
@@ -14,6 +14,8 @@ import { PostMessage, Delete, Get, Put, apishka } from 'src/libs/api'
 
 import Getone from 'src/pages/Getone'
 import List from 'src/pages/list'
+
+const { SubMenu } = Menu
 
 let Error = (((LaNg || {}).Error ||{})[LnG || 'EN'] || 'Error')
 let signError = (((LaNg || {}).signError ||{})[LnG || 'EN'] || 'sign error')
@@ -24,9 +26,12 @@ const ActionsBlock = ({
 	actions, data, params,
 	loading, type = 'form', checked,
 	onSave, goBack, goLink,goLinkTo, onDelete,
-	onCallApi, popup, calendar, onModal//, toggleLoading
+	onCallApi, popup, calendar, onModal, position=1//, toggleLoading
 }) => {
 	if(calendar) type = 'table'
+	
+	actions = actions.filter((act) => act.position === position)
+	
 	let _actions = _.filter(actions, x => {
 		x.isforevery = x.isforevery || false
 		x.isforevery = _.isNumber(x.isforevery) ? x.isforevery === 1 ? true : false : x.isforevery
@@ -87,7 +92,7 @@ const ActionsBlock = ({
 			)
 		}
 
-		return (
+		/*return (
 			<Tooltip key={'s1'+i} placement={place_tooltip} title={el.title || ''}>
 				{((el.actapiconfirm === true &&  el.type === 'API') || el.type === 'Delete')? (
 					<Popconfirm placement='bottom' title={el.title} okText={Yes} cancelText={bClose} onConfirm = {()=>onAction(el)}>
@@ -96,7 +101,88 @@ const ActionsBlock = ({
 					</Popconfirm>
 				) : <FmButton confirmed={true} el = {el} />}
 			</Tooltip>
+		)*/
+	
+		const CubMenu = (props) => {
+			let childs = props.childs
+			return childs.map((ell) => {
+				
+				
+				return 	(<>{(ell.childs.length) > 0? (
+					<SubMenu
+						title={
+							<span className="submenu-title-wrapper">
+								<Icon type={el.icon}/>
+								{el.title}
+							</span>	
+						}
+					>
+						<CubMenu childs={ell.childs} />
+					</SubMenu>
+					)
+					:(
+						<Menu.Item
+							style={{position:'absolute', backgroundColor:'white', cursor:'pointer'}}
+							key={'mnb'+ell.title}
+							onClick={()=>{
+								onAction(ell)
+							}}
+						
+						>
+							<Icon type={ell.icon}/>
+							{ell.title}
+						</Menu.Item>							
+				)}
+				</>
+				)
+			})
+			
+		}
+		
+		return 	(<> {
+			(position === 1)? (
+				<Tooltip key={'s1'+i} placement={place_tooltip} title={el.title || ''}>
+					{((el.actapiconfirm === true &&  el.type === 'API') || el.type === 'Delete')? (
+						<Popconfirm placement='bottom' title={el.title} okText={Yes} cancelText={bClose} onConfirm = {()=>onAction(el)}>
+							<a style={{display:'hide'}}/>
+							<FmButton confirmed={false} el = {el} />
+						</Popconfirm>
+					  ) : <FmButton confirmed={true} el = {el} />
+					}
+				</Tooltip>
+					
+			) : (
+				<Menu mode='horizontal' style={{fontSize:13}}>
+					{(el.childs.length) > 0? (
+							<SubMenu
+								title={
+									<span className="submenu-title-wrapper">
+										<Icon type={el.icon}/>
+										{el.title}
+									</span>	
+								}
+							>
+								<CubMenu childs={el.childs} />
+							</SubMenu>
+						)
+						:(
+							<Menu.Item key={'mnb'+i}
+								onClick={()=>{
+									onAction(el)
+								}}
+							>
+								<Icon type={el.icon}/>
+								{el.title}
+							</Menu.Item>							
+						)
+					}
+				</Menu>
+					
+			)	
+		}
+		</>
 		)
+		
   })
 }
 

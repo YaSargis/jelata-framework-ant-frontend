@@ -248,7 +248,23 @@ const enhance = compose(
 		}
 	}),
 	withHandlers({
-		onSaveRow: ({ getData, onChangeData, set_state, listData, origin, global = {}, history, compo }) => (value, item_config, dataRowIndex) => {
+		onSaveRow: ({ getData, onChangeData, set_state, listData, origin, global = {}, history, compo, allProps }) => (value, item_config, dataRowIndex) => {
+			
+			let saveRowApi = '/api/saverow'
+			if (allProps.viewtype === 'api_table') {
+				console.log('allProps.acts', allProps.acts)
+				saveRowApi = (((allProps.acts || []).filter(act => act.type === 'apiSaveRow') || [])[0] || {}).act
+				
+				if (!saveRowApi) {
+					notification.error({
+						message: Error,
+						description: 'no method specified to save data (apiSaveRow)'
+					})
+					return
+				}
+			}
+			
+			
 			let id_title = _.filter(origin.config, o => o.col.toUpperCase() === 'ID' && !o.fn && !o.relatecolumn)[0].key
 			let data = listData[dataRowIndex]
 
@@ -270,7 +286,7 @@ const enhance = compose(
 
 			go().then( _data => {
 				apishka(
-					'POST', _data, '/api/saverow', (res) => {
+					'POST', _data, saveRowApi, (res) => {
 						let res_data = res.outjson
 						getData(getData)
 						notification.success({
@@ -297,9 +313,11 @@ const enhance = compose(
 		}
 	}),
 	withHandlers({
-		onChangeInput: ({ onSaveRow }) => (event, item, dataRowIndex) => {
+		onChangeInput: ({ onSaveRow, allProps }) => (event, item, dataRowIndex) => {
 			let value = (event && event.target) ? event.target.value : event
 			onSaveRow(value, item, dataRowIndex)
+			
+
 		},
 		onChangeCollapse: ({set_state}) => (key) => {
 			set_state({
