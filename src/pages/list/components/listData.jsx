@@ -2,6 +2,7 @@ import React from 'react';
 import FileGallery from 'src/components/file_gallery';
 import ActionsBlock from 'src/pages/layout/actions';
 import { Collapse } from 'antd';
+import qs from 'query-string'
 
 const { Panel } = Collapse;
 
@@ -48,6 +49,8 @@ export const listDataGenerate = (
 						</ul>
 					);
 				} else if (config.type === 'link') {
+					let link_params = (typeof value !== 'object') ? '' : qs.parse((value || { link: '' }).link.split('?') || [])[1] || ''
+
 					newItem[k] = (
 					  <div>
 						{typeof value !== 'object' ? (
@@ -56,7 +59,21 @@ export const listDataGenerate = (
 						  {value}
 						  </a>
 						) : (
-						  <a href={(value || { link: '' }).link}
+							((value || {target:null}).target === 'modal')?
+								<ActionsBlock
+									actions={[{
+										'act':(value || { link: '' }).link.split('?')[0], 'act_visible_condition':[], 'actapiconfirm':false, 
+										'actapimethod': null, 'actapirefresh': false, 'actapitype': null, 'classname':'ant-btn-link', 'icon':'book',
+										'isforevery':true, 'ismain':false, 'parametrs':[], 'roles':[],'sps':false, 'title':(value || { title: '' }).title,'type':'Modal',
+										'position':1
+									}]} origin={origin || {}}
+									data={item || {}} params={ link_params}
+									history={history} location={location}
+									getData={getData}
+									type='link' checked={checked} setLoading = {changeLoading} 
+									onSaveRow = {onSaveRow}
+								/> :
+							<a href={(value || { link: '' }).link}
 							   target={(value || {target:null}).target || '_blank'} rel='noopener noreferrer'>
 							{(value || { title: '' }).title}
 						  </a>

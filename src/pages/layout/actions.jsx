@@ -3,6 +3,7 @@ import qs from 'query-string'
 
 import axios from 'axios'
 
+
 import { compose, lifecycle, withHandlers } from 'recompose'
 
 import { Tooltip, Icon, Popconfirm, notification, Modal, Spin, Menu } from 'antd'
@@ -35,7 +36,8 @@ const ActionsBlock = ({
 	let _actions = _.filter(actions, x => {
 		x.isforevery = x.isforevery || false
 		x.isforevery = _.isNumber(x.isforevery) ? x.isforevery === 1 ? true : false : x.isforevery
-		if (x.isforevery === (type === 'table') && visibleCondition(data, x.act_visible_condition, params.inputs)) return x
+		if (x.isforevery === (type === 'table' || type === 'link') && visibleCondition(data, x.act_visible_condition, params.inputs)) return x
+		
 	})
 	return _actions.filter((act)=>act.type !== 'onLoad' &&  act.type !== 'Expand').map( (el, i) => {
 		let _value = (type !== 'table') ? <span>{el.title}</span> : null,
@@ -357,13 +359,17 @@ const enhance = compose(
 				}
 			)
 		},
-		onModal: ({getData, origin, data, location, history}) => (act) => {
+		onModal: ({getData, origin, data, location, history, type, params}) => (act) => {
 			const typeContent = act.act.split('/')[1]
 			let inputs = QueryBuilder(data, act, origin.config, history)
 
 			if(!act.isforevery)
 				inputs = QueryBuilder2(data, act, origin.config, location ? qs.parse(location.search) : {})
-
+			console.log('TTTTYYYYPE:', type)
+			
+			if (type === 'link')
+				inputs = params
+			
 			let search = { search: inputs, pathname: act.act }
 
 			const ModalContent =  (typeContent, search, act) => {
