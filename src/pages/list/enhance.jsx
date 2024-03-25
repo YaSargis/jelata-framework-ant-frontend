@@ -388,8 +388,13 @@ const enhance = compose(
 						getData(getData, {})
 					}
 				} else {
-					if(this.props.match.params.id !== nextProps.match.params.id) {
-						set_state({ ready: false }) 
+					if (
+						this.props.match.params.id !== nextProps.match.params.id ||
+						params.search !== nextProps.history.location.search
+					) {
+					
+						set_state({ ready: false,  }) 
+						params.search = nextProps.location.search
 						pagination.pagenum = 1
 						params.inputs = qs.parse(nextProps.location.search)
 						changeFilters({}) 
