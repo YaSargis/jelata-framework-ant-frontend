@@ -31,7 +31,8 @@ import Certificate from './components/certificate'
 import { CustomArrowNext, CustomArrowPrev } from './components/custom-arrows'
 import AceEditor from 'react-ace'
 import Diagram from './components/diagram'
-
+import {List as ListView} from 'src/pages/list';
+import {GetOne as GetOneView} from 'src/pages/Getone';
 
 import { visibleCondition /*Configer*/ } from 'src/libs/methods'
 import TextArea from 'antd/lib/input/TextArea'
@@ -189,7 +190,7 @@ const GetOne = ({
 					<Form.Item key={item.key} label={item.title}>
 						<Rate
 							allowHalf
-							defaultValue={data[item.key] === null ? 0 : data[item.key]}
+							defaultValue={data[item.key] === null ? 0 : parseInt( data[item.key])}
 							onChange={event => {
 								onChangeData(event, item)
 							}}
@@ -759,6 +760,36 @@ const GetOne = ({
 					<Form.Item label={item.title}>
 						<Diagram config={item} data={data} origin={origin} inputs={params.inputs} />
 					</Form.Item>
+				)
+			case 'view':
+				return (
+					<Form.Item label={item.title}>{(() => {
+							console.log('JKLOPITYU', data[item.key])
+							switch(data[item.key].viewtype) {
+								case 'table':
+								case 'tiles':
+									return <List 
+												compo = 'true' 
+												path = {data[item.key].path} 
+												history = {history} 
+												location={location}
+											/>
+								case 'form full':
+								case 'form not mutable':
+									return (
+										<div>
+											<h4>{ null }</h4>
+											<GetOne 
+												compo = {true} path = {data[item.key].path} 
+												history = {history} location={location} 
+												get_params={get_params}
+											/>
+										</div>
+									)
+							}})()}
+						
+					</Form.Item>
+					
 				)
 			default:
 				return (

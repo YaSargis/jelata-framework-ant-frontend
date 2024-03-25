@@ -105,7 +105,10 @@ const enhance = compose(
 			  			document.title = params.inputs._doctitle_
 
 					pagination.foundcount = res.data.foundcount
-
+					if (res.data.data && res.data.data._redirect) {
+						//console.log('_redirect', res.data.data._redirect)
+						window.location.href = res.data.data._redirect
+					}
 		  			if (res.data.subscrible ) {
 				  		let ws = document.location.href.split('//')[1]
 						let ws_protocol = document.location.href.split('//')[0].indexOf('s') !== -1? 'wss' : 'ws'

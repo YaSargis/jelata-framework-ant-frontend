@@ -115,6 +115,9 @@ const enhance = compose(
 
  				    if (!rel)
  					    rel = []
+					
+					if (res.data.data && res.data.data._redirect) 
+						location.href = res.data.data._redirect
 
                     if (res.subscrible) {
                         let ws = document.location.href.split('//')[1];
