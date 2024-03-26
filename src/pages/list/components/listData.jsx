@@ -49,7 +49,7 @@ export const listDataGenerate = (
 						</ul>
 					);
 				} else if (config.type === 'link') {
-					let link_params = (typeof value !== 'object') ? '' : qs.parse((value || { link: '' }).link.split('?') || [])[1] || ''
+					let link_params = (typeof value !== 'object') ? '' : qs.parse( ((value || { link: '' }).link || '').split('?') || [])[1] || ''
 
 					newItem[k] = (
 					  <div>
