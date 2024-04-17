@@ -108,6 +108,31 @@ const GetOne = ({
 					</Form.Item>
 				)
 				break
+			case 'text_scan':
+				return (
+					<Form.Item key='1.2' label={item.title}>
+					  <input
+						ref={input => input && input.focus()}
+						disabled={item.disabled}
+						className ='ant-input'
+						value={data[item.key] ? data[item.key] : ''}
+						onChange={event => onChangeData(event, item)}
+						onBlur={event => onChangeInput(event, item)}
+						onKeyPress={event => {
+							if (event.key === 'Enter') {
+								
+								if (origin.viewtype !== 'form not mutable') {
+									onChangeInput(event, item)
+								}
+								
+							}
+						}}
+					  />
+					</Form.Item>
+			  
+
+				)
+				break
 			case 'textarea':
 				return (
 					<Form.Item key='d2.1' label={item.title}>

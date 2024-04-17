@@ -29,9 +29,9 @@ const ActionsBlock = ({
 	onSave, goBack, goLink,goLinkTo, onDelete,
 	onCallApi, popup, calendar, onModal, position=1//, toggleLoading
 }) => {
-	if(calendar) type = 'table'
+	//if(calendar) type = 'table'
 	
-	actions = actions.filter((act) => act.position === position)
+	actions = (actions || []).filter((act) => act.position === position)
 	
 	let _actions = _.filter(actions, x => {
 		x.isforevery = x.isforevery || false
