@@ -83,7 +83,8 @@ const enhance = compose(
 				return obj[props[i]]
 			}		
 			const _item = searchByString(item, 'item,props,data'),
-				  _view = _.find(values.items, x => x.key === item.key) 
+				  _view = _.find(values.items, x => x.key === _item.key) 
+			  
 			if ( location.hash !== ('#'+_view.key) ) {
 				changeReady(false)
 				history.push(location.pathname + location.search + '#' + _view.key)
