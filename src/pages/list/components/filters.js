@@ -80,8 +80,9 @@ const Filters = ({
 												<Select
 													labelInValue={(p.type === 'multijson' || p.type === 'multiselect')? true : false}
 													mode={ (p.type === 'multijson' || p.type === 'multiselect') ? 'multiple' : 'default' }
-													showSearch={true}
-													value={filters[p.column]}
+													showSearch
+													optionFilterProp='children'
+													value={filters[p.column] }
 													placeholder={p.title}
 													style={{ width: '100%' }}
 													onFocus={()=>handlerGetTable(p)}
@@ -93,7 +94,7 @@ const Filters = ({
 													}}
 													onSelect={(_val, option) => {
 													  if(p.type === 'multijson' || p.type === 'multiselect') {
-																	_val['value'] = _val.key
+														_val['value'] = _val.key
 														if(Array.isArray(filters[p.column]))
 														  filters[p.column].push(_val)
 														  else filters[p.column] = [_val]
@@ -104,7 +105,7 @@ const Filters = ({
 													{
 													  apiData[p.title] ? Array.isArray(apiData[p.title]) ? (()=> {
 														return apiData[p.title].map((it_m, i_arr) => {
-														  return <Option key={i_arr} item={it_m} value={it_m.value}>{ it_m.label }</Option>
+														  return <Select.Option key={i_arr} item={it_m} value={it_m.value}>{ it_m.label }</Select.Option>
 														})
 													  })() : null : null
 													}
