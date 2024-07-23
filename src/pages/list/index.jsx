@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import {
-	Row, Col, Layout, Spin, Card, Collapse
+	Row, Col, Layout, Spin, Card, Collapse, Icon
 } from 'antd'
 
 const { Content } = Layout
@@ -187,17 +187,26 @@ const TableComp = ({
 							setLoading = {changeLoading} position={2}
 						/>
 					</Row>
-						{(allProps.filters.filter((f) => f.position === 2).length > 0)?
-							<FilterList
-								getData={getData} allProps={allProps} path={location.pathname}
-								filter={filter} changeFilter={changeFilter} filters={filters}
-								changeFilters={changeFilters} listConfig={listConfig}
-								listColumns={listColumns} changeLoading={changeLoading}
-								arr_hide={arr_hide} handlerGetTable={handlerGetTable}
-								pagination = {pagination}	changePagination = {changePagination}
-								styleType='up' params={params}
-							 />: null
-						}
+						<Collapse expandIcon={({ isActive })=>(
+								<div style={{color:(isActive)?'black':'blue'}}>
+									<Icon type='filter' /><Icon type='filter' /><Icon type='filter' />
+									<Icon type='filter' /><Icon type='filter' /><Icon type='filter' />
+								</div>
+							)} >
+							<Panel key = 'fltrup1'>
+								{(allProps.filters.filter((f) => f.position === 2).length > 0)?
+									<FilterList
+										getData={getData} allProps={allProps} path={location.pathname}
+										filter={filter} changeFilter={changeFilter} filters={filters}
+										changeFilters={changeFilters} listConfig={listConfig}
+										listColumns={listColumns} changeLoading={changeLoading}
+										arr_hide={arr_hide} handlerGetTable={handlerGetTable}
+										pagination = {pagination}	changePagination = {changePagination}
+										styleType='up' params={params}
+									 />: null
+								}
+							</Panel>
+						</Collapse>
 						{compo ? null : (
 							<MyHeader key='s1' history={history} title={''}>
 								<ActionsBlock
