@@ -25,7 +25,7 @@ const Filters = ({
 	
 	
 	return (
-		<div>
+		<div style={{padding:'10px'}}>
 			{
 				allProps.filters ? (
 					Array.isArray(allProps.filters) &&
