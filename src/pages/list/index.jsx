@@ -187,7 +187,7 @@ const TableComp = ({
 							setLoading = {changeLoading} position={2}
 						/>
 					</Row>
-						<Collapse expandIcon={({ isActive })=>(
+						<Collapse style={{ margin: '10px'}} expandIcon={({ isActive })=>(
 								<div style={{color:(isActive)?'black':'#1890ff'}}>
 									<Icon type='filter' /><Icon type='filter' /><Icon type='filter' />
 									<Icon type='filter' /><Icon type='filter' /><Icon type='filter' />
