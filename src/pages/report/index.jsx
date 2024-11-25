@@ -8,7 +8,8 @@ const Report = ({
 	getSelectOptions, getReportFile 
 }) => {
 	const { title } = values
-	const { Option } = Select
+	//const { Option } = Select
+	const { Option } = AutoComplete;
 	let reportGenerate = (((LaNg || {}).reportGenerate ||{})[LnG || 'EN'] || 'Generate')
 	return [
 		<Card key='1l'>
@@ -31,6 +32,7 @@ const Report = ({
 														let inp = inputs 
 														inp[item.func_paramtitle] = e
 														set_state({ inputs: inp })
+														
 													}
 												}
 												defaultValue = {inputs[item.func_paramtitle]}
@@ -70,22 +72,28 @@ const Report = ({
 												<AutoComplete
 													onFocus={() => getSelectOptions(ptitle, null, item.apimethod)}
 													placeholder={item.ptitle}
-													filterOption={(inputValue, option) =>
-														option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-													}
-													dataSource={selections[item.func_paramtitle]}
+													style={{ width: 600 }}
 													devaultValue = {inputs[item.func_paramtitle]}
 													onChange = {(e) => {
-														let inp = inputs
-														const findedObj = selections.find((it) => it.label===e)
-														inp[item.func_paramtitle] = findedObj
+														
+														//let inp = inputs
+														//const findedObj = selections.find((it) => it.label===e)
+														//inp[item.func_paramtitle] = findedObj
+														//set_state({ /*inputs: inp,*/ substr:e })
+														getSelectOptions(ptitle, e, item.apimethod)
+													}}
+													onSelect = {(e) => {
+														
+														let inp = inputs 
+														inp[item.func_paramtitle] = e
 														set_state({ inputs: inp })
+														
 													}}
 												>
 													{
 														selections ? selections[ptitle] ? selections[ptitle].map((it) => {
-															return <Option key={it.id+it.label} value={it.label}>{it.label}</Option>
-														}) : null : null
+															return <Option key={it.id+it.label} value={it.value.toString()}>{it.label}</Option>
+														}) : [] : []
 													}
 												</AutoComplete>
 											</div>

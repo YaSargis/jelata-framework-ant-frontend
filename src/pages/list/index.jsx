@@ -187,14 +187,14 @@ const TableComp = ({
 							setLoading = {changeLoading} position={2}
 						/>
 					</Row>
+					{(allProps.filters.filter((f) => f.position === 2).length > 0)?
 						<Collapse style={{ margin: '10px'}} expandIcon={({ isActive })=>(
 								<div style={{color:(isActive)?'black':'#1890ff'}}>
-									<Icon type='filter' /><Icon type='filter' /><Icon type='filter' />
-									<Icon type='filter' /><Icon type='filter' /><Icon type='filter' />
+									<Icon type='filter' />
 								</div>
 							)} >
 							<Panel key = 'fltrup1'>
-								{(allProps.filters.filter((f) => f.position === 2).length > 0)?
+								
 									<FilterList
 										getData={getData} allProps={allProps} path={location.pathname}
 										filter={filter} changeFilter={changeFilter} filters={filters}
@@ -203,10 +203,12 @@ const TableComp = ({
 										arr_hide={arr_hide} handlerGetTable={handlerGetTable}
 										pagination = {pagination}	changePagination = {changePagination}
 										styleType='up' params={params}
-									 />: null
-								}
+									 />
+								
 							</Panel>
 						</Collapse>
+						: null
+					}
 						{compo ? null : (
 							<MyHeader key='s1' history={history} title={''}>
 								<ActionsBlock

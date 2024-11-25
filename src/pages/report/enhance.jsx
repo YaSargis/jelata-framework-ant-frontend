@@ -7,7 +7,7 @@ const enhance = compose(
 			values: {}, params: [], inputs: {}, selections: []
 		  }
 		}) => ({
-			values: inState.values, params: inState.params, inputs: inState.inputs, selections: inState.selections   // helper { ptitle: {} | [] } - для селекта []
+			 values: inState.values, params: inState.params, inputs: inState.inputs, selections: inState.selections   // helper { ptitle: {} | [] } - для селекта []
 		}), {
 			set_state: state => obj => {
 				let _state = {...state},
@@ -39,7 +39,7 @@ const enhance = compose(
 					const dataTypeString = res.outjson.methotypename;
 					if(dataTypeString === 'get') {
 						apishka( 
-							'GET', {}, `/api/${res.outjson.methodname}`,
+							'GET', {}, `/api/${res.outjson.methodname}?substr=` + substr,
 							(res) => {
 								let sel = selections
 								sel[ptitle] = res.outjson
