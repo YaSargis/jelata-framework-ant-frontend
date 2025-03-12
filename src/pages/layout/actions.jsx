@@ -291,7 +291,12 @@ const enhance = compose(
 			} else {
 				url = QueryBuilder(data, el, origin.config,  location ? qs.parse(location.search) : {}, checked)
 			}
-			history.push(el.act + url)
+			if (el.act.startsWith("http://") || el.act.startsWith("https://")) {
+				window.location.href = el.act + url
+			} else {
+				history.push(el.act + url) 
+			}
+
 		},
 		goLinkTo: ({ data, origin, location, history,checked }) => (el) => {
 			let url = ''
